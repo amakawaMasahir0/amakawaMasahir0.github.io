@@ -1,0 +1,1522 @@
+
+  <!DOCTYPE html>
+  <html lang="en"  
+    
+      data-theme-mode="auto"
+    
+  >
+  <head>
+  
+  <meta charset="utf-8">
+  
+
+  
+
+  
+
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_0khxww3tj3q9';window.REIMU_CONFIG.clipboard_tips = {"success":{"en":"Copy successfully (*^▽^*)","zh-CN":"复制成功 (*^▽^*)","zh-TW":"複製成功 (*^▽^*)","ja":"コピー成功 (*^▽^*)"},"fail":{"en":"Copy failed (ﾟ⊿ﾟ)ﾂ","zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","zh-TW":"複製失敗 (ﾟ⊿ﾟ)ﾂ","ja":"コピー失敗 (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = 'All articles on this blog are licensed under the BY-NC-SA license agreement unless otherwise stated. Please indicate the source when reprinting!';window.REIMU_CONFIG.code_block = {"expand":40};window.REIMU_CONFIG.base = 'https://amakawamasahir0.github.io';</script>
+  
+  <title>
+    IB简介 |
+    
+    测温大师的工位
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media&#x3D;&#39;all&#39;">
+  
+  
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_0khxww3tj3q9.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+  
+  
+    <meta name="description" content="介绍ib组网，ib协议分层，ib服务类型，ib操作类型，以及ib协议的组包与解包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IB简介">
+<meta property="og:url" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="测温大师的工位">
+<meta property="og:description" content="介绍ib组网，ib协议分层，ib服务类型，ib操作类型，以及ib协议的组包与解包">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/c2cde73e9896d649077b9ac8df32124b.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/0b6da9fbe5368ac55bd9228b43e959a4.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/7b797243efa46703fa756097abaa53a.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/5ef0da1b590d6c6ec9e31d293f3c4e00.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/c2998ef7d9911db74469da07c56168f8.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/586771aec38d2a9eedb36ea9e87b90e1.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/02336c7d395171c61d57ce0f90e8a428.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ff2ffe08e11005ebbda9927f33372049.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/a7a86c5c0a9167fa8d35c9bdfcb65f4c.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ce098c997471f9a6f2f62c50d4d8e4db.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/2024-06-28_11_1.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/2024-06-28_11_2.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195425737.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195456833.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195514978.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-320b1db2b90c5334cb4200a0784a12ce_1440w.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-4576be474bb2fe5ec748d4df9c2cbaa2_1440w.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-a9ae192a4d4a916a6b73d0ab6cec01ff_r.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250326194218498.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/99c7199e35a28bea8bbc33265694d039.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ef2f346037a59c12dc2fa58cdafafaa1.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/972421d5e9ea024e67ee9c74e4253294.png">
+<meta property="article:published_time" content="2025-05-02T09:48:53.000Z">
+<meta property="article:modified_time" content="2025-05-03T15:33:52.872Z">
+<meta property="article:author" content="wanderingxs">
+<meta property="article:tag" content="协议">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/c2cde73e9896d649077b9ac8df32124b.jpeg">
+  
+  
+    <link rel="alternate" href="/404.html" title="测温大师的工位" >
+  
+  
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  
+  
+  
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+  
+  
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.0/dist/aos.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+  <body>
+    
+    
+  <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+        
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+        
+      </div>
+      
+      
+        
+      
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var startLoading = () => {
+      time = Date.now();
+      document.getElementById('loader').classList.remove("loading");
+    }
+    var endLoading = () => {
+      if (!time) {
+        document.body.style.overflow = 'auto';
+        document.getElementById('loader').classList.add("loading");
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          document.body.style.overflow = 'auto';
+          document.getElementById('loader').classList.add("loading");
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    document.getElementById('loader').addEventListener('click', endLoading);
+  </script>
+
+<div id="copy-tooltip" style="pointer-events: none; opacity: 0; transition: all 0.2s ease; position: fixed;top: 50%;left: 50%;z-index: 999;transform: translate(-50%, -50%);color: white;background: rgba(0, 0, 0, 0.5);padding: 10px 15px;border-radius: 10px;">
+</div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav">
+    
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/">Home</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/archives">Archives</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/about">About</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/friend">Friend</a>
+        </span>
+      
+    
+    <a id="main-nav-toggle" class="nav-icon"></a>
+  </nav>
+  <nav id="sub-nav">
+    
+      <a id="nav-rss-link" class="nav-icon" href="/404.html" title="RSS Feed" target="_blank"></a>
+    
+    
+    
+      <a id="nav-search-btn" class="nav-icon popup-trigger" title="Search"></a>
+    
+  </nav>
+  
+</div>
+<header id="header">
+  
+    <picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215682.jpg" alt="IB简介">
+  
+  <div id="header-outer">
+    <div id="header-title">
+      
+        
+        
+          <a href="/" id="logo">
+            <h1 data-aos="slide-up">IB简介</h1>
+          </a>
+        
+      
+      
+        
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+          
+        </h2>
+      
+    </div>
+  </div>
+</header>
+
+        <div id="content"  class="sidebar-right" >
+          <aside id="sidebar">
+  
+  
+  
+  <div class="sidebar-wrapper wrap-sticky">
+    <div class="sidebar-wrap" data-aos="fade-up">
+      
+        
+          <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ib%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">ib协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E7%BB%84%E7%BD%91"><span class="toc-number">1.1.</span> <span class="toc-text">IB组网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">子网管理器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E5%B1%82%E7%BA%A7"><span class="toc-number">1.3.</span> <span class="toc-text">IB层级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB-QP"><span class="toc-number">1.4.</span> <span class="toc-text">IB QP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%88%E4%BB%A5RC-send-or-write%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">QP传输案例（以RC send or write为例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%9ARC-read"><span class="toc-number">1.4.2.</span> <span class="toc-text">QP传输案例：RC read</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.3.</span> <span class="toc-text">QP传输案例：原子操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shared-receive-queue"><span class="toc-number">1.4.4.</span> <span class="toc-text">shared receive queue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B7%E6%B7%86%E7%82%B9%EF%BC%9A%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81rwqe-swqe"><span class="toc-number">1.5.</span> <span class="toc-text">混淆点：是否需要rwqe&#x2F;swqe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ib%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.6.</span> <span class="toc-text">ib服务类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E6%93%8D%E4%BD%9C%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.7.</span> <span class="toc-text">IB操作类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E7%BB%84%E5%8C%85"><span class="toc-number">1.8.</span> <span class="toc-text">IB组包</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+        
+      
+      
+        
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+        
+      
+    </div>
+  </div>
+
+  <div class="sidebar-widget">
+  
+  </div>
+  
+</aside>
+
+          <section id="main"><article id="post-Infiniband/IB简介" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link" data-aos="zoom-in">
+    <time datetime="2025-05-02T09:48:53.000Z" itemprop="datePublished">2025-05-02</time>
+    <time style="display: none;" id="post-update-time">2025-05-03</time>
+  </span>
+</div>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Infiniband/" data-aos="zoom-in">Infiniband</a>
+  </div>
+
+
+    </div>
+    <div class="hr-line"></div>
+    
+
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+      
+        <h1 id="ib协议"><a href="#ib协议" class="headerlink" title="ib协议"></a>ib协议</h1><h2 id="IB组网"><a href="#IB组网" class="headerlink" title="IB组网"></a>IB组网</h2><ul>
+<li><p>ib协议的基础名词解释：<a target="_blank" rel="noopener" href="https://blog.csdn.net/sz_woshishazi/article/details/127059318">https://blog.csdn.net/sz_woshishazi/article/details/127059318</a></p>
+</li>
+<li><p>hca： host channal adapter</p>
+</li>
+<li><p>CA：通道适配器，一个CA有1-255个端口，每个端口在子网下有唯一LID</p>
+<ul>
+<li><p>每个CA port在配置时就具有唯一地址，当一个CA必须发送信息或者读取信息时，首先需要发送一个请求报文，该报文带有destination port ID，通过交换机和路由器的帮助，CA最终抵达目标CA。</p>
+<p>所以说终端必然是CA而不是交换机或路由器，CA是真正的操控者，交换机和路由器只是维护流量通道的。</p>
+</li>
+</ul>
+</li>
+<li><p>交换机：3-255个端口，port0是管理端口，port0分配唯一LID</p>
+</li>
+<li><p>路由器：2-255个端口</p>
+</li>
+<li><p>LID地址空间</p>
+<ul>
+<li><strong>0000h不能被使用</strong>；</li>
+<li><strong>0001h—BFFFh（48K）作为单播地址，单播包不会运往多个Port</strong>；</li>
+<li><strong>C000h—FFFEh（16K）作为多播地址，多播包会前往多个目的地</strong>；</li>
+<li>FFFFh作为permissive LID PLID，有特殊用途；</li>
+</ul>
+</li>
+<li><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/c2cde73e9896d649077b9ac8df32124b.jpeg" alt="请添加图片描述"></p>
+</li>
+<li><p>ipv6地址</p>
+<ul>
+<li><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/0b6da9fbe5368ac55bd9228b43e959a4.jpeg" alt="img"></li>
+</ul>
+</li>
+<li><p>通过lid路由</p>
+<ul>
+<li>源端TCA将报文传入链路中；<br>在到达目的端口的路径中，数据包到达第一个交换机的端口；<br>交换机的链路层会检查包的DLID内容，确定是单播包还是多播包，并根据内部的查找表确定，包接下去该前往的端口；<br>到达目标TCA端口后，端口的链路层解码数据包的DLID字段并确定它是目标端口，之后，数据包被传递到网络层进行处理。</li>
+</ul>
+</li>
+<li><p>ib组网</p>
+<ul>
+<li><p>l1:物理链路，l2是子网； l3是跨子网</p>
+</li>
+<li><p>一个子网包含有一群端口（设备？），它们具有相同的子网管理器和子网ID</p>
+</li>
+<li><p>子网管理器会为所由设备分配一个独特的本地ID和一个相同的子网ID，标识子网和端口位置</p>
+</li>
+<li><p>在同一个子网下，channal adapter，路由器端口和交换机端口可以交换数据包</p>
+<ul>
+<li><p>路由器：工作在网络层，在不同子网之间基于GUID（global unique ID）或者IPv6地址转发数据包。</p>
+<ul>
+<li>GUID是设备唯一的，子网ID+设备ID</li>
+<li>子网管理器扫描子网内设备的GUID信息，构建全局路由表</li>
+<li>路由器记录不同子网内设备们的GUID，据此寻找各个设备所属子网<ul>
+<li>子网可能是多级嵌套的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>路由器路由举例：<img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/7b797243efa46703fa756097abaa53a.jpg" alt="7b797243efa46703fa756097abaa53a"></p>
+<ul>
+<li>TCA端口将Packet发送至链路时，需要设置：SLID、DLID、SGID、DGID</li>
+<li>假设要经过两级交换机；源CA发出包的的DLID就是第一个交换机的LID</li>
+<li>第一级交换机在往第二级发，改变SLID和DLID</li>
+<li>到达路由器，路由器查DGID看看是不是这个L3网络下的目标。<ul>
+<li>如果目标子网不在路由器端口，那可能是嵌套的二级子网，需要继续查表得到。假设查到了交换机1-》交换机2-》CA2，则DLID变为交换机1的DLID</li>
+</ul>
+</li>
+<li>路由器发给一级一级的交换机，查找目标交换机&#x2F;设备的LID，更新SLID和DLID</li>
+<li>最后的交换机根据GUID查LID，把包发给目标CA</li>
+</ul>
+</li>
+<li><p>子网A的某个HCA的GUID为<code>G1</code>，子网B的某个HCA的GUID为<code>G2</code>，路由器知道如何通过GUID在子网间路由流量。</p>
+</li>
+<li><p>当子网A的节点向子网B的节点发送数据时：</p>
+<ul>
+<li>源节点使用目标节点的GUID（而非LID）标识目的地。</li>
+<li>IB路由器根据GUID查询全局路由表，确定目标子网路径。</li>
+<li>数据包被转发到目标子网，目标子网的交换机根据LID完成最终投递。</li>
+</ul>
+</li>
+<li><p>交换机：工作在数据链路层，在同一个子网内基于LID（local ID）转发数据包。LID是子网管理器分配的。</p>
+<ul>
+<li>如果数据包目标地址是<strong>LID</strong>，则交换机默认认为目标设备在<strong>同一子网</strong>内。</li>
+<li>如果目标地址路由器的LID，交换机会将数据包转发给路由器，路由器依靠是<strong>GUID或IPv6地址</strong>进行<strong>跨子网路由</strong>。<ul>
+<li>如果设备A尝试访问一个<strong>不在本地子网LID范围内</strong>的目标地址（例如目标GUID或IPv6地址），数据包会被发送至默认网关（即IB路由器）</li>
+<li>目标子网SM涉及到一个通过GUID查LID的操作，这样才能确定收到的数据包应该被发到本子网的最终哪个设备，然后选择最短路径发送</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>不同子网间通过路由器通信</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>单播</p>
+<ul>
+<li>无限制单播：GID 地址空间中，前三位为 <code>001</code> 的 128 位地址</li>
+<li>部分限制单播：zi定义</li>
+<li>当前子网内有效：GID 的高 64 位（子网前缀）设置为 <code>FE80_0000_0000_0000h</code> 时，表示该地址为链路本地地址。</li>
+</ul>
+</li>
+<li><p>多播</p>
+</li>
+<li><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/5ef0da1b590d6c6ec9e31d293f3c4e00.jpeg" alt="img"></p>
+<ul>
+<li><p>128位GID地址中将最高位为1111 1111b (FFh)作为组播GID地址；<br>Flags是4-bits的标志，且前三bit保留并定义为零，最高位T的定义如下:T &#x3D; 0表示这是一个永久分配的组播GID，T &#x3D; 1表示这是非永久分配(即瞬态)的组播GID；<br>Scope是一个4位的组播作用域值，用于限制组播操作的作用域</p>
+</li>
+<li><p>一个CA或路由器可以加入一个或多个多播组；<br>多播GID不会出现在packet的SGID项中；<br>多播GID ff02:0:0:0:0:0:0:0:1是链路本地多播GID，路由器不将具有该DGID的报文路由到本地子网外。该GID用作DGID时，用与向子网中所有具有多播功能的CA广播；<br>此外，IPv6规范在RFC2375和RFC2373中定义了一组保留地址。除非有明确说明，否则IBA不会将这些地址用于IBA组播操作，而是将它们保留给原始IPv6使用。</p>
+</li>
+<li><p>CA怎么加入多播组？</p>
+<ul>
+<li><p><strong>确定多播组的 GID（MGID）：</strong> 每个多播组都有一个唯一的多播全局标识符（MGID）。要加入特定的多播组，首先需要知道该组的 MGID。</p>
+<p><strong>向子网管理器（SM）发送加入请求：</strong> CA 或路由器通过向子网管理器发送 <code>MCMemberRecord</code> 创建请求，申请加入指定的多播组。如果该多播组尚不存在，子网管理器会自动创建它。 </p>
+<p><strong>子网管理器更新网络配置：</strong> 子网管理器处理加入请求后，会更新网络中的相关交换机和路由器的转发表，确保多播流量能够正确地传递到新加入的成员。 </p>
+<p><strong>本地配置：</strong> 在本地，CA 或路由器需要将其队列对（QP）附加到指定的多播组，以便接收该组的多播消息。这通常通过调用 <code>ibv_attach_mcast()</code> 等函数来实现。如果一个CA加入了多播组，那么一个UD的QP要将多播GUID当作它自己的GUID一样接受报文</p>
+</li>
+</ul>
+</li>
+<li><p>加入多播组后，如果不做限制，某个设备发出的报文会到达组内其他所有设备</p>
+</li>
+</ul>
+</li>
+<li><p>SM：子网管理器</p>
+<ul>
+<li>需要注意的是，<strong>子网中任意两个CA和&#x2F;或路由器端口之间通常存在多条路径。在配置阶段，SM会将CA和路由器端口之间所有可能的path都进行记录，构建一个路径库</strong>。当软件后续需要在QP间构建连接时，通过查询该路径库来确定路径，并由LID或GID指定</li>
+</ul>
+</li>
+</ul>
+<h2 id="子网管理器"><a href="#子网管理器" class="headerlink" title="子网管理器"></a>子网管理器</h2><ol>
+<li>发现所管理子网的<strong>拓扑结构</strong>；</li>
+<li>给子网下的所有Port<strong>分配相同的子网ID</strong>；</li>
+<li>给每个Port<strong>分配LID</strong>；</li>
+<li>建立子网中所有节点之间的可能路径；</li>
+<li>定期扫描子网，<strong>寻找拓扑变化</strong>。</li>
+</ol>
+<ul>
+<li>IB设备的管理器，有子网管理，性能管理，设备管理等。通过管理数据包向这些管理器执行set或者get操作（软件层面）</li>
+<li><strong>子网管理器通过向QP0发送子网管理请求包subnet management request packet(SMPs)去管理设备****CA或路由器上的每个端口都会实现一个SMI(subnet management interface)来接收SMP请求报文和发送SMP响应报文，但是，在交换机上，只有Port0实现SMI，SMP即使从其他Port接收，依旧会转发到Port0处理</strong></li>
+</ul>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/c2998ef7d9911db74469da07c56168f8.jpeg" alt="请添加图片描述"></p>
+<p> 此外，还有子网管理代理的概念，每个CA，交换机或路由器都会实现一个子网管理代理SMA，当接收到SMP后，都由SMA处理请求。SMA执行由SMP定义的操作，然后将SMP响应报文返回给SMI，SMI将响应SMP返回给SM。<br>  注意：在另一个SM发送一个SMP来访问驻留在设备中的SM的SMInfo属性的情况下，SMI将SMP直接传递给设备的SM(而不是它的SMA)进行处理。</p>
+<ul>
+<li>ib qos是通过链路层的不同虚通道实现的；VL15存放子网管理器的SMP消息</li>
+</ul>
+<h2 id="IB层级"><a href="#IB层级" class="headerlink" title="IB层级"></a>IB层级</h2><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/586771aec38d2a9eedb36ea9e87b90e1.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>上层协议层：软件应用或驱动传输数据所在层，负责发送与接收请求，完成传输或发生错误将报告给verb层或传输层；</li>
+<li>Verb层：软件应用调用函数层；</li>
+<li>传输层：负责在QP间发送接收信息，拆分multiple packet任务；</li>
+<li>网络层：路由器中网络层负责使用GRH处理不同子网间的包；在CA发送侧中，负责插入GRH与转发；CA接收侧负责检测是否是ipv6包，GID是否正确；</li>
+<li>链路层：链路层负责通过fabric发送接收数据，建立在packet级别，而非message级别。在传输过程中，链路层从网络层接收数据包，并使用传输层提供的源路径位将正确的端口LID地址插入到数据包的LRH: slides字段中。<ul>
+<li>   当收到来自物理层的数据包时，链路层对数据包的DLID字段执行地址解码，以确定它是否是目标端口。如果是，则将包传递到CA的传输层进行处理。</li>
+<li>   链路层带有发送和接收数据的virtual Lane buffer；流量控制也将在链路层完成；交换机的报文转发；</li>
+</ul>
+</li>
+<li>物理层：物理层主要是完成编码，符号对齐，串行化serdes等功能，使信息在IBA fabric上传输；</li>
+</ul>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/02336c7d395171c61d57ce0f90e8a428.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>IB HCA和IB TCA的区别<ul>
+<li>TCA与HCA的唯一<strong>区别在于与TCA的传输层接口是上层实体，在HCA内，是Verb layer</strong></li>
+<li>verbs 更加友好，软件不关心硬件实现</li>
+</ul>
+</li>
+</ul>
+<h2 id="IB-QP"><a href="#IB-QP" class="headerlink" title="IB QP"></a>IB QP</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/195757767">https://zhuanlan.zhihu.com/p/195757767</a></p>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ff2ffe08e11005ebbda9927f33372049.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>一个CA具有一个LID（L2子网）和一个GUID（L3子网）；硬件上可能有多个服务等级（SL）对应的虚通道，使用扩展LID标识（发送的SLID为原始LID加上偏移）。可能有多个QP，使用QP号标识。发送的包使用PSN（报文序列号）进行标识。一个CA的SQ有起始PSN，RQ有期望收到的起始PSN。</li>
+<li>创建QP时对一个QP的初始化操作<ul>
+<li>本地端口号（在QP创建时确定）；<br>QP类型；<br>SQ开始PSN（SQ发送的第一包插入开始PSN，后续实时更新current PSN）；<br>RQ期望PSN；<br>最大payload尺寸（0.25KB、0.5KB、1KB、2KB、4KB，也被称作path maximum transfer unit，PMTU）；<br>目标端的本地ID；<br>期望的本地QoS；<br>报文注入延迟（因为链路的宽度不同，内部报文延迟也不同，防止快速链路的流量超过较慢链路的流量，QP会附一个IPD来定义将数据包发送到目标IP之间必须遵守的间隔）；<br>本地应答超时（指定时间内没收到ack报文，即为应答超时，需要重发对应报文）；<br>Ack timeout&#x2F;丢包重传计数；<br>RNR重传计数；<br>源端口本地ID；<br>全局的源端&#x2F;目标端地址；</li>
+<li>创建QP时。需要对端的一些信息。这些怎么获取？<ul>
+<li>TCP连接时候指定，软件会发出报文，硬件转发即可</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>服务类型<ul>
+<li>可靠连接 RC（Reliable Connected）QP；<br>非可靠连接 UC（UnReliable Connected）QP；<br>可靠数据报 RD (Reliable Datagram) QP；<br>非可靠数据报 UD (Unreliable Datagram) QP；<br>类似与隧道包，对非IBA协议的包进行封装的 RAW QP。</li>
+</ul>
+</li>
+<li>QP的软硬件交互<ul>
+<li>SWQ&#x2F;RWQ是硬件向软件读，还是软件向硬件写？<ul>
+<li>swqe&#x2F;rwqe是软件通过写硬件寄存器形式下发；硬件内部维护一个环（ring buffer）执行软件给的任务单元。所以AXI-S的所谓（swqe&#x2F;rwqe）指令流其实是不存在的</li>
+<li>cqe是硬件对软件指定的寄存器写。（这里涉及到axi-s的写事务，但是在工程中和数据流合并了）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="QP传输案例（以RC-send-or-write为例）"><a href="#QP传输案例（以RC-send-or-write为例）" class="headerlink" title="QP传输案例（以RC send or write为例）"></a>QP传输案例（以RC send or write为例）</h3><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/a7a86c5c0a9167fa8d35c9bdfcb65f4c.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>CA A rdma write发起方<ul>
+<li>应用层：<ul>
+<li>软件将一个<strong>RDMA Write WQE</strong>提交到CA A的某个QP的SQ（发送队列）</li>
+</ul>
+</li>
+<li>传输层：<ul>
+<li>硬件检测到这个SWQE，检查QP内容的PMTU对请求进行分包。</li>
+<li>构建BTH，设置DQPN，OPCODE，PSN，服务等级，pkey<ul>
+<li>RDMA Write的数据写入地址由发起方在请求包中指定（通过R_Key和Virtual Address）</li>
+</ul>
+</li>
+<li>传递SLID&#x3D;LID+由于服务质量引起的偏移；传递DLID；这两个在链路层填充</li>
+<li>更新PSN</li>
+<li>等待第一个包的ack</li>
+<li>发起下一个分包的传输</li>
+</ul>
+</li>
+<li>网络层（仅在跨子网时生效）：<ul>
+<li>构建GRH，插入源GUID（Global Unique ID）、目标GUID、流量类别（Traffic Class）和跳数限制（Hop Limit）。</li>
+</ul>
+</li>
+<li>链路层：<ul>
+<li>构建LRH（Local Route Header）：<ul>
+<li>SLID &#x3D; CA A端口的Base LID + SL × Offset（由SL决定偏移量）。</li>
+<li>DLID &#x3D; CA B端口的LID。</li>
+</ul>
+</li>
+<li>根据SL-to-VL映射表，将数据包分配到对应的虚通道（VL）传输。</li>
+</ul>
+</li>
+<li>物理层<ul>
+<li>串并转换</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CA B rdma write 接受方<ul>
+<li>物理层<ul>
+<li>数据包经过交换机&#x2F;路由器的路由，到达目标CA</li>
+</ul>
+</li>
+<li>链路层：<ul>
+<li>解包DLID，确定数据前往的端口</li>
+<li>根据SL-to-VL映射表，将数据包分配到对应的虚通道（VL）</li>
+</ul>
+</li>
+<li>网络层（仅在跨子网时生效）：<ul>
+<li>解析GRH，检查目标GUID（DGUID）是否与本地CA的GUID匹配。</li>
+<li>若匹配失败，丢弃报文。</li>
+</ul>
+</li>
+<li>传输层：<ul>
+<li>根据DQPN将包发到对应QP的RQ</li>
+<li>RQ比较PSN和期望PSN，决定是返回ack还是Nak</li>
+<li><strong>处理Opcode</strong>：<ul>
+<li><strong>RDMA Write</strong>：<ul>
+<li>直接根据请求包中的<strong>R_Key和Virtual Address</strong>，由HCA硬件将数据写入目标内存。</li>
+<li><strong>无需RQ发布WQE</strong>。</li>
+</ul>
+</li>
+<li><strong>Send操作</strong>：<ul>
+<li>若RQ未发布WQE（无可用接收缓冲区），返回RNR NAK。</li>
+<li>若已发布WQE，将数据复制到WQE指定的缓冲区。更新下一个储存空间的地址</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RQ里更新下一个RQE的地址；更新期望PSN</li>
+<li><strong>生成ACK</strong>：<ul>
+<li>HCA硬件自动构造ACK包（包含匹配的PSN），通过SQ发送回发起方。</li>
+<li><strong>无需软件参与ACK的构造或SWQE提交</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CA B返回响应，CA A接受响应<ul>
+<li>CA B：响应包有opcode和AETH（表明这是一个响应包）。目标QP是源请求QP，服务等级和请求一致，SLID DILD和请求相反；ACK包会在CA B的链路层按照服务等级映射到对应的虚通道缓存。</li>
+<li>CA A：ack包进入CA A的链路层虚通道缓存，最后发到请求发起QP的RQ。传输层验证ack的PSN与它之前发起的请求包PSN一致，由此确认了请求已到达。</li>
+</ul>
+</li>
+</ul>
+<h3 id="QP传输案例：RC-read"><a href="#QP传输案例：RC-read" class="headerlink" title="QP传输案例：RC read"></a>QP传输案例：RC read</h3><ul>
+<li><p>本端软件</p>
+<ul>
+<li><p>CA在本地构建一个信息；向SQ发布发送操作。提供以下信息给硬件</p>
+<p>源QPN； RDMA read操作类型；<br> Scatter buffer list的元素个数：本地接收端用于存放从远程主机读取数据的内存缓冲区（Buffer）的数量，这些区域可以是非连续的<br>目标QPN和Q_Key；<br>本地内存的起始virtual memory address（VA）；<br>Remote access key（R_Key），RDMA读权限；<br>所需读取数据的大小；</p>
+</li>
+<li><p>软件关联的CA接收上述信息，并向HCA SQ发布WR；</p>
+</li>
+</ul>
+</li>
+<li><p>本端硬件</p>
+<ul>
+<li>执行SQ WQE，SQ会携带上述信息，组成RDMA read请求包；</li>
+</ul>
+</li>
+<li><p>对端硬件</p>
+<ul>
+<li>RQ通过包中R_Key信息，验证该请求是否得到权限；</li>
+<li>如果R_Key验证正确，对端RQ会从指定内存读取数据，并组成响应包提通过对端SQ返还给本端RQ；</li>
+<li>RQ收到响应包，并将payload写入内存；</li>
+<li>RQ完成全部传输后，创建一个CQE；</li>
+</ul>
+</li>
+<li><p>本端软件</p>
+<ul>
+<li>接受CQE，判断一个操作完成</li>
+</ul>
+</li>
+</ul>
+<p>可以outstanding，但是RD可能不能</p>
+<p>多个返回包按照顺序返回</p>
+<p>outstanding数目在连接建立时协商</p>
+<h3 id="QP传输案例：原子操作"><a href="#QP传输案例：原子操作" class="headerlink" title="QP传输案例：原子操作"></a>QP传输案例：原子操作</h3><ul>
+<li><p><strong>fetch and add的原子操作</strong>；</p>
+</li>
+<li><p><strong>Compare and Swap If Equal的原子操作（同Java中的CAS）</strong>；</p>
+</li>
+<li><p>原子操作由请求和Ack包组成，一个由请求方QP的SQ逻辑发出的原子请求包和一个由响应方QP的RQ逻辑返回的原子确认包，但是这两个数据包都不包含数据有效负载字段。操作所需的数据项在报文的AtomicETH字段中携带，AtomicETH字段包含：</p>
+<p>虚拟内存地址(VA)；<br>远程访问键(R_Key)；<br>添加数据(在Fetch和Add操作的情况下)，或比较数据和交换数据(在比较和交换如果相等操作的情况下)；</p>
+<p>  IB协议规定了<strong>在接收到原子请求包时，响应端QP的RQ将其发布到特定于设备的队列中，（由硬件，而不是软件来执行），在内存读写之间的时间间隔内，CA必须阻止同一CA上的其他QP访问同一位置</strong>。原子操作RQ不需要有RQE.</p>
+<p>​    原子操作不需要一对特殊qp，但是要求qp类型为RC</p>
+<p>以fetch and add操作为例，具体流程如下图：</p>
+<p>从响应端内存中可被8整除的虚拟地址开始的内存中读取64-bits值；<br>使用请求包的AtomicETH字段中提供的64位add Data字段执行无符号添加；<br>将结果写回相同的虚拟地址；<br><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ce098c997471f9a6f2f62c50d4d8e4db.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<h3 id="shared-receive-queue"><a href="#shared-receive-queue" class="headerlink" title="shared receive queue"></a>shared receive queue</h3><p><a target="_blank" rel="noopener" href="https://cuterwrite.top/p/rdma-shared-receive-queue/">https://cuterwrite.top/p/rdma-shared-receive-queue/</a></p>
+<ul>
+<li><p>SRQ 是 IB 协议为了给接收端节省资源而设计的。我们可以把一个 RQ 共享给所有关联的 QP 使用，这个公用的 RQ 就称为 SRQ。当与其关联的 QP 想要下发接收 WQE 时，都填写到这个 SRQ 中。然后每当硬件接收到数据后，就根据 SRQ 中的下一个 WQE 的内容把数据存放到指定位置。</p>
+</li>
+<li><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/2024-06-28_11_1.webp" alt="2024-06-28_11_1"></p>
+</li>
+<li><p>应对突发接收场景，n个RQ开的RWQE和总共用来存放接收数据的空间，都会大大减小</p>
+</li>
+<li><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/2024-06-28_11_2.webp" alt="2024-06-28_11_2"></p>
+</li>
+<li><p>上图中的 SRQ 中有两个 RQ WQE，我们看一下 RQ WQE 的内容，它们是由数个 sge（Scatter&#x2F;Gather Element）组成的，每个 sge 由一个内存地址，长度和秘钥组成。有了起始地址和长度，sge 就可以指向一块连续的内存区域，那么多个 sge 就可以表示多个彼此离散的连续内存块，我们称多个 sge 为 sgl（Scatter&#x2F;Gather List）。sge 在 IB 软件协议栈中随处可见（其实在整个 Linux 都很常见），可以用非常少的空间表示非常大的内存区域，IB 的用户都使用 sge 来指定发送和接收区域的。</p>
+</li>
+<li><p>srq属于一个pd</p>
+<ul>
+<li><p>每个 SRQ 都必须指定一个自己的 PD，可以跟自己关联的 QP 的 PD 相同，也可以不同；SRQ 之间也可以使用相同的 PD。</p>
+<p>如果在使用 SRQ 的时候，收到了数据包，那么只有在要访问的 MR 和 SRQ 处于同一个 PD 下，才会正常接收这个数据包，否则会产生立即错误。</p>
+</li>
+</ul>
+</li>
+<li><p>srq limit:有一个限制，wqe小于该限制后，会给软件一个信息</p>
+</li>
+<li><p>普通RQ的接收流程</p>
+</li>
+</ul>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195425737.png" alt="image-20250410195425737"></p>
+<ul>
+<li>SRQ的接收流程</li>
+</ul>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195456833.png" alt="image-20250410195456833"></p>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250410195514978.png" alt="image-20250410195514978"></p>
+<h2 id="混淆点：是否需要rwqe-swqe"><a href="#混淆点：是否需要rwqe-swqe" class="headerlink" title="混淆点：是否需要rwqe&#x2F;swqe"></a>混淆点：是否需要rwqe&#x2F;swqe</h2><ul>
+<li><p>对于一个rdma send&#x2F;receive</p>
+<ul>
+<li>发送方需要swqe。可靠，收到ack上cqe；不可靠，发完了就上cqe</li>
+<li>接收方需要rwqe，收完了上一个cqe，返回ack</li>
+</ul>
+</li>
+<li><p>对于一个rdma read<br>请求方需要 <code>SWQE</code> 来发送 RDMA 读请求。此时也指定了读到的数据要被放在本地CA的哪些分散空间</p>
+<p>响应方不需要 <code>RWQE</code> 来接收 RDMA 读请求。不使用RWQE，而是使用一个设备特定的队列处理该读请求，在指定的地址读出数据</p>
+<p>响应方不需要 <code>SWQE</code> 来返回 RDMA 读响应。</p>
+<p>请求方不需要 <code>RWQE</code> 来接收 RDMA 读响应。因为要写入的空间早在下发swqe时就已经被指定了。这时候会上一个cqe</p>
+</li>
+<li><p>对于一个rdma write</p>
+<ul>
+<li>请求方需要 <code>SWQE</code> 来发送 RDMA 读请求。此时也指定了要写的数据存放在本地CA的哪些gather内存空间</li>
+<li>响应方不需要 <code>RWQE</code> 来接收 RDMA 写请求。不使用RWQE，而是使用一个设备特定的队列处理该读请求，在指定的地址写入数据<ul>
+<li>例外：rdma write with immediate,需要一个接收方的rwqe，然后接收方产生一个cqe上给软件（立即数包含在这个cqe之中）</li>
+</ul>
+</li>
+<li>写响应的发送不需要发送方的swqe</li>
+<li>写响应的处理也不需要发送方的rwqe处理，它的作用是给发送方上cqe</li>
+</ul>
+</li>
+<li><p>对于一个rdma原子操作</p>
+<ul>
+<li>有些麻烦，用到了再看书</li>
+</ul>
+</li>
+</ul>
+<h2 id="ib服务类型"><a href="#ib服务类型" class="headerlink" title="ib服务类型"></a>ib服务类型</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/144099636">https://zhuanlan.zhihu.com/p/144099636</a></li>
+<li>可靠：应答机制，数据校验（CRC），保证顺序交付</li>
+<li>不可靠：没有应答，交付顺序也不能保证</li>
+</ul>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-320b1db2b90c5334cb4200a0784a12ce_1440w.jpg" alt="img"></p>
+<ul>
+<li><p>连接：每个本地QP都和一个远端你节点的QP关联，本地QP context里面有远端目的QP的信息。</p>
+<ul>
+<li>A、B和A、C节点的网卡在物理上是连接在一起的，A上面的QP2和B上面的QP7、A上面的QP4和B上面的QP2建立了逻辑上的连接，或者说“绑定到了一起”。<strong>在<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=120154436&content_type=Article&match_order=1&q=%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B&zhida_source=entity">连接服务类型</a>中的每个QP，都和唯一的另一个QP建立了连接，也就是说QP下发的每个WQE的目的地都是唯一的</strong>。拿上图来说，对于A的QP2下发的每个WQE，硬件都可以通过QPC得知其目的为B的QP7，就会把组装好的数据包发送给B，然后B会根据QP7下发的RQ WQE来存放数据；同理，对于A的QP4下发的每个WQE，A的硬件都知道应该把数据发给Node C的QP2</li>
+<li>“连接”是如何维护的呢？其实就是在QPC里面的一个记录而已。如果A的QP2想断开与B的QP7的“连接”然后与其他QP相“连接”，只需要修改QPC就可以了。两个节点在建立连接的过程中，会交换稍后用于数据交互的QP Number，然后分别记录在QPC中。</li>
+</ul>
+</li>
+<li><p>数据报：</p>
+</li>
+<li><p>发端和收端间不需要“建立管道”的步骤，只要发端到收端物理上是可以到达的，那么我就可能从任何路径发给任意的收端节点。IB协议对其的定义是这样的：</p>
+<blockquote>
+<p>For datagram service, a QP is not tied to a single remote consumer, but rather information in the WQE identifies the destination. A communication setup process similar to the connection setup process needs to occur with each destination to exchange that information.<br>即“对于数据报服务来说，QP不会跟一个唯一的远端节点绑定，而是通过WQE来指定目的节点。和连接类型的服务一样，建立通信的过程也需要两端交换对端信息，但是数据报服务对于每个目的节点都需要执行一次这个交换过程。”</p>
+</blockquote>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-4576be474bb2fe5ec748d4df9c2cbaa2_1440w.jpg" alt="img"></p>
+<p>在数据报类型的QP的Context中，不包含对端信息，即每个QP不跟另一个QP绑定。<strong>QP下发给硬件的每个WQE都可能指向不同的目的地</strong>。比如节点A的QP2下发的第一个WQE，指示给节点C的QP3发数据；而下一个WQE，可以指示硬件发给节点B的QP7。</p>
+<p>与连接服务类型一样，本端QP可以和哪个对端QP发送数据，是在准备阶段提前通过某些方式相互告知的。这也是上文“数据报服务对于每个目的节点都需要执行一次这个交换过程”的含义。</p>
+<p>RC和<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=120154436&content_type=Article&match_order=1&q=UD&zhida_source=entity">UD</a>是应用最多也是最基础的两种服务类型，我们可以将他们分别类比成TCP&#x2F;IP协议栈传输层的TCP和UDP。</p>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/v2-a9ae192a4d4a916a6b73d0ab6cec01ff_r.png" alt="preview"></p>
+</li>
+</ul>
+<h2 id="IB操作类型"><a href="#IB操作类型" class="headerlink" title="IB操作类型"></a>IB操作类型</h2><p>Send：从本地指定内存中获取数据，发送给对端RQ，对端RQ顶端的WR将指示RQ接收的数据该存到哪块内存中；<br>该操作支持所有QP服务类型；</p>
+<p>RDMA Read：SQ发起读请求，对端RQ接收请求后，读取指定内存中数据并返回，SQ接收所需数据后，写入本地内存；<br>仅支持RC和RD；</p>
+<p>RDMA Write：将本地数据写到对端指定内存中（RDMA write和Send的区别在于，Send前往对端的数据是由RQ顶端的WR来决定数据的存放位置，但是RDMA Write是由发送方提前将存放位置确定并指示RQ的）；<br>仅支持RC,UC和RD；</p>
+<p>​	immediate data：在RDMA write情况下，软件可以在payload最后额外添加immediate data一同传输，而这种操作类型完成后，<strong>需要立刻发布Event Queue，以此通知软件，这类特殊包已完成</strong>。</p>
+<p>当SQ WR在包头中指示了带immediate data时，它将被放在<strong>RDMA write last的payload前，IB header后</strong>，但是和payload不同，<strong>immediate data不需要写入本地内存</strong>。</p>
+<p>Atomic RMW：当某任务需要连续访问同一块内存时，需要保证在这期间禁止别的任务对这一内存进行修改，在IBA中，使用一个状态标志，表示内存数据是否处于不可修改状态；</p>
+<p>Memory Window Bind：之后专题会介绍；</p>
+<h2 id="IB组包"><a href="#IB组包" class="headerlink" title="IB组包"></a>IB组包</h2><p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/image-20250326194218498.png" alt="image-20250326194218498"></p>
+<p>还有GRH LRH的内容，用到了再查</p>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/99c7199e35a28bea8bbc33265694d039.jpeg" alt="请添加图片描述"></p>
+<p><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/ef2f346037a59c12dc2fa58cdafafaa1.jpeg" alt="img"></p>
+<ul>
+<li>报文组成：<br><img src="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/972421d5e9ea024e67ee9c74e4253294.png" alt="在这里插入图片描述"><ul>
+<li>LRH：链路层，子网内部路由。包括<strong>目标端口本地ID（DLID）和源端口本地ID（SLID）</strong>。两者都占据16-bits，前者用来表示报文通过交换机需要到达的子网目的地端口；后者用来表示报文源头的子网ID</li>
+<li>GRH：网络层，子网间路由。包括<strong>目标端口全局ID（DGID）和源端口全局ID（SGID）</strong>。两者都占据128-bits，高64-bits表示CA端口的子网ID，低64-bits表示端口的全局唯一ID（GUID）</li>
+<li>BTH：传输层，qp之间路由。包括Opcode、DestQP和PSN Opcode表示报文操作类型；DestQP表示对端CA的目标QP（Queue Pair，是IB协议中信息传输的重要机制，在后续篇章中会介绍）；PSN（Packet Sequence Number）占24-bits ，表示报文序列号，可以用于报文顺序检查和报文重传。</li>
+</ul>
+</li>
+<li>报文传输类型：<ul>
+<li>本地CA向对端CA写信息：<ul>
+<li>send&#x2F;receive：请求信息不指定地址，对端设备自行决定放在哪里</li>
+<li>RDMA write：请求指定对端地址，报文包括了有效荷载，请求报文的内存起始地址、报文长度和允许该RDMA写操作的一个密钥</li>
+</ul>
+</li>
+<li>本地CA向对端CA读信息<ul>
+<li>RDMA read：CA向对端CA发出读指定内存中数据的请求，对端CA接收该请求后，会返回一个或多个响应报文，请求端将返回报文中的数据存储到（请求端指定的）指定内存中</li>
+</ul>
+</li>
+<li>原子操作：<ul>
+<li>原子读取和加法操作：收到请求后，目标CA从其本地的指定内存中读取数据，将Add值与读取数据相加，并将结果写回本地内存。目标CA将读回的初始值以原子响应包的形式返回给请求端CA。收到响应数据包后，请求端CA将读数据写入自己的本地内存（请求端指定的）；</li>
+<li>原子比较和交换操作：收到请求后，目标CA从其本地的指定内存中读取数据，将读取的数据与Compare值比较，若相等，将值写入指定位置，返回的响应操作与上述加法原子操作一致。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>报文分包&#x2F;组包<ul>
+<li>按照4k边界分包，最后一个包可以小于4k</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+        <a data-aos="zoom-in" href="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+      
+      
+        <span data-aos="zoom-in" id="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/" class="leancloud_visitors article-visitor-link" data-flag-title="IB简介">
+          <span class="leancloud-visitors-count">0</span>
+          <em class="post-meta-item-text">Readings</em>
+        </span>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%8D%8F%E8%AE%AE/" rel="tag">协议</a></li></ul>
+
+
+    </footer>
+  </div>
+  
+  <nav id="article-nav" data-aos="fade-up">
+    
+      
+      <div class="article-nav-link-wrap article-nav-link-left">
+        
+          <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032122146.jpg" data-sizes="auto" alt="verilog仲裁器" class="lazyload">
+        
+        <a href="/2025/05/03/%E4%BB%B2%E8%A3%81%E5%99%A8/%E4%BB%B2%E8%A3%81%E5%99%A8/"></a>
+        <div class="article-nav-caption">Newer</div>
+        <h3 class="article-nav-title">
+          
+            verilog仲裁器
+          
+        </h3>
+      </div>
+    
+    
+  </nav>
+
+
+</article>
+
+
+
+
+
+
+
+
+
+  <section id="comments" data-aos="fade-up">
+    <div class="comment-header">
+      
+      
+        
+      
+      <h2 class="comment-title">Leave a comment</h2>
+      <div class="comment-selector">
+        <div class="comment-selector-wrap">
+            
+            <div class="selector-item" data-selector="valine">
+              <span>valine</span>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="comment-content">
+      
+        <div class="comment valine-comment" data-aos="fade-up"
+          id="valine-comment">
+        </div>
+      
+    </div>
+  </section>
+
+
+</section>
+        </div>
+        <footer id="footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    
+    <div>
+      <span class="icon-copyright"></span>
+      
+      
+      
+        2020-2025
+      
+      <span class="footer-info-sep rotate"></span>
+      wanderingxs
+    </div>
+    
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener external nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+    
+    
+      <div>
+        <span class="icon-brush"></span>
+        18.7k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        01:09
+      </div>
+    
+    
+    
+    
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+    
+  </div>
+</footer>
+
+        
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav">
+  <div class="sidebar-wrap">
+    
+      
+        <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ib%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">ib协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E7%BB%84%E7%BD%91"><span class="toc-number">1.1.</span> <span class="toc-text">IB组网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">子网管理器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E5%B1%82%E7%BA%A7"><span class="toc-number">1.3.</span> <span class="toc-text">IB层级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB-QP"><span class="toc-number">1.4.</span> <span class="toc-text">IB QP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%88%E4%BB%A5RC-send-or-write%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">QP传输案例（以RC send or write为例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%9ARC-read"><span class="toc-number">1.4.2.</span> <span class="toc-text">QP传输案例：RC read</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QP%E4%BC%A0%E8%BE%93%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.3.</span> <span class="toc-text">QP传输案例：原子操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shared-receive-queue"><span class="toc-number">1.4.4.</span> <span class="toc-text">shared receive queue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B7%E6%B7%86%E7%82%B9%EF%BC%9A%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81rwqe-swqe"><span class="toc-number">1.5.</span> <span class="toc-text">混淆点：是否需要rwqe&#x2F;swqe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ib%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.6.</span> <span class="toc-text">ib服务类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E6%93%8D%E4%BD%9C%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.7.</span> <span class="toc-text">IB操作类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IB%E7%BB%84%E5%8C%85"><span class="toc-number">1.8.</span> <span class="toc-text">IB组包</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+      
+    
+  </div>
+  
+    
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+    
+  
+</nav>
+
+    </div>
+    
+      <div class="site-search">
+        <div class="reimu-popup popup">
+          <div class="reimu-search">
+            <div class="reimu-search-input-icon"></div>
+            <div class="reimu-search-input" id="reimu-search-input"></div>
+            <div class="popup-btn-close"></div>
+          </div>
+          <div class="reimu-results">
+            <div id="reimu-stats"></div>
+            <div id="reimu-hits"></div>
+            <div id="reimu-pagination" class="reimu-pagination"></div>
+          </div>
+          <img class="reimu-bg" src="/images/reimu.png"/>
+        </div>
+      </div>
+    
+    
+    
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+  
+<script src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js" integrity="sha384-vLev0II0HKFaxkcm+&#x2F;7kX5IGwVFBASkGchU311wmU&#x2F;veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+  
+<script src="/js/generator_search.js" defer></script>
+
+
+
+
+
+
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.1.1/dist/index.umd.js" integrity="sha384-8LyaidD9GPxQQgLJO&#x2F;WRw&#x2F;O2h3BoNq&#x2F;ApI&#x2F;ecpvM6RsrCz2qP2ppBXUKihP4V&#x2F;2d" crossorigin="anonymous"></script>
+
+  <script>
+    window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'))
+  </script>
+
+
+
+
+
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+    
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "wanderingxs",
+          title: "IB简介",
+          url: "https://amakawamasahir0.github.io/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/",
+          excerpt: "介绍ib组网，ib协议分层，ib服务类型，ib操作类型，以及ib协议的组包与解包",
+          description: "",
+          stripContent: "ib协议IB组网 ib协议的基础名词解释：https://blog.csdn.net/sz_woshishazi/article/details/127059318  hca： host channal adapter  CA：通道适配器，一个CA有1-255个端口，每个端口在子网下有唯一LID  每个CA port在配置时就具有唯一地址，当一个CA必须发送信息或者读取信息时，首先需要发送一个请求报文，该报文带有destination port ID，通过交换机和路由器的帮助，CA最终抵达目标C",
+          date: "Fri May 02 2025 17:48:53 GMT+0800",
+          updated: "Sat May 03 2025 23:33:52 GMT+0800",
+          cover: "https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215682.jpg",
+        };
+      </script>
+       
+    
+    
+      
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+        
+      
+    
+    
+      <script type="module" data-pjax>
+        const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+        
+        const pswp = () => {
+          if (_$$('.article-entry a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-entry',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          if(_$$('.article-gallery a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-gallery',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          window.lightboxStatus = 'done';
+          window.removeEventListener('lightbox:ready', pswp);
+        }
+        if(window.lightboxStatus === 'ready') {
+          pswp()
+        } else {
+          window.addEventListener('lightbox:ready', pswp);
+        }
+      </script>
+      
+        
+
+
+
+
+
+
+
+
+<script data-pjax>
+  var loadScript = (src, integrity) => {
+    const script = document.createElement('script');
+    script.src = src;
+    if (integrity) script.integrity = integrity;
+    script.crossOrigin = 'anonymous';
+    return script;
+  };
+
+  var commentConfigKeys = ['valine', 'waline', 'twikoo', 'gitalk', 'giscus'];
+  var commentConfig = {
+    valine: {
+      enable: true,
+      load: () => {
+        const container = document.querySelector('.valine-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/valine@1.5.1/dist/Valine.min.js',
+          'sha384-3ma91AExDeMAZ1rjTjaP8V2A2obQE+s5ltKRwYlwdpArz9xVbp0tF3b0VV2ACNPn'
+        );
+        script.onload = () => {
+          var GUEST_INFO = ['nick', 'mail', 'link'];
+          var guest_info = 'nick,mail,link'.split(',').filter((item) => {
+            return GUEST_INFO.indexOf(item) > -1
+          });
+          var recordIP = JSON.parse('true');
+          var highlight = JSON.parse('true');
+          var visitor = JSON.parse('true');
+          var serverURLs = 'https://zrnvqoxq.api.lncldglobal.com';
+
+          if (window.Valine) {
+            new Valine({
+              el: '.valine-comment',
+              appId: "zrnVQoxQHb8R7bVcJkUheSl5-MdYXbMMI",
+              appKey: "4FFftWoCmetu0akdzWM69pUJ",
+              placeholder: "留下你的评论...",
+              pageSize: '10',
+              avatar: 'mp',
+              lang: document.documentElement.lang || 'en',
+              recordIP: recordIP,
+              highlight: highlight,
+              visitor: visitor,
+              requiredFields: guest_info,
+              path: window.location.pathname,
+              serverURLs
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    },
+    waline: {
+      enable: false,
+      load: async () => {
+        const container = document.querySelector('.waline-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        let walineInit;
+        const walineCdn = 'https://npm.webcache.cn/@waline/client@2.15.8/dist/waline.mjs';
+        const walineIntegrity = 'sha384-9sbqJjrfGjbkI6/PI4nU/MvBfEmkkPC4YK9I4zBeMIf1CVCZdCMH/KinBEAZII/5';
+
+        const module = await safeImport(walineCdn, walineIntegrity);
+        walineInit = module.init;
+
+        window.walineInstance = walineInit({
+          el: '.waline-comment',
+          serverURL: '',
+          lang: document.documentElement.lang || 'en',
+          locale: {},
+          emoji: ["https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/tieba","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji"],
+          meta: ["nick","mail","link"],
+          requiredMeta: ["nick","mail"],
+          wordLimit: JSON.parse('0'),
+          comment: true,
+          pageSize: JSON.parse('10'),
+          dark: 'html[data-theme="dark"]',
+          pageview: JSON.parse('true'),
+        });
+      }
+    },
+    twikoo: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.twikoo-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/twikoo@1.6.16/dist/twikoo.all.min.js',
+          'sha384-lDHsr5aZmkMS0eKnsUu6e9RWP+dRmn7sgjRAKGOAoXfMyzbUK6Qi86zZK7R+KvRV'
+        );
+
+        script.onload = () => {
+          if (window.twikoo) {
+            twikoo.init({
+              envId: '',
+              el: '.tcomment',
+              region: '',
+              lang: document.documentElement.lang || 'en',
+            })
+          }
+        } 
+        document.head.appendChild(script);
+      }
+    },
+    gitalk: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.gitalk-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/gitalk@1.8.0/dist/gitalk.min.js',
+          'sha384-kspnZUWBoSWwoJHa0hBCXYbHGbhvU/lcEH5O8eVbSDhbPwsiVUTp/aGX/z/5EuMA'
+        );
+
+        script.onload = () => {
+          if (false) {
+            const md5Script = loadScript(
+              'https://npm.webcache.cn/blueimp-md5@2.19.0/js/md5.min.js',
+              'sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH'
+            );
+            md5Script.onload = initGitalk;
+            document.head.appendChild(md5Script);
+          } else {
+            initGitalk();
+          }
+        }
+        document.head.appendChild(script);
+
+        function initGitalk() {
+          var gitalkId = location.pathname;
+          var gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: null,
+            id: gitalkId,
+            distractionFreeMode: false,
+            language: document.documentElement.lang || 'en',
+          })
+          gitalk.render('gitalk-comment');
+        }
+      }
+    },
+    giscus: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.giscus-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        // 删除可能已存在的 giscus 脚本和 iframe
+        const existingScript = container.querySelector('script[src*="giscus.app/client.js"]');
+        if (existingScript) existingScript.remove();
+        const existingFrame = document.querySelector('iframe.giscus-frame');
+        if (existingFrame) existingFrame.remove();
+
+        const giscusScript = document.createElement('script');
+        const domMode = document.documentElement.getAttribute("data-theme");
+        giscusScript.src = 'https://giscus.app/client.js';
+        giscusScript.setAttribute('data-repo', '');
+        giscusScript.setAttribute('data-repo-id', '');
+        giscusScript.setAttribute('data-category', ''); 
+        giscusScript.setAttribute('data-category-id', '');
+        giscusScript.setAttribute('data-mapping', '0');
+        giscusScript.setAttribute('data-strict', '0');
+        giscusScript.setAttribute('data-reactions-enabled', '1');
+        giscusScript.setAttribute('data-emit-metadata', '0');
+        giscusScript.setAttribute('data-input-position', 'bottom');
+        giscusScript.setAttribute('data-theme', domMode === 'dark' ? 'dark' : 'light');
+        giscusScript.setAttribute('data-lang', document.documentElement.lang || 'en');
+        giscusScript.setAttribute('crossorigin', 'anonymous');
+        giscusScript.async = true;
+        container.appendChild(giscusScript);
+        document.body.addEventListener('light-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'light' } } }, 'https://giscus.app');
+        });
+        document.body.addEventListener('dark-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'dark' } } }, 'https://giscus.app');
+        });
+      }
+    }
+  }
+  commentConfig.enable = commentConfigKeys.some(key => commentConfig[key].enable);
+
+  var defaultComment = '';
+  if (commentConfig.enable) {
+    // 1. 首先检查localStorage中是否有保存的评论类型
+    var savedCommentType = localStorage.getItem('commentType');
+    
+    // 2. 如果localStorage中有值且对应的评论系统可用，就使用它
+    if (savedCommentType) {
+      if (commentConfig[savedCommentType]?.enable) {
+        defaultComment = savedCommentType;
+      }
+    }
+    
+    // 3. 如果localStorage无效，检查配置的默认评论系统
+    if (!defaultComment) {
+      var configDefault = 'valine';
+      if (commentConfig[configDefault]?.enable) {
+        defaultComment = configDefault;
+      }
+    }
+    
+    // 4. 如果前两项都无效，按指定顺序找到第一个可用的评论系统
+    if (!defaultComment) {
+      defaultComment = commentConfigKeys.find(sys => commentConfig[sys].enable) || '';
+    }
+  }
+  function loadComments() {
+    if (!commentConfig.enable) return;
+    // 评论组件加载状态跟踪
+    const loadedComments = {
+      valine: false,
+      waline: false,
+      twikoo: false,
+      gitalk: false,
+      giscus: false
+    };
+
+    // 隐藏所有评论容器
+    const hideAllComments = () => {
+      const commentContainers = document.querySelectorAll('.comment');
+      commentContainers.forEach(container => {
+        container.style.display = 'none';
+      });
+    };
+
+    // 按需加载评论系统
+    const loadCommentSystem = (type) => {
+      if (loadedComments[type]) {
+        // 如果已加载，只需显示对应容器
+        document.querySelector(`.${type}-comment`).style.display = 'block';
+        return;
+      }
+
+      // 根据类型加载对应的脚本
+      commentConfig[type]?.load();
+      loadedComments[type] = true;
+    };
+
+    // 评论组件选择器
+    const changeActiveCommentItems = (item) => {
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let i = 0; i < commentItems.length; i++) {
+        commentItems[i].classList.remove('active');
+      }
+      item.classList.add('active');
+
+      // 获取要加载的评论系统类型
+      const commentType = item.getAttribute('data-selector');
+
+      // 隐藏所有评论系统
+      hideAllComments();
+
+      // 加载选中的评论系统
+      loadCommentSystem(commentType);
+    };
+
+    const commentInit = () => {
+      // 评论组件选择器点击事件
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let item of commentItems) {
+        item.addEventListener('click', () => {
+          // 保存选择器状态
+          const commentType = item.getAttribute('data-selector');
+          window.localStorage.setItem('commentType', commentType);
+          // 切换选中状态
+          changeActiveCommentItems(item);
+        });
+      }
+
+      // 检查是否需要加载默认评论系统
+      if (defaultComment) {
+        const defaultSelectorItem = document.querySelector(`[data-selector="${defaultComment}"]`);
+        if (!defaultSelectorItem) return;
+        defaultSelectorItem.style.display = 'block';
+        defaultSelectorItem.classList.add('active');
+        loadCommentSystem(defaultComment);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', commentInit);
+    } else {
+      commentInit();
+    }
+  };
+  loadComments();
+</script>
+
+      
+    
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.8.3' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+  </html>
+

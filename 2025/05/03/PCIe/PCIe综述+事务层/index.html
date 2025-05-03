@@ -1,0 +1,1478 @@
+
+  <!DOCTYPE html>
+  <html lang="en"  
+    
+      data-theme-mode="auto"
+    
+  >
+  <head>
+  
+  <meta charset="utf-8">
+  
+
+  
+
+  
+
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_0khxww3tj3q9';window.REIMU_CONFIG.clipboard_tips = {"success":{"en":"Copy successfully (*^▽^*)","zh-CN":"复制成功 (*^▽^*)","zh-TW":"複製成功 (*^▽^*)","ja":"コピー成功 (*^▽^*)"},"fail":{"en":"Copy failed (ﾟ⊿ﾟ)ﾂ","zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","zh-TW":"複製失敗 (ﾟ⊿ﾟ)ﾂ","ja":"コピー失敗 (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = 'All articles on this blog are licensed under the BY-NC-SA license agreement unless otherwise stated. Please indicate the source when reprinting!';window.REIMU_CONFIG.code_block = {"expand":40};window.REIMU_CONFIG.base = 'https://amakawamasahir0.github.io';</script>
+  
+  <title>
+    PCIe综述+事务层 |
+    
+    测温大师的工位
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media&#x3D;&#39;all&#39;">
+  
+  
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_0khxww3tj3q9.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+  
+  
+    <meta name="description" content="简要介绍PCIe协议，以及PCIe协议的事务层（传输层）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCIe综述+事务层">
+<meta property="og:url" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/index.html">
+<meta property="og:site_name" content="测温大师的工位">
+<meta property="og:description" content="简要介绍PCIe协议，以及PCIe协议的事务层（传输层）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105140145502.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105143031929.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232515133.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232211601.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105134923491.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105134943106.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232029833.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105141253238.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104155558664.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104160129157.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105154845807.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105155704367.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105160112004.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105170616562.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105221619405.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105220317346.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106135748045-1730872670356-1.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106134335660.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106170115595.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106204315929.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111152656234.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111151722229.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111161043762.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111184319545.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111184911396.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111193122265.png">
+<meta property="article:published_time" content="2025-05-03T09:48:53.000Z">
+<meta property="article:modified_time" content="2025-05-03T15:46:14.145Z">
+<meta property="article:author" content="wanderingxs">
+<meta property="article:tag" content="协议">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105140145502.png">
+  
+  
+    <link rel="alternate" href="/404.html" title="测温大师的工位" >
+  
+  
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  
+  
+  
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+  
+  
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.0/dist/aos.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+  <body>
+    
+    
+  <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+        
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+        
+      </div>
+      
+      
+        
+      
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var startLoading = () => {
+      time = Date.now();
+      document.getElementById('loader').classList.remove("loading");
+    }
+    var endLoading = () => {
+      if (!time) {
+        document.body.style.overflow = 'auto';
+        document.getElementById('loader').classList.add("loading");
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          document.body.style.overflow = 'auto';
+          document.getElementById('loader').classList.add("loading");
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    document.getElementById('loader').addEventListener('click', endLoading);
+  </script>
+
+<div id="copy-tooltip" style="pointer-events: none; opacity: 0; transition: all 0.2s ease; position: fixed;top: 50%;left: 50%;z-index: 999;transform: translate(-50%, -50%);color: white;background: rgba(0, 0, 0, 0.5);padding: 10px 15px;border-radius: 10px;">
+</div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav">
+    
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/">Home</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/archives">Archives</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/about">About</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/friend">Friend</a>
+        </span>
+      
+    
+    <a id="main-nav-toggle" class="nav-icon"></a>
+  </nav>
+  <nav id="sub-nav">
+    
+      <a id="nav-rss-link" class="nav-icon" href="/404.html" title="RSS Feed" target="_blank"></a>
+    
+    
+    
+      <a id="nav-search-btn" class="nav-icon popup-trigger" title="Search"></a>
+    
+  </nav>
+  
+</div>
+<header id="header">
+  
+    <picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg" alt="PCIe综述+事务层">
+  
+  <div id="header-outer">
+    <div id="header-title">
+      
+        
+        
+          <a href="/" id="logo">
+            <h1 data-aos="slide-up">PCIe综述+事务层</h1>
+          </a>
+        
+      
+      
+        
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+          
+        </h2>
+      
+    </div>
+  </div>
+</header>
+
+        <div id="content"  class="sidebar-right" >
+          <aside id="sidebar">
+  
+  
+  
+  <div class="sidebar-wrapper wrap-sticky">
+    <div class="sidebar-wrap" data-aos="fade-up">
+      
+        
+          <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PCIe%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">PCIe简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.0.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E5%B1%82"><span class="toc-number">1.0.2.</span> <span class="toc-text">事务层</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">事务类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#TLP%E7%BB%84%E6%88%90%EF%BC%88%E5%8F%91%E9%80%81TLP"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">TLP组成（发送TLP)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E6%94%B6%E5%88%B0%E7%9A%84TLP"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">处理收到的TLP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E6%8E%92%E5%BA%8F"><span class="toc-number">1.0.2.4.</span> <span class="toc-text">事务排序</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E9%80%9A%E9%81%93"><span class="toc-number">1.0.2.5.</span> <span class="toc-text">虚通道</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E5%92%8C%E6%8E%A5%E6%94%B6%E7%BC%93%E5%86%B2%E5%8C%BA%E6%B5%81%E6%8E%A7"><span class="toc-number">1.0.2.6.</span> <span class="toc-text">排序和接收缓冲区流控</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.0.2.7.</span> <span class="toc-text">数据完整性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E8%B6%85%E6%97%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">1.0.2.8.</span> <span class="toc-text">完成超时机制</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="toc-number">1.0.2.9.</span> <span class="toc-text">链路状态依赖关系</span></a></li></ol></li></ol></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+        
+      
+      
+        
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+        
+      
+    </div>
+  </div>
+
+  <div class="sidebar-widget">
+  
+  </div>
+  
+</aside>
+
+          <section id="main"><article id="post-PCIe/PCIe综述+事务层" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link" data-aos="zoom-in">
+    <time datetime="2025-05-03T09:48:53.000Z" itemprop="datePublished">2025-05-03</time>
+    <time style="display: none;" id="post-update-time">2025-05-03</time>
+  </span>
+</div>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PCIe/" data-aos="zoom-in">PCIe</a>
+  </div>
+
+
+    </div>
+    <div class="hr-line"></div>
+    
+
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+      
+        <p>看不懂文档的时候可以看看官方FAQ：<a target="_blank" rel="noopener" href="https://pcisig.com/faq?page=2">https://pcisig.com/faq?page=2</a></p>
+<p>非常好的笔记<a target="_blank" rel="noopener" href="https://www.quchao.me/wiki/">https://www.quchao.me/wiki/</a></p>
+<p>软件层面和系统层面的pcie<a target="_blank" rel="noopener" href="https://ctf.re/windows/kernel/pcie/tutorial/2023/02/14/pcie-part-1/">https://ctf.re/windows/kernel/pcie/tutorial/2023/02/14/pcie-part-1/</a></p>
+<p>PCIe配置空间<a target="_blank" rel="noopener" href="https://blog.csdn.net/u011037593/article/details/138016148">https://blog.csdn.net/u011037593/article/details/138016148</a> pcie规范里面有很详细的解释</p>
+<p>xilinx xdma使用指南<a target="_blank" rel="noopener" href="https://github.com/mwrnd/notes/tree/main/XDMA_Communication">https://github.com/mwrnd/notes/tree/main/XDMA_Communication</a></p>
+<h2 id="PCIe简介"><a href="#PCIe简介" class="headerlink" title="PCIe简介"></a>PCIe简介</h2><p><code>规范更适合学完协议本身后设计系统时查阅，而不适合直接学习</code></p>
+<blockquote>
+<p> 也不完全是。</p>
+<p> 导论部分确实一下子看不懂的，全是规定性语句</p>
+<p> 但是，到了事务层后，就会出现我喜欢的描述性语句了</p>
+</blockquote>
+<h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><ul>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105140145502.png" alt="image-20241105140145502"></li>
+<li>PCIe协议规定的分层架构不代表必须按照它实现（xilinx的IP核链路层和物理层的界限模糊）</li>
+<li>重要的基础功能需要实现（看原始手册）<ul>
+<li>配置空间位于事务层之上的独立的配置层空间</li>
+<li>事务层<br>数据包转换<br>基于信用的流控<br>顺序排序规则<br><del>虚通道实现Qos的不同</del></li>
+<li>链路层<br>数据保护与链路层重传</li>
+<li>物理层<br>接口初始化（链路训练？）<br>编解码<br>数据传输应该由GT完成</li>
+</ul>
+</li>
+<li>层间接口<br>原文1.5.4.4节（PCIe5.0中文手册）</li>
+<li>RC拓扑<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105143031929.png" alt="image-20241105143031929"></li>
+</ul>
+<h4 id="事务层"><a href="#事务层" class="headerlink" title="事务层"></a>事务层</h4><blockquote>
+<p>明确：大端还是小端？ 小端</p>
+<p>​	地址高位还是低位在前？</p>
+</blockquote>
+<h5 id="事务类型"><a href="#事务类型" class="headerlink" title="事务类型"></a>事务类型</h5><ul>
+<li>对应2.1节</li>
+<li>包头里的FMT和TYPE字段组成不同类型的TLP</li>
+</ul>
+<h5 id="TLP组成（发送TLP"><a href="#TLP组成（发送TLP" class="headerlink" title="TLP组成（发送TLP)"></a>TLP组成（发送TLP)</h5><ul>
+<li><p>总览：<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232515133.png" alt="image-20241104232515133"></p>
+</li>
+<li><p>包头总览：（例子是64位地址存储器读写请求TLP的格式）<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232211601.png" alt="image-20241104232211601"></p>
+</li>
+<li><p>传输优先级TC</p>
+<ul>
+<li>将不同传输优先级的TLP放入不同的虚通道，然后进行仲裁来得到区分QoS的功能</li>
+<li>高级功能,先不用实现了</li>
+</ul>
+</li>
+<li><p>TLP排序</p>
+<ul>
+<li>顺序发送和接收肯定是最简单的</li>
+<li>Attr，三位</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105134923491.png" alt="image-20241105134923491"></li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105134943106.png" alt="image-20241105134943106"></li>
+<li>高级功能</li>
+</ul>
+</li>
+<li><p>Lightweight Notification (LN) —— 此 1bit 表示内存请求是 LN Read 或 LN Write，或者完成是 LN Completion。</p>
+<ul>
+<li>我应该不用实现</li>
+</ul>
+</li>
+<li><p>TH和PH</p>
+<ul>
+<li>TLP Hints (TH) —— 1bit 值表示在 TLP header 中存在 TPH（TLP Processing Hints）信息以及可选的 TPH TLP Prefix，– bit 0 of byte 1 (see Section 2.2.7.1) 。</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104232029833.png" alt="image-20241104232029833"></li>
+<li>也是个不重要的功能，我不打算支持</li>
+</ul>
+</li>
+<li><p>TD：TLP后面加的ECRC，数据完整性校验</p>
+<ul>
+<li>基础功能</li>
+</ul>
+</li>
+<li><p>EP：Error Poisoned (EP) —— 表示该 TLP 是中毒的 TLP (see Section 2.7) – bit 6 of byte 2 </p>
+<ul>
+<li>错误处理，算进阶功能</li>
+</ul>
+</li>
+<li><p>地址转换，我得到的是物理地址还是虚拟地址？如果是虚拟地址，还需要给IOMMU发一个地址转换请求，得到物理地址后组TLP</p>
+<ul>
+<li>地址是否转换由AT字段表明</li>
+<li>基础功能</li>
+</ul>
+</li>
+<li><p>地址和ID路由</p>
+<ul>
+<li>地址路由类似于pci的地址路由</li>
+<li>ID 是如何被分配的<ul>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105141253238.png" alt="image-20241105141253238"></li>
+</ul>
+</li>
+<li>描述子（transaction ID &#x3D; requester ID + 10位tag<br>扩展Tag字段为10位<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104155558664.png" alt="image-20241104155558664"></li>
+</ul>
+<p><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241104160129157.png" alt="image-20241104160129157"></p>
+</li>
+<li><p>载荷的首末DW字节有效性需要支持</p>
+<ul>
+<li>这个是last DW BE 和First DW BE</li>
+<li>基础功能，复杂的定义查看文档2.2.5节</li>
+</ul>
+</li>
+<li><p>message request</p>
+<ul>
+<li>消息的格式参见2.2.8节</li>
+<li>消息请求是 posted 请求，不需要 Completion。</li>
+<li>消息请求遵循与内存写请求相同的排序规则。</li>
+<li>消息可以使用type字段的[2:0]进行隐式路由，规则是表2-17</li>
+<li>INTx主要用于传统pci设备通过桥挂在pcie总线上，不用管</li>
+<li>电源管理消息，忽略</li>
+<li>错误指示消息，属于高级功能</li>
+<li>用于支持locked transaction,有一个unkock message，暂时忽略</li>
+<li>插槽功率限制，不用管</li>
+<li>制造商定义消息 不用管</li>
+<li>忽略的消息 丢弃即可</li>
+<li>延迟容忍度报告消息 不管</li>
+<li>优化缓冲区刷新&#x2F;填充消息 不管</li>
+<li>精密时间测量消息 不管</li>
+</ul>
+</li>
+<li><p>完成包规范<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105154845807.png" alt="image-20241105154845807"></p>
+<ul>
+<li>BCM:和pcie设备无关，是pci-x的东西，无视</li>
+<li>Byte count：请求的剩余字节数<ul>
+<li>规则：指示完成该请求所需的剩余字 节数，包括随该 Completion 返回的字节数</li>
+</ul>
+</li>
+<li>lower address：带数据的完成包，第一个有效字节的地址</li>
+<li>和之前用过的ip核包头格式很像</li>
+</ul>
+</li>
+<li><p>TLP prefix<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105155704367.png" alt="image-20241105155704367"></p>
+<ul>
+<li>我不想管这个，在配置空间禁用掉，也不考虑存在prefix的状态</li>
+<li>一个TLP可以有多个prefix<ul>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105160112004.png" alt="image-20241105160112004"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CRC字段</p>
+<ul>
+<li>CRC 运算包括所有完成数据字节，也包括其中内容不确定的字节</li>
+</ul>
+</li>
+</ul>
+<h5 id="处理收到的TLP"><a href="#处理收到的TLP" class="headerlink" title="处理收到的TLP"></a>处理收到的TLP</h5><ul>
+<li><p>关于TLP prefix</p>
+<ul>
+<li>不期望接收到任何带有prefix的TLP（每个prefix的长度为1dw）</li>
+<li>错误处理逻辑也不做了</li>
+</ul>
+</li>
+<li><p>fmt type字段判断TLP类型</p>
+</li>
+<li><p>收到的 TLP 为 Malformed TLP，则该 TLP 被丢弃。同时不更新流控信息（是不是意味着出错次数太多就卡死了？）</p>
+<ul>
+<li>没出错，就更新流控信息</li>
+</ul>
+</li>
+<li><p>如何处理收到的TLP？<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105170616562.png" alt="image-20241105170616562"></p>
+</li>
+<li><p>处理收到的请求<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105221619405.png" alt="image-20241105221619405"></p>
+<ul>
+<li>如果 Request 的类型是设备不支持的（因为设计或配置的原因），则该请求被处理为 Unsupported Request，这会根据 Section 6.2 的描述来报告。</li>
+<li>如果该请求需要返回 Completion，则返回一个 Completion Status 字段为 UR 的 Completion（see Section 2.2.9）。</li>
+<li>对于消息，编码未定义则报告UR，找不到对应的功能也报告UR</li>
+<li>请求报错<ul>
+<li>unsupported request：设备本身处理不了这个请求，直接拒绝</li>
+<li>completer abort：设备本身能处理这个请求，但是因为一些原因不能了，这时候才拒绝。违反完成者编程模型的请求设想一些特殊情景有非对齐访问，非规定大小访问和对存储空间大小错误的访问。这些请求在pcie规范里面是允许的，只是设计者的编程模型不允许，这时候也可以返回CA<br>设备本身错误状态也可以返回CA</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241105220317346.png" alt="image-20241105220317346"><ul>
+<li>这是因为pcie设备在复位后经历若干初始化过程，该过程不会响应配置请求，这时候可以返回CRS状态</li>
+</ul>
+</li>
+<li>如果请求有 ECRC Check Failed 错误，则是否返回完成取决于特定于实现，如果是，则返回用于完成状态的架构值。但 是，强烈建议完成者返回带有 UR 完成状态的完成。</li>
+</ul>
+</li>
+<li>完成正常返回<ul>
+<li>参考完成包组包这一部分</li>
+</ul>
+</li>
+<li>对于一个posted request，虽然不用返回completion，但是当它被完成后，需要向发送方返回信用值，The device must either (a) be designed to process received Posted Requests and return associated Flow Control credits within the necessary time limit, or (b) rely on a restricted programming model to ensure that a Posted Request is never sent to the device  either by software or by other devices while the device is unable to accept a new Posted Request within the necessary time limit.</li>
+<li>读请求的返回包<ul>
+<li>可能多个包返回</li>
+<li>多个包返回的情况，只要有一个包出错，丢弃所有包</li>
+<li>RCB Read Completion Boundary<ul>
+<li><strong>可以</strong>而非<del><strong>必须</strong></del>按照64B或者128B的地址边界分段completion</li>
+<li>我似乎一直理解错RCB的含义了。</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106135748045-1730872670356-1.png" alt="image-20241106135748045"></li>
+<li>之前我对pcie硬核发出的子请求大小均小于max_pld_size，所以每个完成包不会分包，而且max_pld_size恰巧是rcb的整数倍，再次说明了不会分包：<strong>我的axi_slave让读请求也按照max_pld_size分包，是不是彻底避免完成包分包的可能性了。</strong></li>
+</ul>
+</li>
+<li>请求包字节使能示意图<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106134335660.png" alt="image-20241106134335660"></li>
+<li>完成包里具体字节数目的计算方法见表2-38</li>
+</ul>
+</li>
+<li>完成包响应规则<ul>
+<li>懒得检查transaction ID了</li>
+<li>也懒得检查完成包和请求的一些字段是否对应</li>
+<li>错误处理：我很有把握他们肯定没做这部分逻辑，那我也不做了。给axi接口返回一个错误可能把系统干崩溃了</li>
+<li>RC对我发出的错误请求包会返回cpl（无数据），那我确保不要发出不合规范的请求不就行了</li>
+<li><strong>RC在探查设备是否存在时</strong>，会进行配置读请求读一个全1值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="事务排序"><a href="#事务排序" class="headerlink" title="事务排序"></a>事务排序</h5><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其实感觉要做排序还是得把包分配到不同的lane里面，mux和dmux</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106170115595.png" alt="image-20241106170115595"></p>
+<p>列先发出，行后发出；Y&#x2F;N表示先后均可；yes表示后一个必须先于前一个发出；no表示后一个不得先于前一个发出</p>
+<ul>
+<li><p>不支持realx ordering，posted事务之间不会被调度</p>
+</li>
+<li><p>posted request 需要调度在non-posted request之前传输（对应一直写优先，仲裁器设计中的）：<strong>如果先发出了non-posted request,后发出了posted request，那么posted request允许被调度在前面来</strong>，这一点对应RQ单接口的设计</p>
+</li>
+<li><p>posted request 和completion间按顺序即可</p>
+</li>
+<li><p>不支持ID ordering，也不支持relax ordering，那么先发出posted request,后发出任何（任何类型的请求或者响应）都不会被调度在前面，默认即可</p>
+</li>
+<li><p>Completion 不能调度到 Posted Request 之前传输，按默认顺序即可</p>
+</li>
+<li><p><strong>Completion 必须能够调度到 Non-Posted Request 之前传输以避免死锁</strong>，这一点对应事务层里面合并RQ与CC数据流时候</p>
+</li>
+<li><p>两个 Completion 拥有不同的 Completion ID 就允许把其中一个调度到另一个之前传输，两个 Completion 拥有相同的 Completion ID 就不允许改变顺序。这能保证一个 Memory Read Request 的多个 Completion 可以保持地址增长的顺序。<code>我就知道pcie规范的设计者也是符合人性的！！！那么我之前的桥接器设计对乱序返回的考虑完全是多余的，ram大小只需要一个大请求那么大就好了。不分包，单个子请求也是顺序。但是问题来了，同一个母请求所属的子请求之间可能是乱序的，要完全保证不同transaction ID之间的顺序</code></p>
+<ul>
+<li>没办法，还是得按照原来方法，无法保证顺序。</li>
+<li>希望对端设计者保证这个顺序。</li>
+</ul>
+</li>
+<li><p>附加事务排序规则，来自GPT</p>
+</li>
+</ul>
+<ol>
+<li><strong>Root Ports 和 Switch Downstream Ports</strong></li>
+</ol>
+<ul>
+<li><strong>要求</strong>：Root Ports 和 Switch Downstream Ports 在接收一个 Posted Request 或 Completion 包时，不得依赖于同一流量类别中的 Non-Posted Request 的传输。</li>
+<li><strong>解释</strong>：对于 Root Ports 和 Switch Downstream Ports，即使当前流量类别中存在未传输的 Non-Posted Request，它们也必须独立接收和处理 Posted Request 或 Completion。Posted 请求和 Completion 不应因为同一流量类别内其他 Non-Posted 请求未被传输而受到阻塞。</li>
+<li><strong>目的</strong>：确保系统的流量控制独立，防止出现端口等待传输 Non-Posted Request 而无法接受其他包的情况。</li>
+</ul>
+<ol start="2">
+<li><strong>Switch Upstream Ports</strong></li>
+</ol>
+<ul>
+<li><strong>要求</strong>：Switch Upstream Ports 在接收 Posted Request 或 Completion 时，不得依赖于其 Downstream Port 上同一流量类别内 Non-Posted Request 的传输。</li>
+<li><strong>解释</strong>：Switch 的 Upstream Port 接收 Posted Request 或 Completion 时，不得因 Downstream Port 中有未传输的 Non-Posted Request 而延迟处理。这一要求确保 Upstream Port 的接收独立于 Downstream Port 上的 Non-Posted 请求的状态。</li>
+<li><strong>目的</strong>：防止因为端口间依赖导致的阻塞，保持数据流的独立性和效率。</li>
+</ul>
+<ol start="3">
+<li><strong>Endpoint、Bridge 和 Switch Upstream Ports（对于 Posted Request）</strong></li>
+</ol>
+<ul>
+<li><strong>要求</strong>：Endpoint、Bridge 和 Switch Upstream Ports 接收 Posted Request 时，不得依赖于该端口上同一流量类别中的任何 TLP 传输。</li>
+<li><strong>解释</strong>：这些端口在接收 Posted Request 时，必须独立于自身的其他 TLP（无论是 Non-Posted Request、Completion 等）的传输状态。这意味着，即使在该端口的同一流量类别内有其他未处理的 TLP，Posted Request 仍然必须被独立接收。</li>
+<li><strong>目的</strong>：确保在系统接收 Posted Request 时不受其他请求的影响，提高系统的吞吐量和响应能力。</li>
+</ul>
+<ol start="4">
+<li><strong>Endpoint、Bridge 和 Switch Upstream Ports（对于 Non-Posted Request）</strong>（难以实现）</li>
+</ol>
+<ul>
+<li><strong>要求</strong>：这些端口接收 Non-Posted Request 时，不得依赖于该端口上同一流量类别内的 Non-Posted Request 的传输。</li>
+<li><strong>解释</strong>：这意味着当前端口在接收一个 Non-Posted Request 时，不会因为同一流量类别下还存在其他未传输的 Non-Posted Request 而阻塞。每个 Non-Posted Request 的接收都是独立的。</li>
+<li><strong>目的</strong>：避免端口之间或同一端口内因 Non-Posted Request 的等待而出现依赖链或阻塞，保证 Non-Posted 请求的处理独立性。</li>
+</ul>
+<ol start="5">
+<li><strong>Endpoint、Bridge 和 Switch Upstream Ports（对于 Completion）</strong></li>
+</ol>
+<ul>
+<li><p><strong>要求</strong>：这些端口接收 Completion 时，不得依赖于该端口上同一流量类别内的任何 TLP 的传输。</p>
+</li>
+<li><p><strong>解释</strong>：即使同一流量类别中有其他 TLP 未被传输或处理中，Completion 也必须被独立接收，不能因为其他数据包的等待而阻塞。</p>
+</li>
+<li><p><strong>目的</strong>：确保 Completion 数据包的及时处理，避免因为其他包未被传输而延误处理，保障完成响应的独立性。</p>
+</li>
+<li><p>读数据一致性和数据更新</p>
+<ul>
+<li>请求方发起读请求，完成方主机同时正在更新数据，请求方读的数据可能不是最新的。请求方需要分次读不同位置可能被更新的数据来确保它们是最新的。主机更新数据的粒度至少是DW</li>
+</ul>
+</li>
+<li><p>写数据一致性与数据更新</p>
+<ul>
+<li><p>请求方向完成方写数据，写数据需要时间，完成方不会立即得到更新的数据。当 Relaxed Ordering 位清除时，完成方需要按照地址递增顺序更新多个 DW。</p>
+<p>规范不对数据更新的粒度作硬性要求，但建议最小粒度为 DW，以减少更新不一致性。</p>
+<p>如果写入的粒度小于 QW，可能会导致主机 CPU 读取时看到部分数据更新、部分数据未更新的现象。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="虚通道"><a href="#虚通道" class="headerlink" title="虚通道"></a>虚通道</h5><p><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241106204315929.png" alt="image-20241106204315929"></p>
+<ul>
+<li>目前了解即可</li>
+<li>未实现可选的 Virtual Channel Capability structure 或 Multi-Function Virtual Channel Capability structure 的组件必须遵守以下规则： <ul>
+<li>Requester 只能生成带有 TC0 标签的请求。（请注意，如果请求者以 TC0 以外的 TC 标签发起请求，则该请求可能被链路另 一端实现 VC capability 并执行 TC 过滤的组件视为格式错误的 TLP。</li>
+<li>完成者必须能接收 TC 标签不是 TC0 的请求，并且必须保留 TC 标签，即，它生成的任何完成都必须有与请求相同的 TC 标签。 </li>
+<li>Switch 必须将所有 TC 映射到 VC0，并且必须转发所有事务，而不管 TC 标签是什么。</li>
+</ul>
+</li>
+</ul>
+<h5 id="排序和接收缓冲区流控"><a href="#排序和接收缓冲区流控" class="headerlink" title="排序和接收缓冲区流控"></a>排序和接收缓冲区流控</h5><p>流控总结：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/687209508">https://zhuanlan.zhihu.com/p/687209508</a></p>
+<p>流控要做好的话需要和链路层一起做的，先放一放？</p>
+<p>规则难以理解</p>
+<ul>
+<li><p>读PCIe体系结构那本书</p>
+<ul>
+<li>N123算法等三种算法，可以理解</li>
+<li>核心是发送方有一个被接收方设定的信用值，发送包需要减少该值。接收方定时或者处理完若干个包后，给发送方发包更新这个信用值。给接收方的缓存分段，来避免overrun（发送方发的接收方收不下）和underrun（接收方已经空了，但是发送方还没有去发）<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111152656234.png" alt="image-20241111152656234"></li>
+</ul>
+</li>
+<li><p>缓存结构，和当前事务层的设计有很大不同。<img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111151722229.png" alt="image-20241111151722229"></p>
+</li>
+<li><p>PCIe current节点（比如EP）信用值的初始化。来自RC的请求需要做流控，但是来自RC的完成包不用做流控，相反，需要限制EP发出non-posted请求的频率（我毕设里做的那个简单流控方法）</p>
+</li>
+<li><p>VC初始化涉及到current节点两次向upstream节点报告信用值。initfc1是用来初始化信用值，initfc2是用来验证流控初始化结果。流控初始化完成后，链路层dl_down无效，事务层可以通过该VC发送数据报文</p>
+</li>
+<li><p>PCIe体系结构9.3.4节，介绍算法：后续随着upstream节点向current节点发送报文的时候，current节点是如何更新credit值的？PCIe规范的2.6.1.1和2.6.1.2节解答了具体如何计算下面提到的这些值</p>
+<ul>
+<li>CC：积累的已经发送的信用值</li>
+<li>CR：已经消耗的+即将消耗的</li>
+<li>CL：信用限，由current节点提供</li>
+<li>（CL-CR）mod(2^field_size)&lt;&#x3D;(2^field_size)&#x2F;2代表接收方缓存空间足够，则发送；否则不发送</li>
+<li>CA：接收方可用缓存空间大小，随时计算更新。<img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111161043762.png" alt="image-20241111161043762"><br>increment是什么？当接收端事务层处理接收到的TLP，并且使得接收缓冲区有空间可用，就更新（增加)这个值。然后CA通过FCP更新CL<ul>
+<li>什么时候使用CA更新CL？协议规范规定了更新信用值的最大值，也就是说不能太慢。</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111184319545.png" alt="image-20241111184319545"><br>更新信用的条件。128bCAS（compare and swap)原子操作。两个操作数都是16字节的。</li>
+<li><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111184911396.png" alt="image-20241111184911396"><br>当可用信用小于max_pld_size，那么每当因为TLP处理导致缓冲区多出新的空间，那么就使得流控信用值更新</li>
+<li>这样，Updatefc FCP的发送会比较频繁</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>流控是端到端的，不代表请求已经到达完成者</p>
+<ul>
+<li>但是我这个是一对一无switch，所以流控也意味着请求到达完成者</li>
+</ul>
+</li>
+<li><p>事务层对TLP进行计数，信用耗尽之后阻塞TLP传输。链路层的其他信息不需要被流控管理。链路层对TLP的重传不会影响流控</p>
+</li>
+<li><p>流控规则</p>
+<ul>
+<li>流控制信息是使用 Flow Control Packets (FCP)传输的，它是 DLLP 的一种<ul>
+<li>InitFC1 InitFC2 FCP DLLP 只用于流控制初始化</li>
+</ul>
+</li>
+<li>流控对两种请求和一种响应各有包头和数据信用值。</li>
+<li>在复位后数据链路层处于 DL_Init 状态时才初始化 VC0。复位后各个信用值的最低值在table2-44中规定</li>
+</ul>
+</li>
+<li><p>流控FCP发送频率的额外要求</p>
+<ul>
+<li>接收端事务处理层通过处理接收到的 TLP 使额外的接收缓冲区空间可用到发送相应的 UpdateFC DLLP 的第一个 符号开始测量的，table2-46规定了这一时间的最大值（对于不同的max_pld_size和链路速度和宽度）</li>
+<li>链路处于 L0 或 L0s 链路状态时（也就是链路正常工作时），必须在规范于2.6.1.2节中给定的时间限制内发出FCP，使用一个计时器进行控制。收到FCP时计时器重置，否则计时器到期，则指示物理层重新训练链路。无限信用情况下该机制被禁用</li>
+</ul>
+</li>
+</ul>
+<h5 id="数据完整性"><a href="#数据完整性" class="headerlink" title="数据完整性"></a>数据完整性</h5><ul>
+<li>数据可靠性主要由链路层重传决定，那里使用32位LCRC来检测错误。</li>
+<li>事务层中的ECRC在我的设计中是可选的，因为我这里不涉及到switch，是点对点的<ul>
+<li>计算ECRC的时候，包头的一些可变位需要被设为指定值，见2.7.1节（比如EP（TLP中毒<del>猫中毒</del>）这个位可能在传输过程中改变的。但是计算ECRC的时候把它当成1</li>
+<li>我的逻辑不会主动去产生ECRC，也不想让RC去产生ECRC。这个感觉可能需要实验出来，我试着在EP的配置空间里禁用ECRC，看驱动在配置PCIe设备时的行为</li>
+</ul>
+</li>
+<li>错误转发<ul>
+<li>指的是TLP的载荷被破坏后，该TLP通过了链路层，被发到了事务层。其中TLP包头的EP位被置位1.</li>
+<li>具体的错误处理逻辑很复杂了，在链路层重传之后再报告错误，已经比较麻烦了（应该不止ECRC出错，还有其他情况可能置位EP）</li>
+<li>错误检测，以及错误报告<br><img src="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/image-20241111193122265.png" alt="image-20241111193122265"></li>
+<li>发送端只可以将带有数据载荷的TLP标记位中毒，接收者不能使用中毒的数据。接收者收到中毒的请求时，向发送者报告错误</li>
+</ul>
+</li>
+</ul>
+<h5 id="完成超时机制"><a href="#完成超时机制" class="headerlink" title="完成超时机制"></a>完成超时机制</h5><ul>
+<li>高级功能，请求发出后多长时间收不到响应，则报告错误？<ul>
+<li>暂不实现，很麻烦。错误处理逻辑也烦</li>
+<li>或者说，请求长时间不收到响应，那么丢弃这个请求，向软件报告错误，软件来重发（很麻烦）</li>
+</ul>
+</li>
+</ul>
+<h5 id="链路状态依赖关系"><a href="#链路状态依赖关系" class="headerlink" title="链路状态依赖关系"></a>链路状态依赖关系</h5><ul>
+<li>链路层处于DL_DOWN状态下，事务层的行为？<ul>
+<li>两种情况：一是链路还未建立；二是链路建立了，但是突然断掉了。协议主要对第二种情况进行说明：</li>
+<li>不管是upstream port还是dowustream port链路层没有ACk或nak的TLP全被丢弃，它们也不再参与流控</li>
+<li>对于downsteram port<ul>
+<li>初始化向下游请求的缓冲区</li>
+<li>核心发出的np请求全部返回请求不支持（UR）状态，丢弃全部np请求。</li>
+<li>丢弃全部制造商定义的消息</li>
+<li>丢弃来自核心的完成报文</li>
+</ul>
+</li>
+<li>对于upstream port<ul>
+<li>初始化全部pcie配置寄存器</li>
+<li>丢弃所有正在处理的TLP</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>链路层处于DL_UP状态，事务层的行为？<ul>
+<li>事务层正常工作（接收和发出TLP）</li>
+</ul>
+</li>
+<li>下游端口错误（DPC）发生后事务层的行为， 对我的设计不重要</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+        <a data-aos="zoom-in" href="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+      
+      
+        <span data-aos="zoom-in" id="/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/" class="leancloud_visitors article-visitor-link" data-flag-title="PCIe综述+事务层">
+          <span class="leancloud-visitors-count">0</span>
+          <em class="post-meta-item-text">Readings</em>
+        </span>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%8D%8F%E8%AE%AE/" rel="tag">协议</a></li></ul>
+
+
+    </footer>
+  </div>
+  
+  <nav id="article-nav" data-aos="fade-up">
+    
+    
+    
+    <div class="article-nav-link-wrap article-nav-link-right">
+      
+        <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg" data-sizes="auto" alt="PCI协议概述" class="lazyload">
+      
+      <a href="/2025/05/03/PCIe/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0/"></a>
+      <div class="article-nav-caption">Older</div>
+      <h3 class="article-nav-title">
+        
+          PCI协议概述
+        
+      </h3>
+    </div>
+    
+  </nav>
+
+
+</article>
+
+
+
+
+
+
+
+
+
+  <section id="comments" data-aos="fade-up">
+    <div class="comment-header">
+      
+      
+        
+      
+      <h2 class="comment-title">Leave a comment</h2>
+      <div class="comment-selector">
+        <div class="comment-selector-wrap">
+            
+            <div class="selector-item" data-selector="valine">
+              <span>valine</span>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="comment-content">
+      
+        <div class="comment valine-comment" data-aos="fade-up"
+          id="valine-comment">
+        </div>
+      
+    </div>
+  </section>
+
+
+</section>
+        </div>
+        <footer id="footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    
+    <div>
+      <span class="icon-copyright"></span>
+      
+      
+      
+        2020-2025
+      
+      <span class="footer-info-sep rotate"></span>
+      wanderingxs
+    </div>
+    
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener external nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+    
+    
+      <div>
+        <span class="icon-brush"></span>
+        18.7k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        01:09
+      </div>
+    
+    
+    
+    
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+    
+  </div>
+</footer>
+
+        
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav">
+  <div class="sidebar-wrap">
+    
+      
+        <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PCIe%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">PCIe简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.0.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E5%B1%82"><span class="toc-number">1.0.2.</span> <span class="toc-text">事务层</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">事务类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#TLP%E7%BB%84%E6%88%90%EF%BC%88%E5%8F%91%E9%80%81TLP"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">TLP组成（发送TLP)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E6%94%B6%E5%88%B0%E7%9A%84TLP"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">处理收到的TLP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E6%8E%92%E5%BA%8F"><span class="toc-number">1.0.2.4.</span> <span class="toc-text">事务排序</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E9%80%9A%E9%81%93"><span class="toc-number">1.0.2.5.</span> <span class="toc-text">虚通道</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E5%92%8C%E6%8E%A5%E6%94%B6%E7%BC%93%E5%86%B2%E5%8C%BA%E6%B5%81%E6%8E%A7"><span class="toc-number">1.0.2.6.</span> <span class="toc-text">排序和接收缓冲区流控</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-number">1.0.2.7.</span> <span class="toc-text">数据完整性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E8%B6%85%E6%97%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">1.0.2.8.</span> <span class="toc-text">完成超时机制</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="toc-number">1.0.2.9.</span> <span class="toc-text">链路状态依赖关系</span></a></li></ol></li></ol></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+      
+    
+  </div>
+  
+    
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+    
+  
+</nav>
+
+    </div>
+    
+      <div class="site-search">
+        <div class="reimu-popup popup">
+          <div class="reimu-search">
+            <div class="reimu-search-input-icon"></div>
+            <div class="reimu-search-input" id="reimu-search-input"></div>
+            <div class="popup-btn-close"></div>
+          </div>
+          <div class="reimu-results">
+            <div id="reimu-stats"></div>
+            <div id="reimu-hits"></div>
+            <div id="reimu-pagination" class="reimu-pagination"></div>
+          </div>
+          <img class="reimu-bg" src="/images/reimu.png"/>
+        </div>
+      </div>
+    
+    
+    
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+  
+<script src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js" integrity="sha384-vLev0II0HKFaxkcm+&#x2F;7kX5IGwVFBASkGchU311wmU&#x2F;veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+  
+<script src="/js/generator_search.js" defer></script>
+
+
+
+
+
+
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.1.1/dist/index.umd.js" integrity="sha384-8LyaidD9GPxQQgLJO&#x2F;WRw&#x2F;O2h3BoNq&#x2F;ApI&#x2F;ecpvM6RsrCz2qP2ppBXUKihP4V&#x2F;2d" crossorigin="anonymous"></script>
+
+  <script>
+    window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'))
+  </script>
+
+
+
+
+
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+    
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "wanderingxs",
+          title: "PCIe综述+事务层",
+          url: "https://amakawamasahir0.github.io/2025/05/03/PCIe/PCIe%E7%BB%BC%E8%BF%B0+%E4%BA%8B%E5%8A%A1%E5%B1%82/",
+          excerpt: "简要介绍PCIe协议，以及PCIe协议的事务层（传输层）",
+          description: "",
+          stripContent: "看不懂文档的时候可以看看官方FAQ：https://pcisig.com/faq?page=2 非常好的笔记https://www.quchao.me/wiki/ 软件层面和系统层面的pciehttps://ctf.re/windows/kernel/pcie/tutorial/2023/02/14/pcie-part-1/ PCIe配置空间https://blog.csdn.net/u011037593/article/details/138016148 pcie规范里面有很详细的解释 xil",
+          date: "Sat May 03 2025 17:48:53 GMT+0800",
+          updated: "Sat May 03 2025 23:46:14 GMT+0800",
+          cover: "https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg",
+        };
+      </script>
+       
+    
+    
+      
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+        
+      
+    
+    
+      <script type="module" data-pjax>
+        const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+        
+        const pswp = () => {
+          if (_$$('.article-entry a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-entry',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          if(_$$('.article-gallery a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-gallery',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          window.lightboxStatus = 'done';
+          window.removeEventListener('lightbox:ready', pswp);
+        }
+        if(window.lightboxStatus === 'ready') {
+          pswp()
+        } else {
+          window.addEventListener('lightbox:ready', pswp);
+        }
+      </script>
+      
+        
+
+
+
+
+
+
+
+
+<script data-pjax>
+  var loadScript = (src, integrity) => {
+    const script = document.createElement('script');
+    script.src = src;
+    if (integrity) script.integrity = integrity;
+    script.crossOrigin = 'anonymous';
+    return script;
+  };
+
+  var commentConfigKeys = ['valine', 'waline', 'twikoo', 'gitalk', 'giscus'];
+  var commentConfig = {
+    valine: {
+      enable: true,
+      load: () => {
+        const container = document.querySelector('.valine-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/valine@1.5.1/dist/Valine.min.js',
+          'sha384-3ma91AExDeMAZ1rjTjaP8V2A2obQE+s5ltKRwYlwdpArz9xVbp0tF3b0VV2ACNPn'
+        );
+        script.onload = () => {
+          var GUEST_INFO = ['nick', 'mail', 'link'];
+          var guest_info = 'nick,mail,link'.split(',').filter((item) => {
+            return GUEST_INFO.indexOf(item) > -1
+          });
+          var recordIP = JSON.parse('true');
+          var highlight = JSON.parse('true');
+          var visitor = JSON.parse('true');
+          var serverURLs = 'https://zrnvqoxq.api.lncldglobal.com';
+
+          if (window.Valine) {
+            new Valine({
+              el: '.valine-comment',
+              appId: "zrnVQoxQHb8R7bVcJkUheSl5-MdYXbMMI",
+              appKey: "4FFftWoCmetu0akdzWM69pUJ",
+              placeholder: "留下你的评论...",
+              pageSize: '10',
+              avatar: 'mp',
+              lang: document.documentElement.lang || 'en',
+              recordIP: recordIP,
+              highlight: highlight,
+              visitor: visitor,
+              requiredFields: guest_info,
+              path: window.location.pathname,
+              serverURLs
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    },
+    waline: {
+      enable: false,
+      load: async () => {
+        const container = document.querySelector('.waline-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        let walineInit;
+        const walineCdn = 'https://npm.webcache.cn/@waline/client@2.15.8/dist/waline.mjs';
+        const walineIntegrity = 'sha384-9sbqJjrfGjbkI6/PI4nU/MvBfEmkkPC4YK9I4zBeMIf1CVCZdCMH/KinBEAZII/5';
+
+        const module = await safeImport(walineCdn, walineIntegrity);
+        walineInit = module.init;
+
+        window.walineInstance = walineInit({
+          el: '.waline-comment',
+          serverURL: '',
+          lang: document.documentElement.lang || 'en',
+          locale: {},
+          emoji: ["https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/tieba","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji"],
+          meta: ["nick","mail","link"],
+          requiredMeta: ["nick","mail"],
+          wordLimit: JSON.parse('0'),
+          comment: true,
+          pageSize: JSON.parse('10'),
+          dark: 'html[data-theme="dark"]',
+          pageview: JSON.parse('true'),
+        });
+      }
+    },
+    twikoo: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.twikoo-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/twikoo@1.6.16/dist/twikoo.all.min.js',
+          'sha384-lDHsr5aZmkMS0eKnsUu6e9RWP+dRmn7sgjRAKGOAoXfMyzbUK6Qi86zZK7R+KvRV'
+        );
+
+        script.onload = () => {
+          if (window.twikoo) {
+            twikoo.init({
+              envId: '',
+              el: '.tcomment',
+              region: '',
+              lang: document.documentElement.lang || 'en',
+            })
+          }
+        } 
+        document.head.appendChild(script);
+      }
+    },
+    gitalk: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.gitalk-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/gitalk@1.8.0/dist/gitalk.min.js',
+          'sha384-kspnZUWBoSWwoJHa0hBCXYbHGbhvU/lcEH5O8eVbSDhbPwsiVUTp/aGX/z/5EuMA'
+        );
+
+        script.onload = () => {
+          if (false) {
+            const md5Script = loadScript(
+              'https://npm.webcache.cn/blueimp-md5@2.19.0/js/md5.min.js',
+              'sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH'
+            );
+            md5Script.onload = initGitalk;
+            document.head.appendChild(md5Script);
+          } else {
+            initGitalk();
+          }
+        }
+        document.head.appendChild(script);
+
+        function initGitalk() {
+          var gitalkId = location.pathname;
+          var gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: null,
+            id: gitalkId,
+            distractionFreeMode: false,
+            language: document.documentElement.lang || 'en',
+          })
+          gitalk.render('gitalk-comment');
+        }
+      }
+    },
+    giscus: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.giscus-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        // 删除可能已存在的 giscus 脚本和 iframe
+        const existingScript = container.querySelector('script[src*="giscus.app/client.js"]');
+        if (existingScript) existingScript.remove();
+        const existingFrame = document.querySelector('iframe.giscus-frame');
+        if (existingFrame) existingFrame.remove();
+
+        const giscusScript = document.createElement('script');
+        const domMode = document.documentElement.getAttribute("data-theme");
+        giscusScript.src = 'https://giscus.app/client.js';
+        giscusScript.setAttribute('data-repo', '');
+        giscusScript.setAttribute('data-repo-id', '');
+        giscusScript.setAttribute('data-category', ''); 
+        giscusScript.setAttribute('data-category-id', '');
+        giscusScript.setAttribute('data-mapping', '0');
+        giscusScript.setAttribute('data-strict', '0');
+        giscusScript.setAttribute('data-reactions-enabled', '1');
+        giscusScript.setAttribute('data-emit-metadata', '0');
+        giscusScript.setAttribute('data-input-position', 'bottom');
+        giscusScript.setAttribute('data-theme', domMode === 'dark' ? 'dark' : 'light');
+        giscusScript.setAttribute('data-lang', document.documentElement.lang || 'en');
+        giscusScript.setAttribute('crossorigin', 'anonymous');
+        giscusScript.async = true;
+        container.appendChild(giscusScript);
+        document.body.addEventListener('light-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'light' } } }, 'https://giscus.app');
+        });
+        document.body.addEventListener('dark-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'dark' } } }, 'https://giscus.app');
+        });
+      }
+    }
+  }
+  commentConfig.enable = commentConfigKeys.some(key => commentConfig[key].enable);
+
+  var defaultComment = '';
+  if (commentConfig.enable) {
+    // 1. 首先检查localStorage中是否有保存的评论类型
+    var savedCommentType = localStorage.getItem('commentType');
+    
+    // 2. 如果localStorage中有值且对应的评论系统可用，就使用它
+    if (savedCommentType) {
+      if (commentConfig[savedCommentType]?.enable) {
+        defaultComment = savedCommentType;
+      }
+    }
+    
+    // 3. 如果localStorage无效，检查配置的默认评论系统
+    if (!defaultComment) {
+      var configDefault = 'valine';
+      if (commentConfig[configDefault]?.enable) {
+        defaultComment = configDefault;
+      }
+    }
+    
+    // 4. 如果前两项都无效，按指定顺序找到第一个可用的评论系统
+    if (!defaultComment) {
+      defaultComment = commentConfigKeys.find(sys => commentConfig[sys].enable) || '';
+    }
+  }
+  function loadComments() {
+    if (!commentConfig.enable) return;
+    // 评论组件加载状态跟踪
+    const loadedComments = {
+      valine: false,
+      waline: false,
+      twikoo: false,
+      gitalk: false,
+      giscus: false
+    };
+
+    // 隐藏所有评论容器
+    const hideAllComments = () => {
+      const commentContainers = document.querySelectorAll('.comment');
+      commentContainers.forEach(container => {
+        container.style.display = 'none';
+      });
+    };
+
+    // 按需加载评论系统
+    const loadCommentSystem = (type) => {
+      if (loadedComments[type]) {
+        // 如果已加载，只需显示对应容器
+        document.querySelector(`.${type}-comment`).style.display = 'block';
+        return;
+      }
+
+      // 根据类型加载对应的脚本
+      commentConfig[type]?.load();
+      loadedComments[type] = true;
+    };
+
+    // 评论组件选择器
+    const changeActiveCommentItems = (item) => {
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let i = 0; i < commentItems.length; i++) {
+        commentItems[i].classList.remove('active');
+      }
+      item.classList.add('active');
+
+      // 获取要加载的评论系统类型
+      const commentType = item.getAttribute('data-selector');
+
+      // 隐藏所有评论系统
+      hideAllComments();
+
+      // 加载选中的评论系统
+      loadCommentSystem(commentType);
+    };
+
+    const commentInit = () => {
+      // 评论组件选择器点击事件
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let item of commentItems) {
+        item.addEventListener('click', () => {
+          // 保存选择器状态
+          const commentType = item.getAttribute('data-selector');
+          window.localStorage.setItem('commentType', commentType);
+          // 切换选中状态
+          changeActiveCommentItems(item);
+        });
+      }
+
+      // 检查是否需要加载默认评论系统
+      if (defaultComment) {
+        const defaultSelectorItem = document.querySelector(`[data-selector="${defaultComment}"]`);
+        if (!defaultSelectorItem) return;
+        defaultSelectorItem.style.display = 'block';
+        defaultSelectorItem.classList.add('active');
+        loadCommentSystem(defaultComment);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', commentInit);
+    } else {
+      commentInit();
+    }
+  };
+  loadComments();
+</script>
+
+      
+    
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.8.3' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+  </html>
+
