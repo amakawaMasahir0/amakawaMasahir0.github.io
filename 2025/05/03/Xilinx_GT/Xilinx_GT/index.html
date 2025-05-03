@@ -1,0 +1,2106 @@
+
+  <!DOCTYPE html>
+  <html lang="en"  
+    
+      data-theme-mode="auto"
+    
+  >
+  <head>
+  
+  <meta charset="utf-8">
+  
+
+  
+
+  
+
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_0khxww3tj3q9';window.REIMU_CONFIG.clipboard_tips = {"success":{"en":"Copy successfully (*^▽^*)","zh-CN":"复制成功 (*^▽^*)","zh-TW":"複製成功 (*^▽^*)","ja":"コピー成功 (*^▽^*)"},"fail":{"en":"Copy failed (ﾟ⊿ﾟ)ﾂ","zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","zh-TW":"複製失敗 (ﾟ⊿ﾟ)ﾂ","ja":"コピー失敗 (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = 'All articles on this blog are licensed under the BY-NC-SA license agreement unless otherwise stated. Please indicate the source when reprinting!';window.REIMU_CONFIG.code_block = {"expand":40};window.REIMU_CONFIG.base = 'https://amakawamasahir0.github.io';</script>
+  
+  <title>
+    Xilinx_GT详解 |
+    
+    测温大师的工位
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media&#x3D;&#39;all&#39;">
+  
+  
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_0khxww3tj3q9.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+  
+  
+    <meta name="description" content="Xilinx_GTY IP核的详细介绍。其他类型的GT结构和功能上大同小异。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xilinx_GT详解">
+<meta property="og:url" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/index.html">
+<meta property="og:site_name" content="测温大师的工位">
+<meta property="og:description" content="Xilinx_GTY IP核的详细介绍。其他类型的GT结构和功能上大同小异。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/renditionDownload.jpeg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732093269922-3.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229234556398.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229234644004.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732093937212-9.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159142805-12.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159164298-15.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159205806-18.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159240645-21.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194105482-27.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194084956-24.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194252355-30.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194329379-33.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194682168-36.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241121211337342.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732343560989-42.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732343551945-39.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241123143213296.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159240645-21.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732345770009-45.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241123151015862.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732364198405-48.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732364251683-51.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732365925196-54.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241128132323437.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230065920898.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229233107460.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230060505748.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230060900159.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230102710058.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230103856223.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230113144512.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631404228-58.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631578404-61.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631637166-64.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241126225200511.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231194707592.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241128125949317.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230100646740.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230100959552.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230101033889.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230101101187.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230201751230.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230202219735.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231200258404.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231201906732.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231215023155.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230212433770.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733146562546-76.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117621918-70.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117659678-73.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117621918-70-1733146805013-79.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733151144641-81.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733151247093-84.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153591737-87.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153644840-90.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153673964-93.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153720184-96.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153727352-99.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733726607337-104.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241212151934317.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733987986713-3.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733988009884-6.webp">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210175133825.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210185041680.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210185713426.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210191120348.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210195140921.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210191349025.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210200315031.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210200553580.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/ec4d30e355ad04a35ea03949abd6716.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231220526225.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231220916879.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231221810044.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230158382.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230330489.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230601028.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231231135739.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102182440575.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102193004034.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102211407089.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102211800585.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102221008234.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241129121559848.png">
+<meta property="article:published_time" content="2025-05-03T06:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-03T18:18:55.908Z">
+<meta property="article:author" content="wanderingxs">
+<meta property="article:tag" content="知识">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/renditionDownload.jpeg">
+  
+  
+    <link rel="alternate" href="/404.html" title="测温大师的工位" >
+  
+  
+    <link rel="shortcut icon" href="/images/favicon_new.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  
+  
+  
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+  
+  
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.0/dist/aos.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+  <body>
+    
+    
+  <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+        
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+        
+      </div>
+      
+      
+        
+      
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var startLoading = () => {
+      time = Date.now();
+      document.getElementById('loader').classList.remove("loading");
+    }
+    var endLoading = () => {
+      if (!time) {
+        document.body.style.overflow = 'auto';
+        document.getElementById('loader').classList.add("loading");
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          document.body.style.overflow = 'auto';
+          document.getElementById('loader').classList.add("loading");
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    document.getElementById('loader').addEventListener('click', endLoading);
+  </script>
+
+<div id="copy-tooltip" style="pointer-events: none; opacity: 0; transition: all 0.2s ease; position: fixed;top: 50%;left: 50%;z-index: 999;transform: translate(-50%, -50%);color: white;background: rgba(0, 0, 0, 0.5);padding: 10px 15px;border-radius: 10px;">
+</div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav">
+    
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/">Home</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/archives">Archives</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/about">About</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/friend">Friend</a>
+        </span>
+      
+    
+    <a id="main-nav-toggle" class="nav-icon"></a>
+  </nav>
+  <nav id="sub-nav">
+    
+      <a id="nav-rss-link" class="nav-icon" href="/404.html" title="RSS Feed" target="_blank"></a>
+    
+    
+    
+      <a id="nav-search-btn" class="nav-icon popup-trigger" title="Search"></a>
+    
+  </nav>
+  
+</div>
+<header id="header">
+  
+    <picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032122146.jpg" alt="Xilinx_GT详解">
+  
+  <div id="header-outer">
+    <div id="header-title">
+      
+        
+        
+          <a href="/" id="logo">
+            <h1 data-aos="slide-up">Xilinx_GT详解</h1>
+          </a>
+        
+      
+      
+        
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+          
+        </h2>
+      
+    </div>
+  </div>
+</header>
+
+        <div id="content"  class="sidebar-right" >
+          <aside id="sidebar">
+  
+  
+  
+  <div class="sidebar-wrapper wrap-sticky">
+    <div class="sidebar-wrap" data-aos="fade-up">
+      
+        
+          <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84GT%E4%B9%8B%E9%97%B4%E5%A4%A7%E5%90%8C%E5%B0%8F%E5%BC%82%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">不同的GT之间大同小异的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GT%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">3.</span> <span class="toc-text">GT学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E6%8E%A5%E5%8F%A3%E4%BF%A1%E5%8F%B7%E7%BB%84"><span class="toc-number">3.1.</span> <span class="toc-text">GT的接口信号组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DRP"><span class="toc-number">3.1.1.</span> <span class="toc-text">DRP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bufgt-xxx-%E4%BF%A1%E5%8F%B7"><span class="toc-number">3.1.2.</span> <span class="toc-text">bufgt xxx 信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QPLL"><span class="toc-number">3.1.3.</span> <span class="toc-text">QPLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPLL"><span class="toc-number">3.1.4.</span> <span class="toc-text">CPLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%BA%BF"><span class="toc-number">3.1.5.</span> <span class="toc-text">串行数据线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gtwiz"><span class="toc-number">3.1.6.</span> <span class="toc-text">gtwiz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cpll%E6%A0%A1%E5%87%86"><span class="toc-number">3.1.6.1.</span> <span class="toc-text">cpll校准</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="toc-number">3.2.</span> <span class="toc-text">重要概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%92%9F%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.1.</span> <span class="toc-text">时钟相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%80%9F%E6%94%B6%E5%8F%91%E5%99%A8%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.2.</span> <span class="toc-text">高速收发器相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GT%E7%BB%93%E6%9E%84-%E7%BB%84%E4%BB%B6%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.3.</span> <span class="toc-text">GT结构&#x2F;组件相关</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E6%80%BB%E4%BD%93%E7%BB%93%E6%9E%84%EF%BC%88%E4%BB%A5GTX%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">GT总体结构（以GTX为例）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E6%97%B6%E9%92%9F%E7%BB%93%E6%9E%84"><span class="toc-number">3.4.</span> <span class="toc-text">GT的时钟结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPLL%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.5.</span> <span class="toc-text">CPLL的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QPLL%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.6.</span> <span class="toc-text">QPLL的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TXUSERCLK%E5%92%8CTXUSERCLK2"><span class="toc-number">3.7.</span> <span class="toc-text">TXUSERCLK和TXUSERCLK2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TXOUTCLK"><span class="toc-number">3.8.</span> <span class="toc-text">TXOUTCLK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%92%9F%E8%BE%93%E5%87%BA%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97"><span class="toc-number">3.8.1.</span> <span class="toc-text">时钟输出控制模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-8b10b-%E7%BC%96%E7%A0%81%E5%99%A8"><span class="toc-number">3.9.</span> <span class="toc-text">TX 8b10b 编码器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX128-130b%E7%BC%96%E7%A0%81%E5%99%A8"><span class="toc-number">3.10.</span> <span class="toc-text">TX128&#x2F;130b编码器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-%E5%90%8C%E6%AD%A5-gearbox"><span class="toc-number">3.11.</span> <span class="toc-text">TX 同步 gearbox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX%E5%BC%82%E6%AD%A5-gearbox"><span class="toc-number">3.12.</span> <span class="toc-text">TX异步 gearbox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-buffer"><span class="toc-number">3.13.</span> <span class="toc-text">TX buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Buffer-Bypass"><span class="toc-number">3.14.</span> <span class="toc-text">TX Buffer Bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Pattern-Generator%E5%8A%9F%E8%83%BD%E5%9D%97"><span class="toc-number">3.15.</span> <span class="toc-text">TX Pattern Generator功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-polarty"><span class="toc-number">3.16.</span> <span class="toc-text">TX polarty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Phase-Interpolator-PPM-Controller"><span class="toc-number">3.17.</span> <span class="toc-text">TX Phase Interpolator PPM Controller</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Configurable-Driver"><span class="toc-number">3.18.</span> <span class="toc-text">TX Configurable Driver</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Receiver-Detect-Support-for-PCI-Express-Designs"><span class="toc-number">3.19.</span> <span class="toc-text">TX Receiver Detect Support for PCI Express Designs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-OOB"><span class="toc-number">3.20.</span> <span class="toc-text">TX OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RXUSERCLK%E5%92%8CRXUSERCLK2"><span class="toc-number">3.21.</span> <span class="toc-text">RXUSERCLK和RXUSERCLK2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RXOUTCLK%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="toc-number">3.22.</span> <span class="toc-text">RXOUTCLK的来源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E6%A8%A1%E6%8B%9F%E5%89%8D%E7%AB%AF"><span class="toc-number">3.23.</span> <span class="toc-text">RX模拟前端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-OOB"><span class="toc-number">3.24.</span> <span class="toc-text">RX OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-number">3.25.</span> <span class="toc-text">RX 均衡器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E8%A3%95%E5%BA%A6%E5%88%86%E6%9E%90"><span class="toc-number">3.26.</span> <span class="toc-text">RX裕度分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-CDR"><span class="toc-number">3.27.</span> <span class="toc-text">RX CDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-Pattern-Checker%E5%8A%9F%E8%83%BD%E5%9D%97"><span class="toc-number">3.28.</span> <span class="toc-text">RX Pattern Checker功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PLL%E7%9A%84%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.29.</span> <span class="toc-text">PLL的复位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E5%A4%8D%E4%BD%8D%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.30.</span> <span class="toc-text">GT复位总体介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GPT%E8%AF%B4%E9%85%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%BA%9B%E5%95%A5%EF%BC%9F"><span class="toc-number">3.30.1.</span> <span class="toc-text">GPT说配置工作主要有些啥？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.31.</span> <span class="toc-text">TX复位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.32.</span> <span class="toc-text">RX复位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AARX%E5%88%9D%E6%AC%A1%E6%80%BB%E4%BD%93%E5%A4%8D%E4%BD%8D%E6%B5%81%E7%A8%8B"><span class="toc-number">3.32.1.</span> <span class="toc-text">一个RX初次总体复位流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%A1%BA%E5%BA%8F%E6%A8%A1%E5%BC%8F%E4%B8%8B%E5%A4%8D%E4%BD%8D%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%A4%8D%E4%BD%8D%E7%9A%84%E8%8C%83%E5%9B%B4"><span class="toc-number">3.32.2.</span> <span class="toc-text">不同顺序模式下复位，可以复位的范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%B8%80%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84RX%E5%A4%8D%E4%BD%8D%EF%BC%8C%E8%A6%86%E7%9B%96%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="toc-number">3.32.3.</span> <span class="toc-text">单一模式下的RX复位，覆盖的组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E4%B8%8B%E6%8E%A8%E8%8D%90%E7%9A%84%E5%A4%8D%E4%BD%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.32.4.</span> <span class="toc-text">不同场景下推荐的复位模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-comma"><span class="toc-number">3.33.</span> <span class="toc-text">RX comma</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-8b10b%E8%A7%A3%E7%A0%81"><span class="toc-number">3.34.</span> <span class="toc-text">RX 8b10b解码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#128-130b%E7%BC%96%E8%A7%A3%E7%A0%81%EF%BC%9Agen3-4%E5%AF%B9%E9%BD%90"><span class="toc-number">3.35.</span> <span class="toc-text">128&#x2F;130b编解码：gen3&#x2F;4对齐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-buffer-bypass"><span class="toc-number">3.36.</span> <span class="toc-text">RX buffer bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-elastic-buffer"><span class="toc-number">3.37.</span> <span class="toc-text">RX elastic buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#clock-correction"><span class="toc-number">3.38.</span> <span class="toc-text">clock correction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-channal-bounding"><span class="toc-number">3.39.</span> <span class="toc-text">RX channal bounding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-%E5%90%8C%E6%AD%A5%E5%8F%98%E9%80%9F%E7%AE%B1"><span class="toc-number">3.40.</span> <span class="toc-text">RX 同步变速箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GTY%E7%9A%84PCIe%E7%9B%B8%E5%85%B3%E6%94%AF%E6%8C%81%E4%BF%A1%E5%8F%B7"><span class="toc-number">3.41.</span> <span class="toc-text">GTY的PCIe相关支持信号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.41.1.</span> <span class="toc-text">重要端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%B1%9E%E6%80%A7"><span class="toc-number">3.41.2.</span> <span class="toc-text">重要属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT-OOB"><span class="toc-number">3.42.</span> <span class="toc-text">GT OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT-DRP"><span class="toc-number">3.43.</span> <span class="toc-text">GT DRP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E8%87%AA%E5%9B%9E%E7%8E%AF"><span class="toc-number">3.44.</span> <span class="toc-text">GT的自回环</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">5</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+        
+      
+      
+        
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+        
+      
+    </div>
+  </div>
+
+  <div class="sidebar-widget">
+  
+  </div>
+  
+</aside>
+
+          <section id="main"><article id="post-Xilinx_GT/Xilinx_GT" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link" data-aos="zoom-in">
+    <time datetime="2025-05-03T06:00:00.000Z" itemprop="datePublished">2025-05-03</time>
+    <time style="display: none;" id="post-update-time">2025-05-04</time>
+  </span>
+</div>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Xilinx-%E8%BD%AF%E4%BB%B6%E4%B8%8EIP%E6%A0%B8/" data-aos="zoom-in">Xilinx 软件与IP核</a>
+  </div>
+
+
+    </div>
+    <div class="hr-line"></div>
+    
+
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+      
+        <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://fpgaup.com/fpgaup.php?fl=6">7系列的GTP介绍</a></li>
+<li>一个很有用的微信公众号： 李锐博恩 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU1NTI4NTAxMQ==&mid=2247485462&idx=1&sn=a599d739402a1c00c5b1f621b6022376&chksm=fbd7e76acca06e7c3b5cf99f3abcdfbe8113b0682e46982bc718be041da8ccb641869c141f03&cur_album_id=1566464162078179328&scene=190#rd">FPGA LAB</a></li>
+<li><a target="_blank" rel="noopener" href="https://physics.bu.edu/~wusx/download/Design_collection/l0mdt/">一个有关GT的项目</a>（谁把服务器放公网上了。。。）</li>
+<li>versal GTY应该看手册：Versal ACAP GTY and GTYP Transceivers Architecture Manual</li>
+</ul>
+<h1 id="不同的GT之间大同小异的"><a href="#不同的GT之间大同小异的" class="headerlink" title="不同的GT之间大同小异的"></a>不同的GT之间大同小异的</h1><ul>
+<li><p>本篇没有做好区分工作。</p>
+</li>
+<li><p><strong>从tx buffer开始使用GTH</strong></p>
+</li>
+<li><p>GTY和 versal GTY的不同：<a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/article/Differences-Designing-with-UltraScale">https://adaptivesupport.amd.com/s/article/Differences-Designing-with-UltraScale</a></p>
+</li>
+</ul>
+<h1 id="GT学习笔记"><a href="#GT学习笔记" class="headerlink" title="GT学习笔记"></a>GT学习笔记</h1><blockquote>
+<p>但是呢？这都是唬人的！我为了写这篇文档专门写了个测试程序，你们猜猜的测试程序写了几行？</p>
+<p>加上好多空行，逻辑代码没超过50行！！！！而且啊，例化的IP接口信号虽说有上百行，用到的只有6个，其他的或是不理会或是直接写死。</p>
+</blockquote>
+<h2 id="GT的接口信号组"><a href="#GT的接口信号组" class="headerlink" title="GT的接口信号组"></a>GT的接口信号组</h2><p>这些信号已经在实验室电脑上分组，用的时候再查。</p>
+<p>先肯定主要关注数据通路</p>
+<h3 id="DRP"><a href="#DRP" class="headerlink" title="DRP"></a>DRP</h3><ul>
+<li>涉及到对gt common 和gt 本身的动态配置</li>
+</ul>
+<h3 id="bufgt-xxx-信号"><a href="#bufgt-xxx-信号" class="headerlink" title="bufgt xxx 信号"></a>bufgt xxx 信号</h3><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/renditionDownload.jpeg" alt="Can_be_safely_ignore"></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/question/0D54U00008mBSuaSAG/ultrascale-gth-undocumented-bufgtce-port-?language=en_US">https://adaptivesupport.amd.com/s/question/0D54U00008mBSuaSAG/ultrascale-gth-undocumented-bufgtce-port-?language=en_US</a></li>
+<li>可以看到这个信号被连接到pcie phy的时钟生成模块</li>
+<li>我理解的作用： gt channal初始化好了，才会指示用户时钟生成</li>
+</ul>
+<h3 id="QPLL"><a href="#QPLL" class="headerlink" title="QPLL"></a>QPLL</h3><ul>
+<li>参考手册</li>
+</ul>
+<h3 id="CPLL"><a href="#CPLL" class="headerlink" title="CPLL"></a>CPLL</h3><ul>
+<li>同样参考手册</li>
+</ul>
+<h3 id="串行数据线"><a href="#串行数据线" class="headerlink" title="串行数据线"></a>串行数据线</h3><ul>
+<li>注意约束到对应的FPGA管脚</li>
+</ul>
+<h3 id="gtwiz"><a href="#gtwiz" class="headerlink" title="gtwiz"></a>gtwiz</h3><h4 id="cpll校准"><a href="#cpll校准" class="headerlink" title="cpll校准"></a>cpll校准</h4><ul>
+<li>用于速率切换：<a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/article/70485">https://adaptivesupport.amd.com/s/article/70485</a></li>
+<li>但是实际设计中，这些值被写死或者近似写死</li>
+</ul>
+<h2 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h2><h3 id="时钟相关"><a href="#时钟相关" class="headerlink" title="时钟相关"></a>时钟相关</h3><ul>
+<li><strong>PLL（Phase-Locked Loop，锁相环）</strong> 是一种用于生成和管理时钟信号的电路模块。它是 FPGA 时钟管理的核心组件之一，通过提供可编程的频率、相位和占空比，满足系统的各种时钟需求。</li>
+<li>QPLL：Quad-based LC tank PLL， QPLL 是一个共享型的锁相环，位于 <strong>GTH&#x2F;GTY 收发器的 Quad 模块</strong> 中；它为同一个 Quad 中的所有通道（最多 4 个收发器通道）提供时钟信号；设计目标是支持较高的频率范围，适合需要高速串行数据的应用场景。</li>
+<li>CPLL：Channel-based ring oscillator PLL， CPLL 是独立型的锁相环，位于 <strong>每个收发器通道（Channel）内部</strong>；每个通道都有自己的专用 CPLL，用于生成其所需的时钟信号；设计目标是支持较低频率范围，适合中低速应用</li>
+</ul>
+<h3 id="高速收发器相关"><a href="#高速收发器相关" class="headerlink" title="高速收发器相关"></a>高速收发器相关</h3><ul>
+<li>GTXE2_CHANNEL&#x2F;GTH2_CHANNEL是例化了1个GTX&#x2F;GTH Transceiver 通道的原语名</li>
+<li>GTXE2_COMMON&#x2F;GTHE2_COMMON是例化了1个QPLL的原语名</li>
+<li><strong>GT Quad</strong>是由4个GT Transceiver通道，1个QPLL，2个差分输入时钟对，1个模拟输入引脚组成的集合<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732093269922-3.webp" alt="Image"></li>
+</ul>
+<h3 id="GT结构-组件相关"><a href="#GT结构-组件相关" class="headerlink" title="GT结构&#x2F;组件相关"></a>GT结构&#x2F;组件相关</h3><ul>
+<li><strong>PRBS</strong>（<strong>Pseudo-Random Binary Sequence</strong>，伪随机二进制序列）是一种在数字通信和高速信号链路测试中广泛使用的信号序列。它具有随机性和确定性的特点，是通过特定的算法生成的一种二进制序列。</li>
+<li>多lane的主从结构<ul>
+<li>initial master lane: 负责生成和分发同步信号（如 TXOUTCLK 或 TXUSRCLK），协调其他从属 Lane 的操作</li>
+<li>maintenance master lane:</li>
+<li>在某些多通道通信协议中，维护主 Lane 用于特定的协议维护任务，例如在链路训练期间管理 Lane 的训练状态或在运行过程中负责纠错操作;该模式通常用于高级的协议操作，而不直接参与普通的数据发送。</li>
+<li>slave lane:当前 Lane 是一个从属 Lane（Slave），跟随主 Lane 的控制信号进行同步操作;单lane链路默认是从lane</li>
+</ul>
+</li>
+<li>不同频率跨时钟域<ul>
+<li>使用异步fifo</li>
+<li>插入类似SKP有序集的东西，这些数据没有实际意义因此能被添加或者删除，以此防止fifo的上溢出和下溢出</li>
+</ul>
+</li>
+</ul>
+<h2 id="GT总体结构（以GTX为例）"><a href="#GT总体结构（以GTX为例）" class="headerlink" title="GT总体结构（以GTX为例）"></a>GT总体结构（以GTX为例）</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640.png" alt="Image"></p>
+<ul>
+<li>GT channal<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229234556398.png" alt="image-20241229234556398"><br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229234644004.png" alt="image-20241229234644004"><ul>
+<li>PCS：（Physical Coding Sublayer, 物理编码子层）<ul>
+<li>数据流</li>
+<li>负责数据编码解码，数据对齐，PCS状态机（链路建立，训练，数据恢复），流控</li>
+</ul>
+</li>
+<li>PMA：（Physical Medium Attachment, 物理介质附着层）<ul>
+<li>负责串转并，时钟恢复，信号调理，高速IO</li>
+</ul>
+</li>
+<li>时钟来源：要么是CPLL要么是QPLL，经过分频提供给PCS和PMA<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732093937212-9.webp" alt="Image"></li>
+</ul>
+</li>
+</ul>
+<h2 id="GT的时钟结构"><a href="#GT的时钟结构" class="headerlink" title="GT的时钟结构"></a>GT的时钟结构</h2><ul>
+<li>每个quad有一个QPLL，4个transceiver（channel）各自都有一个CPLL，一共4个<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159142805-12.webp" alt="Image"></li>
+<li>输入时钟共6个：2个输入差分时钟；2个南quad输入时钟；2个北quad输入时钟</li>
+<li>QPLL时钟选择<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159164298-15.webp" alt="Image"><br>其中GTGREFCLK是内部用的测试时钟</li>
+<li>CPLL时钟选择<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159205806-18.webp" alt="Image"></li>
+<li>一个channal可选的时钟来源，以及时钟架构<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159240645-21.webp" alt="Image"><br>注意差分参考时钟输入需要例化IBUFDS_GTE2原语才能使用这些专用的参考时钟引脚对。</li>
+<li>参考时钟如何输入到GT quad？<ul>
+<li>一个外部差分参考时钟驱动一个quad的多个transciever<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194105482-27.webp" alt="Image"></li>
+<li>用户设计将 IBUFDS_GTE2的输出O连接到GTH transceiver的 GTHE2_COMMON 和 GTHE2_CHANNEL 原语。</li>
+</ul>
+</li>
+<li>一个外部差分参考时钟驱动多个quad的多个transciever<ul>
+<li>连接方式一样</li>
+<li>限制<ul>
+<li>源QUAD上方的QUAD数量不能超过1个；</li>
+<li>源QUAD下方的QUAD数量不能超过1个；</li>
+<li>1个外部参考时钟所驱动的QUAD总数不超过3个，或驱动的Transceiver不超过12个。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一个quad中多个transceiver使用多个参考时钟<ul>
+<li>相当于MGTREFCLK1也被启用了</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194084956-24.webp" alt="Image"></li>
+<li>用户设计需要根据设计需求设置 QPLLREFCLKSEL[2:0]和CPLLREFCLKSEL[2:0]</li>
+</ul>
+</li>
+<li>不同QUAD中，多个GTX Transceiver 使用多个参考时钟<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194252355-30.webp" alt="Image"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="CPLL的工作原理"><a href="#CPLL的工作原理" class="headerlink" title="CPLL的工作原理"></a>CPLL的工作原理</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194329379-33.webp" alt="Image"></p>
+<ul>
+<li>RX和TX可以选用不同的时钟</li>
+<li>PMA是串行，PCS是并行</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732194682168-36.webp" alt="Image">             </p>
+<p>当 GT 内部或外部的 PLL（如 CPLL 或 QPLL）锁定到参考时钟的目标频率和相位时，<code>PLL_LOCK</code> 信号会被拉高（变为逻辑 1），表示 PLL 已进入稳定状态，能够生成可靠的时钟信号。</p>
+<ul>
+<li>CPLL输出时钟频率计算公式<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241121211337342.png" alt="image-20241121211337342"></li>
+<li><strong>一些协议被显示为单速率配置和多速率配置两次。在单速率配置中，只需要一个线速，参考时钟为该特定线速进行了优化。在多速率配置中，为最高的线路速率选择参考时钟，并选择适当的分频器来支持较低的线路速率</strong></li>
+<li><strong>为什么乘以2，是因为QPLL输出的上升沿以及下降沿都用来产生要求的线速率。</strong></li>
+</ul>
+<h2 id="QPLL的工作原理"><a href="#QPLL的工作原理" class="headerlink" title="QPLL的工作原理"></a>QPLL的工作原理</h2><ul>
+<li><p>当以高于CPLL操作范围的线速率操作通道时，需要使用 QPLL。</p>
+</li>
+<li><p>QPLL结构</p>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732343560989-42.webp" alt="Image"><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732343551945-39.webp" alt="Image"></p>
+</li>
+<li><p>QPLL速率的计算</p>
+<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241123143213296.png" alt="image-20241123143213296"></li>
+<li><strong>为什么乘以2，是因为QPLL输出的上升沿以及下降沿都用来产生要求的线速率。</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="TXUSERCLK和TXUSERCLK2"><a href="#TXUSERCLK和TXUSERCLK2" class="headerlink" title="TXUSERCLK和TXUSERCLK2"></a>TXUSERCLK和TXUSERCLK2</h2><ul>
+<li><p>回忆：TXOUTCLK的来源根据手册里了可以有多种选择：例如TXSYSCLKSEL[1:0] ：Selects the PLL reference clock source to drive the TXOUTCLK : 00 &#x3D; CPLL 10 &#x3D; QPLL0 11 &#x3D; QPLL1(是的，可以存在多个QPLL)<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732159240645-21.webp" alt="Image"></p>
+</li>
+<li><p>TXUSERCLK是transceiver内部PCS（并行逻辑）的时钟</p>
+<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732345770009-45.webp" alt="Image"></li>
+<li>内部数据位宽有2B和4B两种，TX_INT_DATAWIDTH为0或为1</li>
+</ul>
+</li>
+<li><p>TXUSERCLK2是transceiver对FPGA TX端接口的时钟，进入GTX&#x2F;GTH Transceiver TX端的大多数信号都是在TXUSRCLK2的正沿上采样的</p>
+</li>
+<li><p>二者频率关系<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241123151015862.png" alt="image-20241123151015862"></p>
+</li>
+<li><p>TXOUTCLK在2字节或4字节模式下驱动GTX&#x2F;GTH收发器TX</p>
+<p>TXOUTCLK用于驱动单通道配置中的2字节模式（TX_DATA_WIDTH&#x3D;16或20，TX_INT_DATWIDTH&#x3D;0）或4字节模式（TX_DATA_WIDTH&#x3D;32或40，TX_INT_DATWIDTH&#x3D;1）的TXUSRCLK和TXUSRCK2<img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732364198405-48.webp" alt="Image"><br>多个lane情况下也可以这样连接</p>
+</li>
+<li><p>TXOUTCLK 在 4 字节或 8 字节模式下驱动 GTX&#x2F;GTH 收发器 TX</p>
+<p>TXOUTCLK用于驱动TXUSRCLK2的4字节模式（TX_DATA_WIDTH &#x3D; 32或40，TX_INT_DATWIDTH &#x3D; 0）或8字节模式（TX_DATA_WIDTH &#x3D; 64或80，TX_INT_DATWIDTH &#x3D; 1）<img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732364251683-51.webp" alt="Image"><br>TXUSRCLK2的频率都等于TXUSRCLK频率的一半</p>
+</li>
+<li><p>二者其他关系</p>
+<ul>
+<li>TXUSRCLK和TXUSRCLK2必须是正边对齐的，它们之间的偏移尽可能小。因此，低偏移的时钟资源（BUFG、BUFH、和 BUFR）应被用来驱动TXUSRCLK和TXUSRCLK2。</li>
+<li>即使它们可能以不同的频率运行，TXUSRCLK、TXUSRCLK2和 Transmitter参考时钟必须有相同的振荡器作为其来源。因此 TXUSRCLK和TXUSRCLK2必须是发射器参考时钟的倍频或分频版本。</li>
+</ul>
+</li>
+</ul>
+<h2 id="TXOUTCLK"><a href="#TXOUTCLK" class="headerlink" title="TXOUTCLK"></a>TXOUTCLK</h2><ul>
+<li>GTX的</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732365925196-54.webp" alt="Image"></p>
+<ul>
+<li>GTH，在TX Fabric Clock Output Control节中</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241128132323437.png" alt="image-20241128132323437"></p>
+<ul>
+<li><p>说明</p>
+<ul>
+<li>Each transmitter PMA module has a D divider that divides down the clock from the PLL for lower line rate support. This serial clock divider, D, can be set statically for applications with a fixed line rate or it can be changed dynamically for protocols with multiple line rates.</li>
+</ul>
+</li>
+<li><p>TXOUTCLK的具体来源</p>
+<ul>
+<li><p>1.TXOUTCLKSEL&#x3D;3’b001:不建议使用TXOUTCLKPCS路径，因为它产生了来自PCS块的额外延迟。</p>
+</li>
+<li><p>.TXOUTCLKSEL &#x3D; 3’b010.TXOUTCLKPMA是TX相位插值器之后的分频PLL时钟，由TXPCS块使用。当PLL被一个相关的复位信号复位时，这个时钟被中断。</p>
+</li>
+<li><p>TXOUTCLKSEL &#x3D; 3’b011 或 3’b100:TXPLLREFCLK DIV1 或TXPLLREFCLK DIV2 是CPLL 或 QPLL 的输入参考时钟，取决于 TXSYSCLKSEL[1]的设置。TXPLLREFCLK是一般使用的推荐时钟，在TX缓冲器旁路模式下需要。</p>
+</li>
+<li><p>TXOUTCLK是推荐给FPGA逻辑的时钟输出。也可以把MGTREFCLK直接带到FPGA逻辑中，作为逻辑时钟使用。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="时钟输出控制模块"><a href="#时钟输出控制模块" class="headerlink" title="时钟输出控制模块"></a>时钟输出控制模块</h3><ul>
+<li>另外，通常FPGA逻辑会使用TXOURTCLK及其的分频版本作为TX&#x2F;RXuserclk（2）,以及pipe接口的时钟</li>
+<li>上图中REFCLK_CTRL选项由软件自动控制，用户不能选择。用户只能将IBUFDS_GTE2的O或ODIV2输出中的一个通过CMT（PLL、MMCM或BUFMRCE）、BUFH或BUFG布线到FPGA逻辑。</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230065920898.png" alt="image-20241230065920898"></p>
+<h2 id="TX-8b10b-编码器"><a href="#TX-8b10b-编码器" class="headerlink" title="TX 8b10b 编码器"></a>TX 8b10b 编码器</h2><ul>
+<li>编码器启用：<ul>
+<li>TX8b10ben置位</li>
+<li>TX_DATA_WIDTH&#x3D;20&#x2F;40&#x2F;80</li>
+<li>TXCHARISK[7:0] ，当高电平时，表示TXDATA上对应的数据字节是一个有效的K字符。</li>
+</ul>
+</li>
+<li>编码器绕过：（可以逐个字节绕过）<ul>
+<li>当TX8B10BEN为高电平时，将TX8B10BBYPASS的一个位驱动为高电平可以使来自TXDATA的相应字节通道绕过8B&#x2F;10B编码</li>
+<li>TX_DATA_WIDTH&#x3D;20&#x2F;40&#x2F;80</li>
+<li>第8位是TXCHARDISPVAL</li>
+<li>第9位是TXCHARDISPMODE</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640.webp" alt="Image"></li>
+<li>可以针对每个字节选择直流平衡模式</li>
+</ul>
+</li>
+<li>编码器关闭：（可以逐个字节关闭）<ul>
+<li>当TX8B10BEN被驱动为低电平时，所有编码器被关闭，不能对TXDATA的数据进行编码。</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX128-130b编码器"><a href="#TX128-130b编码器" class="headerlink" title="TX128&#x2F;130b编码器"></a>TX128&#x2F;130b编码器</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241229233107460.png" alt="image-20241229233107460"></p>
+<p>Versal ACAP GTY and GTYP Transceivers Architecture Manual（已加入zotero书架）</p>
+<p>里面有简单的tx&#x2F;rx 128&#x2F;130b 编解码器的说明（比如txctrl的位是干嘛的）</p>
+<h2 id="TX-同步-gearbox"><a href="#TX-同步-gearbox" class="headerlink" title="TX 同步 gearbox"></a>TX 同步 gearbox</h2><ul>
+<li>PHY_IP里不使用gearbox，也就是说要么8b10b要么128b&#x2F;130b</li>
+<li>支持和不支持的功能<ul>
+<li>进行64b&#x2F;66b编码</li>
+<li>不进行加扰，需要用户逻辑进行，也就是说直流平衡是不保证的</li>
+</ul>
+</li>
+<li>使用<ul>
+<li>考虑到同步头的传输开销，需要精确地经过若干个周期停止传一拍数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX异步-gearbox"><a href="#TX异步-gearbox" class="headerlink" title="TX异步 gearbox"></a>TX异步 gearbox</h2><ul>
+<li>区别？<ul>
+<li>不需要断开数据传输，每个TXUSERCLK都传数据，但有的包含同步头有的不包含</li>
+</ul>
+</li>
+<li>要求<ul>
+<li>使用这个的时候必须启用TX buffer实现不同频率和相位时钟域的转换</li>
+<li>TXOUTCLKSEL must be set to 3’b101 and an appropriate divide value must be selected to create the required clock frequency for TXUSRCLK and TXUSRCLK2.</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-buffer"><a href="#TX-buffer" class="headerlink" title="TX buffer"></a>TX buffer</h2><ul>
+<li>功能<ul>
+<li>GT TX接口和TXPMA并行时钟同频率但不同相位，这里做了跨时钟域处理</li>
+</ul>
+</li>
+<li>要求<ul>
+<li>什么时候复位：Reset the TX buffer whenever CH*_TXBUFSTATUS indicates an overflow or underflow condition.</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-Buffer-Bypass"><a href="#TX-Buffer-Bypass" class="headerlink" title="TX Buffer Bypass"></a>TX Buffer Bypass</h2><ul>
+<li>功能<ul>
+<li>使用相位对齐电路来做GT TX接口和TXPMA并行时钟的跨时钟域处理</li>
+<li>也调整TXUSERCLK来对齐延迟（因为一些环境因素导致的）</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>减少发送端lane之间偏差：The TX phase-alignment circuit can be used to reduce the lane skew between separate GTY transceivers. All GTY transceivers involved must use the same line rate.</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>Sensitive to TXUSRCLK jitter.</li>
+</ul>
+</li>
+<li>要求<ul>
+<li>对GTH时钟：TXOUTCLKSEL must select the GTH transceiver reference clock as the source of TXOUTCLK to drive TXUSRCLK.</li>
+<li><strong>GT QUAD位置</strong>：In stacked silicon interconnect (SSI) technology devices, multi-lane TX buffer bypass crossing SLR boundaries is supported when TX_INT_DATAWIDTH &#x3D; TX_DATA_WIDTH.<ul>
+<li>两个gt quad不一定跨越了slr边界</li>
+<li>gen1&#x2F;2下两个数据位宽不等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用模型（只考虑多lane auto mode）<ul>
+<li>信号条件<ul>
+<li>TXPHALIGNEN&#x3D;0使用auto mode</li>
+<li>TXBUF_EN &#x3D; FALSE.</li>
+<li>TX_XCLK_SEL&#x3D;TXUSR</li>
+<li>TXOUTCLKSEL&#x3D;3’b011 or 3’b100 or 3’b101 to select the GTH transceiver reference clock as the source of TXOUTCLK.</li>
+<li>对于多个lane：TXSYNC_MULTILANE&#x3D;1；TXSYNC_OVRD&#x3D;0</li>
+<li>图片表示连线方式（包括手册中说明是保留值的连接方式）<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230060505748.png" alt="image-20241230060505748"></li>
+</ul>
+</li>
+<li>工作条件（在此之后才能工作）<ul>
+<li>Resetting or powering up the GTH transmitter. </li>
+<li>Resetting or powering up the PLL. </li>
+<li>Change of the GTH transceiver reference clock source or frequency. </li>
+<li>Change of the TX line rate.</li>
+</ul>
+</li>
+<li>工作波形（在复位或者速率切换后）<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230060900159.png" alt="image-20241230060900159"><ul>
+<li>先置位TXDLYSRESET</li>
+<li>Wait until TXDLYSRESETDONE is High.</li>
+<li>When TXSYNCDONE of the master lane is asserted, the alignment procedure is completed. This signal remains asserted until the alignment procedure is re-initiated</li>
+<li>Upon the assertion of TXSYNCDONE of the master lane, TXPHALIGNDONE of the master lane indicates whether alignment is achieved and maintained.</li>
+<li>TX delay alignment continues to adjust TXUSRCLK to compensate for temperature and voltage variations.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>TXUSRCLK and RXUSRCLK Sharing<ul>
+<li>手册说，GTH里达成这个条件需要both TX and RX buffer bypass<ul>
+<li><strong>phy ip似乎并没有 bypass rx buffer</strong>，也有可能是做了DRP？</li>
+</ul>
+</li>
+<li>条件：<ul>
+<li>Global master: In a multi-lane application using both TX and RX buffer bypass, the buffer bypass master is the lane that is the source of TXOUTCLK.</li>
+<li>Slave: These are all the lanes that share the same TXUSRCLK&#x2F;TXUSRCLK2&#x2F;RXUSRCLK&#x2F; RXUSRCLK2, which is generated from the TXOUTCLK of the buffer bypass master. <strong>All slave lanes must skip delay alignment. The RX master channel should also set RXSYNC_SKIP_DA &#x3D; 1’b1 to operate as a slave and skip delay alignment.</strong><ul>
+<li>通过DRP进行了配置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>要求<ul>
+<li>这种情况必须使用tx buffer bypass auto mode</li>
+<li>TX phase alignment needs to complete before starting the RX phase alignment.</li>
+<li>Only the TX global master channel can perform the delay alignment.</li>
+<li>All slave TX and RX channels must operate as slaves and skip delay alignment in auto mode.</li>
+<li>The RX master channel also needs to set RXSYNC_SKIP_DA &#x3D; 1’b1 to operate as a slave and skip delay alignment.</li>
+<li><strong>The above mode is supported when TX and RX are synchronous.</strong></li>
+</ul>
+</li>
+<li>参考<ul>
+<li><a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/question/0D54U00005wSh4YSAS/txusrclk-and-rxusrclk-sharing-using-both-tx-and-rx-buffer-bypass-in-multilane-auto-mode?language=en_US">https://adaptivesupport.amd.com/s/question/0D54U00005wSh4YSAS/txusrclk-and-rxusrclk-sharing-using-both-tx-and-rx-buffer-bypass-in-multilane-auto-mode?language=en_US</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-Pattern-Generator功能块"><a href="#TX-Pattern-Generator功能块" class="headerlink" title="TX Pattern Generator功能块"></a>TX Pattern Generator功能块</h2><ul>
+<li>模式生成和检查（check）功能通常用于验证链路质量测试，也用于抖动容限测试。对于链路质量测试，通过将TXPRBSSEL和RXPRBSSEL设置为非000值来选择测试模式，并将RXPRBS_ERR_LOOPBACK设置为0。只有PRBS模式能被RX模式检查器识别。</li>
+</ul>
+<h2 id="TX-polarty"><a href="#TX-polarty" class="headerlink" title="TX polarty"></a>TX polarty</h2><p>如果TXP和TXN的差分线在PCB上被意外调换，GTX&#x2F;GTH收发器TX传输的差分数据就会反转。</p>
+<p>一个解决方案是在串行化和传输之前将并行数据反转，以抵消差分对上的反转极性。TX极性控制可以通过结构用户界面的TXPOLARITY输入访问。它被驱动为高电平，以反转输出数据的极性。</p>
+<h2 id="TX-Phase-Interpolator-PPM-Controller"><a href="#TX-Phase-Interpolator-PPM-Controller" class="headerlink" title="TX Phase Interpolator PPM Controller"></a>TX Phase Interpolator PPM Controller</h2><ul>
+<li>在PCS中的一个模块，通过其间接控制 PMA的相位插值器，进而控制PLL的输出时钟</li>
+<li>看图，最终控制的是串行输出数据时钟？</li>
+<li>用户使用模型<ul>
+<li>连续PI code 更新模型<ul>
+<li>情景：两个时钟之间有一个固定的小偏移（主要是频率偏移，相位偏移是频率偏移引起的）</li>
+<li>可以通过设置相关信号的值来达到时钟偏移</li>
+</ul>
+</li>
+<li>PI code 步进模型<ul>
+<li>情景：使得TX输出和参考时钟有固定的相位关系</li>
+<li>每次移动一步，信号具有严格的时序关系（参看手册）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-Configurable-Driver"><a href="#TX-Configurable-Driver" class="headerlink" title="TX Configurable Driver"></a>TX Configurable Driver</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230102710058.png" alt="image-20241230102710058"></p>
+<p>注意这里的串行时钟频率是线速率&#x2F;2</p>
+<ul>
+<li>为了具有信号完整性，有以下特征<ul>
+<li>差分电压控制</li>
+<li>Pre-cursor and post-cursor transmit pre-emphasis<ul>
+<li>预加重：预加重是一种用于抵消信道损耗（尤其是在较高频率下）引起的信号衰减的技术。<ul>
+<li>前光标预加重：这涉及调整主数据位之前的信号电平。通过修改前一位的幅度，它有助于减轻由于前几位的影响而可能影响当前位的符号间干扰 (ISI)。此调整在补偿导致较早符号干扰当前符号的信道效应方面特别有用。</li>
+<li>后光标预加重：这涉及调整主数据位之后的信号电平。通过修改后续位的幅度，它解决了由于后续位的影响而可能影响当前位的 ISI。此调整有助于补偿信道效应，即后续符号会干扰当前符号。</li>
+<li>微调发射器FIR滤波器抽头系数，发射器可以预失真信号以抵消传输信道的预期失真，从而有效地平坦频率响应并降低 ISI。此过程增强了接收器端的信号完整性，从而实现更可靠的数据传输。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>校准终端电阻</li>
+</ul>
+</li>
+<li>名词解释<ul>
+<li>swing：发送端（TX）差分信号的电压摆幅，即信号的峰峰值电压</li>
+<li>预加重和去加重的区别：预加重通过增加差分信号的摆幅来补偿高频损耗，而去加重则通过降低差分信号的摆幅来实现。</li>
+<li>margin：此功能通过测量接收器端的信号眼宽（时间）和高度（电压）来评估可用的裕度，从而深入了解系统对工艺、电压、温度和其他因素变化的容忍度。</li>
+</ul>
+</li>
+<li>不懂的信号解释：<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230103856223.png" alt="image-20241230103856223"></li>
+<li>TXELECIDLE：强制差分信号共模</li>
+<li>其他是一些控制信号</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-Receiver-Detect-Support-for-PCI-Express-Designs"><a href="#TX-Receiver-Detect-Support-for-PCI-Express-Designs" class="headerlink" title="TX Receiver Detect Support for PCI Express Designs"></a>TX Receiver Detect Support for PCI Express Designs</h2><ul>
+<li>GT中专门有一个电路做了接收器检测<ul>
+<li>接收器检测序列从 TXDETECTRX 置位开始。作为响应，接收器检测逻辑将 TXN 和 TXP 驱动至 (VDD - VSWING&#x2F;2)，然后释放它们。经过预定义的时间间隔后，TXN 和 TXP 的电平与阈值电压进行比较。在序列结束时，当 PHYSTATUS 被置为高电平并持续一个周期时，接收器检测状态将显示在 RXSTATUS 上。</li>
+</ul>
+</li>
+<li>信号<ul>
+<li>TXDETECTRX:Used to tell the GTH transceiver to begin a receiver detection operation. 0: Normal operation. 1: Receiver detection.</li>
+<li>PHY_STATUS</li>
+<li>RXSTATUS：During receiver detection, this signal is read when PHYSTATUS is asserted High. Only these encodings are valid during receiver detection: 000: Receiver not present. 011: Receiver present.</li>
+</ul>
+</li>
+<li>过程<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230113144512.png" alt="image-20241230113144512"></li>
+<li>Ensure that the GTH transceiver has successfully entered the P1 power state with [TX&#x2F;RX]PD &#x3D; 2’d2 before receiver detection is performed by asserting TXDETECTRX. 2. Wait for PHYSTATUS &#x3D; 1’d1 to read RXSTATUS on the same PCLK cycle. In PCI Express mode, PCLK is [TX&#x2F;RX]USRCLK. If RXSTATUS &#x3D; 3’d3, then the receiver is present. If RXSTATUS &#x3D; 3’d0, then the receiver is not present. Deassert TXDETECTRX to exit receiver detection.</li>
+<li>phy IP支持<ul>
+<li>as_mac_in_detect：Tell the PHY to switch the Receiver Termination between VTT and GND. Set to 1 when MAC is in: • Detect.Quiet • Detect.Active Set to 0 when in other states.</li>
+<li>我的测试中不用做接收端检测，因为一定有。</li>
+</ul>
+</li>
+</ul>
+<h2 id="TX-OOB"><a href="#TX-OOB" class="headerlink" title="TX OOB"></a>TX OOB</h2><ul>
+<li>这个模块可以向链路伙伴发送pcie 规范规定的信标信号<ul>
+<li><strong>Beacon</strong> 是一种以特定模式发送的电信号，用于在 PCIe 链路处于低功耗状态（如 L2 或 L3）时实现设备间的通信。</li>
+<li>它是一种 <strong>低频模式</strong> 信号，包含一系列的电压波形或电平变化，通常在差分信号对上生成。</li>
+<li>链路退出低功耗状态时，设备发送beacon信号通知链路伙伴恢复正常工作</li>
+<li>GTH 的 TX OOB 模块可以按照 PCIe 规范生成和发送符合标准的 Beacon 信号。</li>
+</ul>
+</li>
+<li>和pcie有关的：<ul>
+<li>TXPDELECIDLEMODE：Determines if TXELECIDLE and TXPD should be treated as synchronous or asynchronous signals. 1: Asynchronous 0: Synchronous</li>
+<li>TXPD[1:0]：Powers down the TX lane according to the PCI Express encoding.</li>
+<li>TX_IDLE_DATA_ZERO：When enabled, data sent to the PMA is all zeros during electrical idle. Use the recommended value from the Wizard.</li>
+</ul>
+</li>
+</ul>
+<h2 id="RXUSERCLK和RXUSERCLK2"><a href="#RXUSERCLK和RXUSERCLK2" class="headerlink" title="RXUSERCLK和RXUSERCLK2"></a>RXUSERCLK和RXUSERCLK2</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631404228-58.webp" alt="Image"></p>
+<ul>
+<li>RXUSRCLK是GTX&#x2F;GTH发射器中PCS逻辑的内部时钟</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631578404-61.webp" alt="Image"></p>
+<ul>
+<li>RXUSRCLK2是进入GTX&#x2F;GTH收发器RX侧的所有信号的主要同步时钟<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1732631637166-64.webp" alt="Image"></li>
+<li>和TXUSERCLK很像</li>
+<li>如果通道被配置成由同一个振荡器驱动发射器和接收器的参考时钟，TXOUTCLK可以用来驱动RXUSRCLK和RXUSRCLK2，其方式与驱动TXUSRCLK和TXUSRCLK2相同。当时钟校正被关闭或RX缓冲器被旁路时，必须使用RX相位校准来校准串行时钟和并行时钟。</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241126225200511.png" alt="image-20241126225200511"><br>这些不太懂，但是感觉也用不到。目前是使用同一个时钟源来驱动TXUSERCLK和RXUSERCLK的</li>
+</ul>
+<h2 id="RXOUTCLK的来源"><a href="#RXOUTCLK的来源" class="headerlink" title="RXOUTCLK的来源"></a>RXOUTCLK的来源</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231194707592.png" alt="image-20241231194707592"></p>
+<ul>
+<li>RXOUTCLKSEL &#x3D; 3’b001：不建议使用RXOUTCLKPCS路径，因为它产生了来自PCS块的额外延迟。</li>
+<li>RXOUTCLKSEL &#x3D; 3’b010。RXOUTCLKPMA是可以引出FPGA逻辑的恢复时钟。恢复的时钟被那些没有时钟补偿机制的协议使用，需要使用与数据同步的时钟（恢复的时钟），为下游结构逻辑提供时钟。它也被RX PCS块使用。当PLL或CDR被一个相关的复位信号复位时，这个时钟会被中断。</li>
+<li>RXOUTCLKSEL &#x3D; 3’b011或3’b100。RXPLLREFCLK_DIV1或RXPLLREFCLK_DIV2是CPLL或QPLL的输入参考时钟，取决于RXSYSCLKSEL[1]的设置。对于不需要向结构输出恢复时钟的使用，RXPLLREFCLK_DIV1或RXPLLREFCLK_DIV2可以作为系统时钟使用。然而，TXOUTCLK通常被用作系统时钟。lk</li>
+<li>还有一个RXRECCLKOUT，这个是一个channal的恢复时钟，GT输出的<img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241128125949317.png" alt="image-20241128125949317"></li>
+</ul>
+<h2 id="RX模拟前端"><a href="#RX模拟前端" class="headerlink" title="RX模拟前端"></a>RX模拟前端</h2><ul>
+<li>包含一些可以编程控制的接收端电压，感觉是高级应用</li>
+<li>用户模型：对应几种RX电路的连接方式和电压参数设置</li>
+</ul>
+<h2 id="RX-OOB"><a href="#RX-OOB" class="headerlink" title="RX OOB"></a>RX OOB</h2><ul>
+<li><p>该功能<strong>没有关闭</strong>，至少在gty打开的</p>
+</li>
+<li><p>RX OOB block可以接收pcie beacon序列，但是对nbeacon序列的解码是用户逻辑做的</p>
+<ul>
+<li>OOB信号涵盖了TX PMA发出的OOB信号，为什么后文和TX IF收到的链路训练相关有序集扯上关系？</li>
+<li>RX OOB 模块不直接处理 EIEOS 有序集。相反，它会检测从电气空闲状态到活动状态的转换，这可能涉及识别信号电平或指示此类转换的模式的变化。一旦链路退出电气空闲状态，常规数据路径逻辑就会接管解码和处理 EIEOS 等有序集。</li>
+<li>后文中也说到了，RX是否处于电气空闲是RXELECIDLE和EIEOS序列共同决定的</li>
+</ul>
+</li>
+<li><p>重要信号&#x2F;时钟关系<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230100646740.png" alt="image-20241230100646740"></p>
+<ul>
+<li>RXELECIDLEMODE[1:0]：2’b00 &#x3D; RXELECIDLE indicates the status of the OOB signal detection circuit. Use this setting for PCIe, SATA&#x2F;SAS, and protocols&#x2F;applications using OOB. In these cases, the OOB circuit must be powered on.</li>
+<li>RXELECIDLE：接收方有没有收到发送方的活动？<ul>
+<li>The maximum line rate supported to use RXELECIDLE <strong>alone for data detection</strong> is 2.5 Gb&#x2F;s.</li>
+</ul>
+</li>
+<li>RXSYSCLKSEL：Selects the reference clock source for the RX: 2’b00 selects CPLLREFCLK 2’b10 selects QPLLREFCLK0 2’b11 selects QPLLREFCLK1</li>
+<li>OOB_PWRUP</li>
+<li>OOBDIVCTL[1:0]：Controls the division of the OOB clk: 11 &#x3D; 8 10 &#x3D; 4 01 &#x3D; 2 00 &#x3D; 1 (no change)</li>
+<li>RXOOB_CLK_CFG：PMA &#x3D; Selects sysclk. FABRIC &#x3D; Selects port sigvalidclk.</li>
+</ul>
+</li>
+<li><p>OOB和推断电气空闲</p>
+<ul>
+<li>pcie gen1&#x2F;2<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230100959552.png" alt="image-20241230100959552"></li>
+<li>pcie gen3&#x2F;4</li>
+<li>进入电气空闲<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230101033889.png" alt="image-20241230101033889"></li>
+<li>退出电气空闲<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230101101187.png" alt="image-20241230101101187"></li>
+</ul>
+</li>
+</ul>
+<h2 id="RX-均衡器"><a href="#RX-均衡器" class="headerlink" title="RX 均衡器"></a>RX 均衡器</h2><ul>
+<li>目的：因为链路传输过程种会存在衰减和失真，接收端需要对信号进行增强滤波</li>
+<li>LPM（low power mode）：LPM 使用连续时间线性均衡器（CTLE）来补偿信道损耗。CTLE 是一种线性滤波器，通过衰减低频信号分量并放大高频分量，抵消信道的低通特性。LPM 的功耗较低，适用于信道损耗较小的短距离传输场景。一般而言，当信道损耗小于 12 dB 时，建议使用 LPM 模式。<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230201751230.png" alt="image-20241230201751230"></li>
+<li>DFE（Decision Feedback Equalizer）：DFE 是一种非线性均衡器，能够更有效地补偿高损耗信道中的码间干扰（ISI）。它通过利用已判决的比特信息，反馈并抵消前一个比特对当前比特的影响，从而提高信号质量。DFE 模式适用于信道损耗较大的中长距离传输场景，特别是在奈奎斯特频率下信道损耗超过 8 dB 的情况下。<ul>
+<li>DFE只会补偿post cursor，不补偿pre cursor</li>
+<li>A linear equalizer allows pre-cursor and post-cursor gain.<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230202219735.png" alt="image-20241230202219735"></li>
+</ul>
+</li>
+<li>信号<ul>
+<li>RXLPMEN：gen1&#x2F;2是LPM，gen3&#x2F;4是DFE</li>
+<li>RXDFELPMRESET：切换模式后需要复位<ul>
+<li>RX_DFE_LPM_HOLD_DURING_EIDLE：1’b0: Default setting. 1’b1: Restores the DFE contents from internal registers after termination of an electrical idle state for PCI Express operation. Holds the DFE circuit in reset when an electrical idle condition is detected. Note: For channels with large attenuation (lossy channels typically exceeding 15 dB at Nyquist), Xilinx recommends setting RX_DFE_LPM_HOLD_DURING_EIDLE to 1’b0 because fast transitioning data patterns like the 101010 sequence in CJPAT&#x2F;CJTPAT can accidentally trigger an electrical idle.</li>
+<li>phy ip取0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RX裕度分析"><a href="#RX裕度分析" class="headerlink" title="RX裕度分析"></a>RX裕度分析</h2><ul>
+<li>眼图是什么：<a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/282342">https://bbs.huaweicloud.com/blogs/282342</a></li>
+<li>测量均衡后接收器眼图裕度的机制，确定均衡设置的效果</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231200258404.png" alt="image-20241231200258404"><ul>
+<li>水平采样位置：时机；垂直采样位置：决定电平大小</li>
+<li>中间的哪个是最佳采样点；设置不同的偏移采样点；做多次测试判断各个偏移采样点的误码率（和中间采样点的不一致判定为错误）</li>
+</ul>
+</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231201906732.png" alt="image-20241231201906732"><ul>
+<li>均衡后的模拟信号分别被数据采样和偏移采样<ul>
+<li>对于DFE均衡，要采样两次</li>
+</ul>
+</li>
+<li>图中说明了偏移采样时的水平&#x2F;垂直偏移是怎么被添加的</li>
+<li>RDARA是数据采样，SDATA是偏移采样<ul>
+<li>The 40-bit Rdata bus contains the data samples,</li>
+<li>and each bit of the 40-bit Sdata bus is one if and only if the corresponding data sample and offset sample are not equal.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>后续篇幅说明了比较复杂的BER计数规则，用到了很多的属性值<ul>
+<li>SDATA是80位，低40位是当前周期；高40位是前一个周期</li>
+<li>RDATA也是80位，一样的逻辑</li>
+</ul>
+</li>
+<li>采样计数器和错误计数器增加条件：<ul>
+<li>RDATA低40位和ES_QUALIFIER中的匹配，在此条件下：<ul>
+<li>RDATA和ES_QUAL_MASK按位或，结果决定计数器是否增加</li>
+<li>SDATA与 ~ES_SDATA_MASK相与，结果的低40位用来增加错误计数器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>眼图扫描状态机<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231215023155.png" alt="image-20241231215023155"><ul>
+<li>count工作模式<ul>
+<li>任一计数器饱和，进入end状态</li>
+</ul>
+</li>
+<li>armed工作模式<ul>
+<li>达到触发条件</li>
+<li>Rdata and Sdata are frozen，读出检测结果</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>用户模型<ul>
+<li>眼图&#x2F;误码率可以用来评估均衡的效果</li>
+<li>那么均衡重设参数后，我通过读取BER相关寄存器，是不是就可以评估均衡的质量了？</li>
+<li>phy ip 确实提供了drp接口</li>
+</ul>
+</li>
+</ul>
+<h2 id="RX-CDR"><a href="#RX-CDR" class="headerlink" title="RX CDR"></a>RX CDR</h2><ul>
+<li>将数据和时钟从串行数据流中恢复出来<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241230212433770.png" alt="image-20241230212433770"></li>
+<li>重要信号<ul>
+<li>rx cdr hold: 当该信号被激活时，CDR 控制环路会被冻结，即保持当前状态，不再调整相位或频率。这意味着 CDR 将停止对输入数据流的相位和频率变化进行跟踪，保持其在激活时的设定。</li>
+<li>rxrate:确定pll分频因子的系数<ul>
+<li>RXBUF_RESET_ON_RATE_CHANGE：使用这属性使得速率切换后自动复位<ul>
+<li>phy ip设置为true</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RXCDR_HOLD_DURING_EIDLE：1’b0: Default setting. 1’b1: Enables the CDR to hold its internal states during an optional reset sequence of an electrical idle state as used in PCI Express operation. Note: For channels with large attenuation (lossy channels typically exceeding 15 dB at Nyquist), Xilinx recommends setting RXCDR_HOLD_DURING_EIDLE to 1’b0 because fast transitioning data patterns like the 101010 sequence in CJPAT&#x2F;CJTPAT can accidentally trigger an electrical idle.<ul>
+<li>phy ip 设置为0</li>
+</ul>
+</li>
+<li>RXCDR_FR_RESET_ON_EIDLE：1’b0: Default setting. 1’b1: Enables automatic reset of CDR frequency during an optional reset sequence of an electrical idle state as used in PCI Express operation. Note: For channels with large attenuation (lossy channels typically exceeding 15 dB at Nyquist), Xilinx recommends setting RXCDR_FR_RESET_ON_EIDLE to 1’b0 because fast transitioning data patterns like the 101010 sequence in CJPAT&#x2F;CJTPAT can accidentally trigger an electrical idle.<ul>
+<li>phy ip设置为0</li>
+</ul>
+</li>
+<li>RXCDR_PH_RESET_ON_EIDLE：1’b0: Default setting. 1’b1: Enables automatic reset of CDR phase during an optional reset sequence of an electrical idle state as used in PCI Express operation. Note: For channels with large attenuation (lossy channels typically exceeding 15 dB at Nyquist), Xilinx recommends setting RXCDR_PH_RESET_ON_EIDLE to 1’b0 because fast transitioning data patterns like the 101010 sequence in CJPAT&#x2F;CJTPAT can accidentally trigger an electrical idle.<ul>
+<li>phy ip设置为0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>应用模型<ul>
+<li>让CDR锁定到参考时钟，set RXCDRHOLD &#x3D; 1’b1 and RXCDROVRDEN &#x3D; 1’b0.、</li>
+<li><strong>切换速率时保持CDR</strong><ul>
+<li>注意phy ip手册要求：Tell the PHY when to hold CDR. Set to 1 when MAC is in: • Recovery.Speed • L1.Entry • L1.Idle • Loopback.Speed • Loopback.Entry Set to 0 when in other states.</li>
+<li>注意在GT上电前，以及速率切换时，是需要hold cdr的。这个对应LTSSM的状态，我的测试中也需要体现；但目前不清楚这没做的后果</li>
+<li>GTH手册里讲到了切速率的时序；但是这是SATA的，对于pcie phy我不用管切速率的复位（由IP自动完成），那我就确定在切速率没完成之前一直保持CDR即可</li>
+<li>具体再深入需要看链路训练状态机</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RX-Pattern-Checker功能块"><a href="#RX-Pattern-Checker功能块" class="headerlink" title="RX Pattern Checker功能块"></a>RX Pattern Checker功能块</h2><ul>
+<li>在解码和块对齐之前检测接收数据中的PRBS pattern，用来评估通道信号完整性</li>
+</ul>
+<h2 id="PLL的复位"><a href="#PLL的复位" class="headerlink" title="PLL的复位"></a>PLL的复位</h2><ul>
+<li>CPLL&#x2F;QPLL power down （CPLLPD）无效后，即检测到参考时钟，可以开始复位</li>
+<li>输入RESET引脚，过一段时间后输出LOCK信号</li>
+</ul>
+<h2 id="GT复位总体介绍"><a href="#GT复位总体介绍" class="headerlink" title="GT复位总体介绍"></a>GT复位总体介绍</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733146562546-76.webp" alt="Image"></p>
+<h3 id="GPT说配置工作主要有些啥？"><a href="#GPT说配置工作主要有些啥？" class="headerlink" title="GPT说配置工作主要有些啥？"></a>GPT说配置工作主要有些啥？</h3><ul>
+<li><p>时钟配置：参考时钟要稳定</p>
+</li>
+<li><p>以下推测为设计时完成</p>
+<ul>
+<li>GT 属性设置：例化GT时有一些属性参数设置</li>
+<li>I&#x2F;O 引脚分配：</li>
+</ul>
+</li>
+<li><p>寄存器初始化：比如pll的分频倍频因子</p>
+</li>
+<li><p>复位序列的准备（包括pll的复位）</p>
+</li>
+<li><p>驱动RX和TX的PLL必须在复位之前锁定</p>
+</li>
+<li><p>复位RX和TX分别进行</p>
+</li>
+<li><p>TX复位必须按照顺序进行<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117621918-70.webp" alt="Image"></p>
+</li>
+<li><p>RX复位只有初始状态必须进行顺序复位，其他情况下可以单独复位部分模块<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117659678-73.webp" alt="Image"></p>
+</li>
+<li><p>GTRESETSEL选择复位方式是顺序还是选择</p>
+</li>
+</ul>
+<h2 id="TX复位"><a href="#TX复位" class="headerlink" title="TX复位"></a>TX复位</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733117621918-70-1733146805013-79.webp" alt="Image"></p>
+<ul>
+<li>什么时候开始总体复位？<ul>
+<li>配置完成后至少要等待500 ns。</li>
+<li>将复位模式改为顺序模式。</li>
+<li>再等待300-500 ns。</li>
+<li>使能C&#x2F;QPLLRESET和GTTXRESET。</li>
+<li>总体复位时序<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733151144641-81.webp" alt="Image"></li>
+<li>建议使用CPLLL或QPLL的相关PLLLOCK将GTTXRESET从高电平释放到低电平，如上图所示。TX复位状态机在检测到GTTXRESET为高电平时等待，直到GTTXRESET被释放为低电平， 启动复位序列。</li>
+</ul>
+</li>
+<li>什么时候开始PCS复位？<ul>
+<li>当使用PLL或MMCM时，应用程序使用的所有时钟，包括TXUSRCLK&#x2F;TXUSRCLK2都显示为稳定或锁定。</li>
+<li>用户接口准备好向GTX&#x2F;GTH收发器传输数据。</li>
+<li>看完这段描述想说的是：TXUSERRDY 是TX的一个输入端口，当TXUSRCLK和TXUSRCLK2稳定时，该端口由用户的应用驱动为高电平。例如，如果一个MMCM被用来产生TXUSRCLK和TXUSRCLK2，那么这里可以使用MMCM锁定信号。</li>
+</ul>
+</li>
+<li>此外，在正常工作过程中也可以进行总体复位<ul>
+<li>GTRESETSEL必须被驱动为低电平以使用顺序模式。</li>
+<li>在整个复位过程中，TXPMARESET和TXPCSRESET必须在TXRESETDONE被检测到高电平之前被持续驱动为低电平。</li>
+<li>相关的PLL必须指示锁定。</li>
+<li>该异步GTTXRESET脉冲宽度的指导原则是参考时钟的一个周期。</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733151247093-84.webp" alt="Image"></li>
+</ul>
+</li>
+<li>TX组件单独复位<ul>
+<li>过程中全局复位必须是无效的，且只能同时进行一种单独复位</li>
+<li>PMA单独复位时序<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153591737-87.webp" alt="Image"></li>
+<li>PCS单独复位时序（必须等待来自用户逻辑的TXUSERREADY）<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153644840-90.webp" alt="Image"></li>
+</ul>
+</li>
+<li>复位可以重置啥？<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153673964-93.webp" alt="Image"></li>
+</ul>
+</li>
+<li>什么情况下需要TX复位？<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153720184-96.webp" alt="Image"></li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733153727352-99.webp" alt="Image"></li>
+<li>具体规则参见手册</li>
+</ul>
+</li>
+</ul>
+<h2 id="RX复位"><a href="#RX复位" class="headerlink" title="RX复位"></a>RX复位</h2><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733726607337-104.webp" alt="Image"></p>
+<ul>
+<li>pll和GT RX的复位都是高电平有效的</li>
+</ul>
+<h3 id="一个RX初次总体复位流程"><a href="#一个RX初次总体复位流程" class="headerlink" title="一个RX初次总体复位流程"></a>一个RX初次总体复位流程</h3><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640.png" alt="Image"></p>
+<p>先让pll复位。提前拉高rxreset，但是不启动rx复位。等待pll lock，复位状态机才正式启动复位流程，同时使得rxreset也无效。直到完成复位流程。</p>
+<h3 id="不同顺序模式下复位，可以复位的范围"><a href="#不同顺序模式下复位，可以复位的范围" class="headerlink" title="不同顺序模式下复位，可以复位的范围"></a>不同顺序模式下复位，可以复位的范围</h3><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241212151934317.png" alt="image-20241212151934317"></p>
+<h3 id="单一模式下的RX复位，覆盖的组件"><a href="#单一模式下的RX复位，覆盖的组件" class="headerlink" title="单一模式下的RX复位，覆盖的组件"></a>单一模式下的RX复位，覆盖的组件</h3><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733987986713-3.webp" alt="Image"></p>
+<h3 id="不同场景下推荐的复位模式"><a href="#不同场景下推荐的复位模式" class="headerlink" title="不同场景下推荐的复位模式"></a>不同场景下推荐的复位模式</h3><p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/640-1733988009884-6.webp" alt="Image"></p>
+<h2 id="RX-comma"><a href="#RX-comma" class="headerlink" title="RX comma"></a>RX comma</h2><ul>
+<li><p>先参见手册</p>
+</li>
+<li><p>寻找数据流中的Ｐ／Ｍ／Ｐ＆Ｍ　comma，然后使得串行数据对齐到并行</p>
+</li>
+<li><p>速率大于5GT的话，有可能comma对齐会出错，rxbyteisaligend可能会异常置位。需要额外逻辑来检测<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210175133825.png" alt="image-20241210175133825"></p>
+</li>
+<li><p>OOB block（在RX端结构中有说明）在pcie中被使用。在已经对齐边界之后（rxisaligned第一次被置位之后）,rxisaligned信号可能被复位，这个时候并不表示对齐边界发生了变化<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210185041680.png" alt="image-20241210185041680"></p>
+<ul>
+<li>原因可能是因为OOB序列被传到了PCS逻辑</li>
+</ul>
+</li>
+<li><p>comma在不同数据位宽,不同ALIGN_COMMA_WORD模式设置下可能出现的位置<br>Protocols that send commas in even and odd positions must set ALIGN_COMMA_WORD to 1.<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210185713426.png" alt="image-20241210185713426"></p>
+</li>
+<li><p>手动对齐</p>
+<ul>
+<li>rxslide启用时，启用手动对齐</li>
+<li>使用方法：RXSLIDE is driven High for two RXUSRCLK2 cycles to shift the parallel data by one bit. RXSLIDE must be Low for at least 32 RXUSRCLK2 cycles before it can be used again.</li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210191120348.png" alt="image-20241210191120348"></li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210195140921.png" alt="image-20241210195140921"></li>
+<li>特征：移位需要时间，中间可能会收到中间态数据；RX恢复时钟每移位一次，移动2个串行数据比特持续时间（这有啥意思？）</li>
+<li>1）原本是接收回来乱的数据</li>
+<li>2）一次rxsilde有效（2周期高）（32周期后可发起下一次），乱数据移位一次</li>
+<li>3）移位是循环移位，最大移位数目由int_datawidth， align_comma_wod决定<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210191349025.png" alt="image-20241210191349025"></li>
+<li>4）直到RXdata端收到正确的符号（symbol），停止移位</li>
+</ul>
+</li>
+<li><p>手动对齐slide_mode的配置<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210200315031.png" alt="image-20241210200315031"></p>
+<ul>
+<li>在1.0和2.0情况下不需要考虑手动对齐</li>
+<li>3.0和4.0情况下怎么办？ip核里采用了pma，为什么不用auto?<ul>
+<li>试试auto,然后一直发k28.5看看会咋样<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241210200553580.png" alt="image-20241210200553580"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>deskrew自己的一种方法（寄存器打拍）</p>
+</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/ec4d30e355ad04a35ea03949abd6716.jpg" alt="ec4d30e355ad04a35ea03949abd6716"></p>
+<h2 id="RX-8b10b解码"><a href="#RX-8b10b解码" class="headerlink" title="RX 8b10b解码"></a>RX 8b10b解码</h2><ul>
+<li>解码后的数据<ul>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231220526225.png" alt="image-20241231220526225"></li>
+</ul>
+</li>
+<li>解码错误检测<ul>
+<li>running disparity错误检测（直流平衡错误）：置位RXCTRL1</li>
+<li>带外错误（不能解码）：<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231220916879.png" alt="image-20241231220916879"></li>
+</ul>
+</li>
+<li>特殊k字符<ul>
+<li>解码到的时候拉高RXCTRL0</li>
+<li>If DEC_PCOMMA_DETECT is set to TRUE, the decoder drives the corresponding RXCTRL2 High whenever RXDATA is a positive 8B&#x2F;10B comma. If DEC_MCOMMA_DETECT is TRUE, the decoder drives the corresponding RXCTRL2 bit High whenever RXDATA is a negative 8B&#x2F;10B comma.</li>
+<li>多lane大位宽，对于每个symbol确定RXCTRL0&#x2F;1&#x2F;2&#x2F;3的值</li>
+</ul>
+</li>
+</ul>
+<h2 id="128-130b编解码：gen3-4对齐"><a href="#128-130b编解码：gen3-4对齐" class="headerlink" title="128&#x2F;130b编解码：gen3&#x2F;4对齐"></a>128&#x2F;130b编解码：gen3&#x2F;4对齐</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/article/000034076?language=zh_CN">https://adaptivesupport.amd.com/s/article/000034076?language=zh_CN</a></li>
+<li>赛灵思坏事做尽，不给用户提供这个接口</li>
+<li>数据依赖EIEOS序列进行对齐；</li>
+</ul>
+<h2 id="RX-buffer-bypass"><a href="#RX-buffer-bypass" class="headerlink" title="RX buffer bypass"></a>RX buffer bypass</h2><p>DRP：地址0018</p>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231221810044.png" alt="image-20241231221810044"></p>
+<ul>
+<li>rx phase alignment: 作SIPO并行时钟（XCLK）和PCS时钟（RXUSERCLK）的跨时钟域处理</li>
+<li>rx delay alignment: 作RXUSERCLK和RXUSERCLK2的跨时钟域处理</li>
+<li>用户模型<ul>
+<li>phy ip不使用RX buffer bypass，通过仿真观察相关信号得出<ul>
+<li>那phy ip为什么能TX RX用一个时钟？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>多lane自动bypass模式<ul>
+<li>要求<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230158382.png" alt="image-20241231230158382"></li>
+<li><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230330489.png" alt="image-20241231230330489"></li>
+<li>必须选择RXOUTCLK作为RXUSERCLK的来源</li>
+<li>在以下条件启用：Resetting or powering up the GTY receiver. •Resettingorpoweringup the CPLL and&#x2F;or QPLL. • Changing the RX recovered clock source or frequency.• Changing the GTY RX line rate.</li>
+</ul>
+</li>
+<li>时序，参考手册</li>
+</ul>
+<h2 id="RX-elastic-buffer"><a href="#RX-elastic-buffer" class="headerlink" title="RX elastic buffer"></a>RX elastic buffer</h2><ul>
+<li>两个时钟域：XCLK和USERCLK</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231230601028.png" alt="image-20241231230601028"></p>
+<ul>
+<li>RXBUFFER作跨时钟域处理</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241231231135739.png" alt="image-20241231231135739"></p>
+<ul>
+<li><p>RX buf status</p>
+<ul>
+<li>phy ip 的GT有时会报buffer错误，具体看上板测试日记。</li>
+</ul>
+</li>
+<li><p>关于phy ip GT ebuffer的属性配置</p>
+<ul>
+<li>RX_DEFER_RESET_BUF_EN：1；接收端电气空闲后再过RXBUF_EIDLE_HI_CNT时间复位buffer</li>
+<li>RXBUF_ADDR_MODE：FULL，使用buffer做时钟校准和通道对齐。如果是FAST的话那么buffer只做相位校准而不做时钟校准和通道对齐，这种模式说是在高线速率下适用，但不知道为什么phy ip使用FULL模式</li>
+<li>RXBUF_RESET_ON_CB_CHANGE：1，在通道对齐配置改变时，复位ebuffer</li>
+<li>RXBUF_RESET_ON_COMMAALIGN：0.因为使用了channal bounding，所以不在comma对齐后复位Ebuffer</li>
+<li>RXBUF_RESET_ON_EIDLE：1进入RX电气空闲后复位ebuffer</li>
+<li>RXBUF_RESET_ON_RATE_CHANGE：1</li>
+<li>buffer内容的临界点，用户自定的。1和31</li>
+</ul>
+</li>
+<li><p>用户模型</p>
+<ul>
+<li><p>上溢出或者下溢出后，buffer需要被复位。</p>
+<ul>
+<li>手动复位流程需要参照时序图进行</li>
+<li>在channel bonding topology change, comma realignment, electrical idle, or rate change conditions.这些条件下ebuffer可能被自动复位</li>
+</ul>
+</li>
+<li><p>什么时候需要用到clock correction？phyip是第三种情况，所以要用<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102182440575.png" alt="image-20250102182440575"></p>
+<p>When the RX elastic buffer is used, the setting of CLK_COR_MIN_LAT affects the latency through the buffer, regardless of whether clock correction is used.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="clock-correction"><a href="#clock-correction" class="headerlink" title="clock correction"></a>clock correction</h2><ul>
+<li><p>对于所有场合均需要。因为XCLK域和RXUSERCLK域并不同频同相</p>
+</li>
+<li><p>elastic buffer可以重复或者移除特殊字符来避免上溢出和下溢出<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102193004034.png" alt="image-20250102193004034"></p>
+<ul>
+<li><strong>前提是TX端会发出这样的特殊字符！！！</strong></li>
+</ul>
+</li>
+<li><p>重要端口</p>
+<ul>
+<li>RXBUFSTATUS[2:0]看有没有溢出或者有没有快到溢出了</li>
+<li>RXCLKCORCNT[1:0]说明有没有做了重复或者移除特殊字符</li>
+</ul>
+</li>
+<li><p>重要属性</p>
+<ul>
+<li>CBCC_DATA_SOURCE_SEL：decoded。在8b10b解码后，送入clock cor模块。但是这设置在8b10ben 是低的时候，不被支持。</li>
+<li>CLK_CORRECT_USE：1</li>
+<li>CLK_COR_KEEP_IDLE：1至少在收到的clk cor序列中包保留一个</li>
+<li>CLK_COR_MAX_LAT，CLK_COR_MIN_LAT；当ebuffer内部的数据个数多于&#x2F;少于个数时，进行重复或者移除clk cor序列</li>
+<li>CLK_COR_PRECEDENCE：1时钟修正先于通道绑定</li>
+<li>CLK_COR_REPEAT_WAIT：0两次连续的时钟修正之间可以有任意的间隔，以RXUSERCLK计数</li>
+<li>CLK_COR_SEQ_LEN：1只要发现1个clk cor序列，就可以进行重复或者删除；重复或者删除的数目为1</li>
+<li>之后几个属性，规定了可用于clk cor序列的种类多少，以及每个序列的长度，序列内容<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102211407089.png" alt="image-20250102211407089"></li>
+<li>RX_DISPERR_SEQ_MATCH：1解码序列的直流平衡错误状态必须和clk cor， 通道绑定序列匹配</li>
+<li>ALIGN_COMMA_WORD：comma的对齐边界</li>
+</ul>
+</li>
+<li><p>pcie3&#x2F;4相关的重要属性</p>
+<ul>
+<li><p>PCIE3_CLK_COR_EMPTY_THRSH：规定了pcie3&#x2F;4时钟校准buffer的上下临界点</p>
+</li>
+<li><p>almost full 和almost empty</p>
+</li>
+<li><p>PCIE3_CLK_COR_THRSH_TIMER：Threshold timer for PCIe Gen3 or Gen4 clock correction buffer. It sets the number of data count cycles before determining if the user needs to add or remove the SKPOS.</p>
+<ul>
+<li><p><code>PCIE3_CLK_COR_THRSH_TIMER</code> 属性设置了一个阈值计时器，用于确定在执行符号插入或删除操作之前，允许的数据计数周期数。</p>
+<p>当接收的数据计数超过该阈值时，系统会判断需要进行时钟校正操作，即添加或移除跳过有序集（SKPOS），以纠正时钟偏差。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>用户模型：比较简单</p>
+<ul>
+<li>clk cor len和具体的序列内容决定了看到什么样的序列可以重复或者删除</li>
+<li>在8b10b解码之前或者之后进行修正？<ul>
+<li>CBCC_DATA_SOURCE_SEL is set to DECODED；When RX_DISPERR_SEQ_MATCH is set to FALSE, CLK_COR_SEQ_x_y[9] is not used for matching.</li>
+</ul>
+</li>
+<li>对于一些协议，并不是每个clk cor序列都有4个；用CLK_COR_SEQ_x_ENABLE来判定要不要比较序列中的这个BYTE</li>
+<li>和comma对齐的关系：好像必须使得comma以1字节边界对齐<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102211800585.png" alt="image-20250102211800585"></li>
+</ul>
+</li>
+</ul>
+<h2 id="RX-channal-bounding"><a href="#RX-channal-bounding" class="headerlink" title="RX channal bounding"></a>RX channal bounding</h2><ul>
+<li>phy ip不使用，通道合并由用户逻辑实现</li>
+<li>这个功能只支持8b10b</li>
+<li>原理同样是检测特定序列</li>
+<li>重要端口&#x2F;属性<ul>
+<li>好理解，实现的时候了可以参考这个</li>
+</ul>
+</li>
+<li>用户模型<ul>
+<li>主channal和从channal</li>
+<li>daisy lane（master channal 控制信息和slave channal控制信息的连接方式）有点繁琐，用到时候再看</li>
+<li>channal bounding序列</li>
+<li>工作流程中涉及到的，能修正的最大skrew</li>
+</ul>
+</li>
+</ul>
+<h2 id="RX-同步变速箱"><a href="#RX-同步变速箱" class="headerlink" title="RX 同步变速箱"></a>RX 同步变速箱</h2><ul>
+<li>由于时钟和PMA不同，有可能出现输出数据无效的情景</li>
+<li>输出数据不一定是channal对齐的</li>
+<li>phy ip不使用</li>
+<li>重要端口<ul>
+<li>RXGEARBOXSLIP：使得变速器对齐到下一个边界</li>
+<li>RXSTARTOFSEQ[1:0]：位0表示输出的序列计数器是0（这是什么？）</li>
+</ul>
+</li>
+<li>属性：启用变速器以及工作模式</li>
+<li>工作模式</li>
+</ul>
+<p><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20250102221008234.png" alt="image-20250102221008234"></p>
+<ul>
+<li>每隔若干个传输计数，都要把rxvalid拉低一个周期，这是由于同步头的开销导致的</li>
+<li>块同步<ul>
+<li>RXGEARBOXSLIP信号需要被用户逻辑实现的块同步状态机所驱动，来移动对齐边界，最后获得块锁定</li>
+<li>状态机结合状态图和描述很好理解，就是不断使得对齐边界移动，最终<strong>始终</strong>能获得合法的同步头，实现块对齐。</li>
+</ul>
+</li>
+</ul>
+<h2 id="GTY的PCIe相关支持信号"><a href="#GTY的PCIe相关支持信号" class="headerlink" title="GTY的PCIe相关支持信号"></a>GTY的PCIe相关支持信号</h2><ul>
+<li>这个行为可以通过phy_ip 的代码和仿真波形来判断</li>
+<li>很多输出端口都没有使用。但是可以通过这些输出端口来判断设计的行为</li>
+</ul>
+<h3 id="重要端口"><a href="#重要端口" class="headerlink" title="重要端口"></a>重要端口</h3><ul>
+<li>PCIEUSERPHYSTATUSRST：每次切速率都会变ff，切好了就变00，没有用到</li>
+<li>PCIERATEQPLLPD：qpll一直上电，这个一直是0000，没有用到</li>
+<li>PCIERATEQPLLRESET：每次切速率会变0，但没有用到</li>
+<li>PCIERATEIDLE：为0说明正在切速率，没有用到</li>
+<li>PCIESYNCTXSYNCDONE：每切一次速率00-&gt;fe-&gt;ff<ul>
+<li>TX buffer bypass clock alignment</li>
+<li>The TX phase alignment circuit is used to adjust the phase difference between the PMA parallel clock domain (XCLK) and the TXUSRCLK domain when the TX buffer is bypassed. It also performs the TX delay alignment by continuously adjusting the TXUSRCLK to compensate for the temperature and voltage variations.</li>
+<li>PCS一个时钟，PMA一个时钟；这个功能代替tx buffer的工作，让数据不变</li>
+</ul>
+</li>
+<li>PCIERATEGEN3：gen3和gen4下为1，正在进入指定线速率</li>
+<li>PCIEUSERGEN3RDY：已经进入指定线速率，为ff</li>
+<li>PCIEUSERRATESTART：手册说是保留值。每切一次速率在完成之前会变为ff</li>
+<li>RXSTATUS：只在gen1和gen2下有效</li>
+<li>CPLLFREQLOCK：输入管脚，将cpll lock信号输入给这个管脚</li>
+<li>QPLL0FREQLOCK：输入管脚</li>
+<li>QPLL1FREQLOCK：输入管脚</li>
+</ul>
+<h3 id="重要属性"><a href="#重要属性" class="headerlink" title="重要属性"></a>重要属性</h3><ul>
+<li>PCS_PCIE_EN：将PCS设置为pcie模式，是true</li>
+<li>其他的是各种速率下pll的选择</li>
+</ul>
+<h2 id="GT-OOB"><a href="#GT-OOB" class="headerlink" title="GT OOB"></a>GT OOB</h2><ul>
+<li>oob模块支持pcie pipe规范里提出的信标（beacon)序列<ul>
+<li>信标序列是什么？</li>
+</ul>
+</li>
+<li>RXELECIDLE：The maximum line rate supported to use RXELECIDLE alone for data detection is 2.5 Gb&#x2F;s.这个是不可靠的</li>
+</ul>
+<h2 id="GT-DRP"><a href="#GT-DRP" class="headerlink" title="GT DRP"></a>GT DRP</h2><ul>
+<li>配置信息读写流程非常简单</li>
+<li>关键在于，对于一些必须通过DRP端口改变的配置，它的地址&#x2F;数据是什么</li>
+</ul>
+<h2 id="GT的自回环"><a href="#GT的自回环" class="headerlink" title="GT的自回环"></a>GT的自回环</h2><ul>
+<li>四种自回环方式，见ug576的60页</li>
+<li>1）近端PCS自回环<ul>
+<li><strong>RX弹性buffer必须被启用，RX_XCLK_SEL必须被设置为RXREC，以便近端PCS环回功能正常。在近端PCS环回时，RX XCLK域由TX PMA并行时钟（TX XCLK）提供时钟。</strong><ul>
+<li>已经满足。因为：RXREC: 选择RX恢复的时钟作为XCLK的来源。在使用RX弹性缓冲器时使用</li>
+</ul>
+</li>
+<li>我的理解：发送PMA并行时钟是TX TCLK，RX提取的时钟也应该是这个</li>
+</ul>
+</li>
+<li>2）近端PMA自回环<ul>
+<li>在进入和退出近端PMA环回后，需要进行GTRXRESET。</li>
+<li>在上板的时候操作过。有可能自回环模式改变，自动重新进行RXRESET</li>
+</ul>
+</li>
+<li>3）远端PMA自回环<ul>
+<li>TX buffer必须被启用，TX_XCLK_SEL必须被设置为TXOUT</li>
+<li>在远端PMA环回时，TX缓冲器的写入端由RX PMA并行时钟（RX XCLK）提供时钟。必须通过将TXPIPPMEN端口设置为1’b0和TXPIPPMSEL端口设置为1’b0来禁用TX相位插补器PPM控制器。</li>
+<li>在进入和退出远端PMA环回后，需要进行GTTXRESET</li>
+</ul>
+</li>
+<li>4）远端PCS自回环<ul>
+<li>如果不使用时钟校正，远端PCS环回中的收发器必须使用作为环回数据来源的收发器所使用的相同参考时钟</li>
+<li>无论是否使用时钟校正，TXUSRCLK和RXUSRCLK端口必须由同一时钟资源（BUFG、BUFR或BUFH）驱动</li>
+<li>当通道中的两个或任一gearbox都被启用时，不支持远端PCS环回</li>
+</ul>
+</li>
+<li>师兄说，启用自回环模式只需要修改debug输入LOOPBACK[2:0]的值<br><img src="/2025/05/03/Xilinx_GT/Xilinx_GT/image-20241129121559848.png" alt="image-20241129121559848"></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+        <a data-aos="zoom-in" href="/2025/05/03/Xilinx_GT/Xilinx_GT/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2025/05/03/Xilinx_GT/Xilinx_GT/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+      
+      
+        <span data-aos="zoom-in" id="/2025/05/03/Xilinx_GT/Xilinx_GT/" class="leancloud_visitors article-visitor-link" data-flag-title="Xilinx_GT详解">
+          <span class="leancloud-visitors-count">0</span>
+          <em class="post-meta-item-text">Readings</em>
+        </span>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86/" rel="tag">知识</a></li></ul>
+
+
+    </footer>
+  </div>
+  
+  <nav id="article-nav" data-aos="fade-up">
+    
+      
+      <div class="article-nav-link-wrap article-nav-link-left">
+        
+          <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032122146.jpg" data-sizes="auto" alt="verilog仲裁器" class="lazyload">
+        
+        <a href="/2025/05/03/%E4%BB%B2%E8%A3%81%E5%99%A8/%E4%BB%B2%E8%A3%81%E5%99%A8/"></a>
+        <div class="article-nav-caption">Newer</div>
+        <h3 class="article-nav-title">
+          
+            verilog仲裁器
+          
+        </h3>
+      </div>
+    
+    
+    
+    <div class="article-nav-link-wrap article-nav-link-right">
+      
+        <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215682.jpg" data-sizes="auto" alt="IB简介" class="lazyload">
+      
+      <a href="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/"></a>
+      <div class="article-nav-caption">Older</div>
+      <h3 class="article-nav-title">
+        
+          IB简介
+        
+      </h3>
+    </div>
+    
+  </nav>
+
+
+</article>
+
+
+
+
+
+
+
+
+
+  <section id="comments" data-aos="fade-up">
+    <div class="comment-header">
+      
+      
+        
+      
+      <h2 class="comment-title">Leave a comment</h2>
+      <div class="comment-selector">
+        <div class="comment-selector-wrap">
+            
+            <div class="selector-item" data-selector="valine">
+              <span>valine</span>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="comment-content">
+      
+        <div class="comment valine-comment" data-aos="fade-up"
+          id="valine-comment">
+        </div>
+      
+    </div>
+  </section>
+
+
+</section>
+        </div>
+        <footer id="footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    
+    <div>
+      <span class="icon-copyright"></span>
+      
+      
+      
+        2020-2025
+      
+      <span class="footer-info-sep rotate"></span>
+      wanderingxs
+    </div>
+    
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener external nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+    
+    
+      <div>
+        <span class="icon-brush"></span>
+        29.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        01:51
+      </div>
+    
+    
+    
+    
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+    
+  </div>
+</footer>
+
+        
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav">
+  <div class="sidebar-wrap">
+    
+      
+        <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84GT%E4%B9%8B%E9%97%B4%E5%A4%A7%E5%90%8C%E5%B0%8F%E5%BC%82%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">不同的GT之间大同小异的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GT%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">3.</span> <span class="toc-text">GT学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E6%8E%A5%E5%8F%A3%E4%BF%A1%E5%8F%B7%E7%BB%84"><span class="toc-number">3.1.</span> <span class="toc-text">GT的接口信号组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DRP"><span class="toc-number">3.1.1.</span> <span class="toc-text">DRP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bufgt-xxx-%E4%BF%A1%E5%8F%B7"><span class="toc-number">3.1.2.</span> <span class="toc-text">bufgt xxx 信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QPLL"><span class="toc-number">3.1.3.</span> <span class="toc-text">QPLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPLL"><span class="toc-number">3.1.4.</span> <span class="toc-text">CPLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%BA%BF"><span class="toc-number">3.1.5.</span> <span class="toc-text">串行数据线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gtwiz"><span class="toc-number">3.1.6.</span> <span class="toc-text">gtwiz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cpll%E6%A0%A1%E5%87%86"><span class="toc-number">3.1.6.1.</span> <span class="toc-text">cpll校准</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="toc-number">3.2.</span> <span class="toc-text">重要概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%92%9F%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.1.</span> <span class="toc-text">时钟相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%80%9F%E6%94%B6%E5%8F%91%E5%99%A8%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.2.</span> <span class="toc-text">高速收发器相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GT%E7%BB%93%E6%9E%84-%E7%BB%84%E4%BB%B6%E7%9B%B8%E5%85%B3"><span class="toc-number">3.2.3.</span> <span class="toc-text">GT结构&#x2F;组件相关</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E6%80%BB%E4%BD%93%E7%BB%93%E6%9E%84%EF%BC%88%E4%BB%A5GTX%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">GT总体结构（以GTX为例）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E6%97%B6%E9%92%9F%E7%BB%93%E6%9E%84"><span class="toc-number">3.4.</span> <span class="toc-text">GT的时钟结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPLL%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.5.</span> <span class="toc-text">CPLL的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QPLL%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.6.</span> <span class="toc-text">QPLL的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TXUSERCLK%E5%92%8CTXUSERCLK2"><span class="toc-number">3.7.</span> <span class="toc-text">TXUSERCLK和TXUSERCLK2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TXOUTCLK"><span class="toc-number">3.8.</span> <span class="toc-text">TXOUTCLK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%92%9F%E8%BE%93%E5%87%BA%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97"><span class="toc-number">3.8.1.</span> <span class="toc-text">时钟输出控制模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-8b10b-%E7%BC%96%E7%A0%81%E5%99%A8"><span class="toc-number">3.9.</span> <span class="toc-text">TX 8b10b 编码器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX128-130b%E7%BC%96%E7%A0%81%E5%99%A8"><span class="toc-number">3.10.</span> <span class="toc-text">TX128&#x2F;130b编码器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-%E5%90%8C%E6%AD%A5-gearbox"><span class="toc-number">3.11.</span> <span class="toc-text">TX 同步 gearbox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX%E5%BC%82%E6%AD%A5-gearbox"><span class="toc-number">3.12.</span> <span class="toc-text">TX异步 gearbox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-buffer"><span class="toc-number">3.13.</span> <span class="toc-text">TX buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Buffer-Bypass"><span class="toc-number">3.14.</span> <span class="toc-text">TX Buffer Bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Pattern-Generator%E5%8A%9F%E8%83%BD%E5%9D%97"><span class="toc-number">3.15.</span> <span class="toc-text">TX Pattern Generator功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-polarty"><span class="toc-number">3.16.</span> <span class="toc-text">TX polarty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Phase-Interpolator-PPM-Controller"><span class="toc-number">3.17.</span> <span class="toc-text">TX Phase Interpolator PPM Controller</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Configurable-Driver"><span class="toc-number">3.18.</span> <span class="toc-text">TX Configurable Driver</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-Receiver-Detect-Support-for-PCI-Express-Designs"><span class="toc-number">3.19.</span> <span class="toc-text">TX Receiver Detect Support for PCI Express Designs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX-OOB"><span class="toc-number">3.20.</span> <span class="toc-text">TX OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RXUSERCLK%E5%92%8CRXUSERCLK2"><span class="toc-number">3.21.</span> <span class="toc-text">RXUSERCLK和RXUSERCLK2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RXOUTCLK%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="toc-number">3.22.</span> <span class="toc-text">RXOUTCLK的来源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E6%A8%A1%E6%8B%9F%E5%89%8D%E7%AB%AF"><span class="toc-number">3.23.</span> <span class="toc-text">RX模拟前端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-OOB"><span class="toc-number">3.24.</span> <span class="toc-text">RX OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-%E5%9D%87%E8%A1%A1%E5%99%A8"><span class="toc-number">3.25.</span> <span class="toc-text">RX 均衡器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E8%A3%95%E5%BA%A6%E5%88%86%E6%9E%90"><span class="toc-number">3.26.</span> <span class="toc-text">RX裕度分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-CDR"><span class="toc-number">3.27.</span> <span class="toc-text">RX CDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-Pattern-Checker%E5%8A%9F%E8%83%BD%E5%9D%97"><span class="toc-number">3.28.</span> <span class="toc-text">RX Pattern Checker功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PLL%E7%9A%84%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.29.</span> <span class="toc-text">PLL的复位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E5%A4%8D%E4%BD%8D%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.30.</span> <span class="toc-text">GT复位总体介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GPT%E8%AF%B4%E9%85%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%BA%9B%E5%95%A5%EF%BC%9F"><span class="toc-number">3.30.1.</span> <span class="toc-text">GPT说配置工作主要有些啥？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TX%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.31.</span> <span class="toc-text">TX复位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX%E5%A4%8D%E4%BD%8D"><span class="toc-number">3.32.</span> <span class="toc-text">RX复位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AARX%E5%88%9D%E6%AC%A1%E6%80%BB%E4%BD%93%E5%A4%8D%E4%BD%8D%E6%B5%81%E7%A8%8B"><span class="toc-number">3.32.1.</span> <span class="toc-text">一个RX初次总体复位流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%A1%BA%E5%BA%8F%E6%A8%A1%E5%BC%8F%E4%B8%8B%E5%A4%8D%E4%BD%8D%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%A4%8D%E4%BD%8D%E7%9A%84%E8%8C%83%E5%9B%B4"><span class="toc-number">3.32.2.</span> <span class="toc-text">不同顺序模式下复位，可以复位的范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%B8%80%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84RX%E5%A4%8D%E4%BD%8D%EF%BC%8C%E8%A6%86%E7%9B%96%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="toc-number">3.32.3.</span> <span class="toc-text">单一模式下的RX复位，覆盖的组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E4%B8%8B%E6%8E%A8%E8%8D%90%E7%9A%84%E5%A4%8D%E4%BD%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.32.4.</span> <span class="toc-text">不同场景下推荐的复位模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-comma"><span class="toc-number">3.33.</span> <span class="toc-text">RX comma</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-8b10b%E8%A7%A3%E7%A0%81"><span class="toc-number">3.34.</span> <span class="toc-text">RX 8b10b解码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#128-130b%E7%BC%96%E8%A7%A3%E7%A0%81%EF%BC%9Agen3-4%E5%AF%B9%E9%BD%90"><span class="toc-number">3.35.</span> <span class="toc-text">128&#x2F;130b编解码：gen3&#x2F;4对齐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-buffer-bypass"><span class="toc-number">3.36.</span> <span class="toc-text">RX buffer bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-elastic-buffer"><span class="toc-number">3.37.</span> <span class="toc-text">RX elastic buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#clock-correction"><span class="toc-number">3.38.</span> <span class="toc-text">clock correction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-channal-bounding"><span class="toc-number">3.39.</span> <span class="toc-text">RX channal bounding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RX-%E5%90%8C%E6%AD%A5%E5%8F%98%E9%80%9F%E7%AE%B1"><span class="toc-number">3.40.</span> <span class="toc-text">RX 同步变速箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GTY%E7%9A%84PCIe%E7%9B%B8%E5%85%B3%E6%94%AF%E6%8C%81%E4%BF%A1%E5%8F%B7"><span class="toc-number">3.41.</span> <span class="toc-text">GTY的PCIe相关支持信号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.41.1.</span> <span class="toc-text">重要端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%B1%9E%E6%80%A7"><span class="toc-number">3.41.2.</span> <span class="toc-text">重要属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT-OOB"><span class="toc-number">3.42.</span> <span class="toc-text">GT OOB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT-DRP"><span class="toc-number">3.43.</span> <span class="toc-text">GT DRP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GT%E7%9A%84%E8%87%AA%E5%9B%9E%E7%8E%AF"><span class="toc-number">3.44.</span> <span class="toc-text">GT的自回环</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">5</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">4</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">2</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+      
+    
+  </div>
+  
+    
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+    
+  
+</nav>
+
+    </div>
+    
+      <div class="site-search">
+        <div class="reimu-popup popup">
+          <div class="reimu-search">
+            <div class="reimu-search-input-icon"></div>
+            <div class="reimu-search-input" id="reimu-search-input"></div>
+            <div class="popup-btn-close"></div>
+          </div>
+          <div class="reimu-results">
+            <div id="reimu-stats"></div>
+            <div id="reimu-hits"></div>
+            <div id="reimu-pagination" class="reimu-pagination"></div>
+          </div>
+          <img class="reimu-bg" src="/images/reimu.png"/>
+        </div>
+      </div>
+    
+    
+    
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+  
+<script src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js" integrity="sha384-vLev0II0HKFaxkcm+&#x2F;7kX5IGwVFBASkGchU311wmU&#x2F;veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+  
+<script src="/js/generator_search.js" defer></script>
+
+
+
+
+
+
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.1.1/dist/index.umd.js" integrity="sha384-8LyaidD9GPxQQgLJO&#x2F;WRw&#x2F;O2h3BoNq&#x2F;ApI&#x2F;ecpvM6RsrCz2qP2ppBXUKihP4V&#x2F;2d" crossorigin="anonymous"></script>
+
+  <script>
+    window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'))
+  </script>
+
+
+
+
+
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+    
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "wanderingxs",
+          title: "Xilinx_GT详解",
+          url: "https://amakawamasahir0.github.io/2025/05/03/Xilinx_GT/Xilinx_GT/",
+          excerpt: "Xilinx_GTY IP核的详细介绍。其他类型的GT结构和功能上大同小异。",
+          description: "",
+          stripContent: "写在前面 7系列的GTP介绍 一个很有用的微信公众号： 李锐博恩 FPGA LAB 一个有关GT的项目（谁把服务器放公网上了。。。） versal GTY应该看手册：Versal ACAP GTY and GTYP Transceivers Architecture Manual  不同的GT之间大同小异的 本篇没有做好区分工作。  从tx buffer开始使用GTH  GTY和 versal GTY的不同：https://adaptivesupport.amd.com/s/article/Di",
+          date: "Sat May 03 2025 14:00:00 GMT+0800",
+          updated: "Sun May 04 2025 02:18:55 GMT+0800",
+          cover: "https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032122146.jpg",
+        };
+      </script>
+       
+    
+    
+      
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+        
+      
+    
+    
+      <script type="module" data-pjax>
+        const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+        
+        const pswp = () => {
+          if (_$$('.article-entry a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-entry',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          if(_$$('.article-gallery a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-gallery',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          window.lightboxStatus = 'done';
+          window.removeEventListener('lightbox:ready', pswp);
+        }
+        if(window.lightboxStatus === 'ready') {
+          pswp()
+        } else {
+          window.addEventListener('lightbox:ready', pswp);
+        }
+      </script>
+      
+        
+
+
+
+
+
+
+
+
+<script data-pjax>
+  var loadScript = (src, integrity) => {
+    const script = document.createElement('script');
+    script.src = src;
+    if (integrity) script.integrity = integrity;
+    script.crossOrigin = 'anonymous';
+    return script;
+  };
+
+  var commentConfigKeys = ['valine', 'waline', 'twikoo', 'gitalk', 'giscus'];
+  var commentConfig = {
+    valine: {
+      enable: true,
+      load: () => {
+        const container = document.querySelector('.valine-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/valine@1.5.1/dist/Valine.min.js',
+          'sha384-3ma91AExDeMAZ1rjTjaP8V2A2obQE+s5ltKRwYlwdpArz9xVbp0tF3b0VV2ACNPn'
+        );
+        script.onload = () => {
+          var GUEST_INFO = ['nick', 'mail', 'link'];
+          var guest_info = 'nick,mail,link'.split(',').filter((item) => {
+            return GUEST_INFO.indexOf(item) > -1
+          });
+          var recordIP = JSON.parse('true');
+          var highlight = JSON.parse('true');
+          var visitor = JSON.parse('true');
+          var serverURLs = 'https://zrnvqoxq.api.lncldglobal.com';
+
+          if (window.Valine) {
+            new Valine({
+              el: '.valine-comment',
+              appId: "zrnVQoxQHb8R7bVcJkUheSl5-MdYXbMMI",
+              appKey: "4FFftWoCmetu0akdzWM69pUJ",
+              placeholder: "留下你的评论...",
+              pageSize: '10',
+              avatar: 'mp',
+              lang: document.documentElement.lang || 'en',
+              recordIP: recordIP,
+              highlight: highlight,
+              visitor: visitor,
+              requiredFields: guest_info,
+              path: window.location.pathname,
+              serverURLs
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    },
+    waline: {
+      enable: false,
+      load: async () => {
+        const container = document.querySelector('.waline-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        let walineInit;
+        const walineCdn = 'https://npm.webcache.cn/@waline/client@2.15.8/dist/waline.mjs';
+        const walineIntegrity = 'sha384-9sbqJjrfGjbkI6/PI4nU/MvBfEmkkPC4YK9I4zBeMIf1CVCZdCMH/KinBEAZII/5';
+
+        const module = await safeImport(walineCdn, walineIntegrity);
+        walineInit = module.init;
+
+        window.walineInstance = walineInit({
+          el: '.waline-comment',
+          serverURL: '',
+          lang: document.documentElement.lang || 'en',
+          locale: {},
+          emoji: ["https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/tieba","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji"],
+          meta: ["nick","mail","link"],
+          requiredMeta: ["nick","mail"],
+          wordLimit: JSON.parse('0'),
+          comment: true,
+          pageSize: JSON.parse('10'),
+          dark: 'html[data-theme="dark"]',
+          pageview: JSON.parse('true'),
+        });
+      }
+    },
+    twikoo: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.twikoo-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/twikoo@1.6.16/dist/twikoo.all.min.js',
+          'sha384-lDHsr5aZmkMS0eKnsUu6e9RWP+dRmn7sgjRAKGOAoXfMyzbUK6Qi86zZK7R+KvRV'
+        );
+
+        script.onload = () => {
+          if (window.twikoo) {
+            twikoo.init({
+              envId: '',
+              el: '.tcomment',
+              region: '',
+              lang: document.documentElement.lang || 'en',
+            })
+          }
+        } 
+        document.head.appendChild(script);
+      }
+    },
+    gitalk: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.gitalk-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/gitalk@1.8.0/dist/gitalk.min.js',
+          'sha384-kspnZUWBoSWwoJHa0hBCXYbHGbhvU/lcEH5O8eVbSDhbPwsiVUTp/aGX/z/5EuMA'
+        );
+
+        script.onload = () => {
+          if (false) {
+            const md5Script = loadScript(
+              'https://npm.webcache.cn/blueimp-md5@2.19.0/js/md5.min.js',
+              'sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH'
+            );
+            md5Script.onload = initGitalk;
+            document.head.appendChild(md5Script);
+          } else {
+            initGitalk();
+          }
+        }
+        document.head.appendChild(script);
+
+        function initGitalk() {
+          var gitalkId = location.pathname;
+          var gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: null,
+            id: gitalkId,
+            distractionFreeMode: false,
+            language: document.documentElement.lang || 'en',
+          })
+          gitalk.render('gitalk-comment');
+        }
+      }
+    },
+    giscus: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.giscus-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        // 删除可能已存在的 giscus 脚本和 iframe
+        const existingScript = container.querySelector('script[src*="giscus.app/client.js"]');
+        if (existingScript) existingScript.remove();
+        const existingFrame = document.querySelector('iframe.giscus-frame');
+        if (existingFrame) existingFrame.remove();
+
+        const giscusScript = document.createElement('script');
+        const domMode = document.documentElement.getAttribute("data-theme");
+        giscusScript.src = 'https://giscus.app/client.js';
+        giscusScript.setAttribute('data-repo', '');
+        giscusScript.setAttribute('data-repo-id', '');
+        giscusScript.setAttribute('data-category', ''); 
+        giscusScript.setAttribute('data-category-id', '');
+        giscusScript.setAttribute('data-mapping', '0');
+        giscusScript.setAttribute('data-strict', '0');
+        giscusScript.setAttribute('data-reactions-enabled', '1');
+        giscusScript.setAttribute('data-emit-metadata', '0');
+        giscusScript.setAttribute('data-input-position', 'bottom');
+        giscusScript.setAttribute('data-theme', domMode === 'dark' ? 'dark' : 'light');
+        giscusScript.setAttribute('data-lang', document.documentElement.lang || 'en');
+        giscusScript.setAttribute('crossorigin', 'anonymous');
+        giscusScript.async = true;
+        container.appendChild(giscusScript);
+        document.body.addEventListener('light-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'light' } } }, 'https://giscus.app');
+        });
+        document.body.addEventListener('dark-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'dark' } } }, 'https://giscus.app');
+        });
+      }
+    }
+  }
+  commentConfig.enable = commentConfigKeys.some(key => commentConfig[key].enable);
+
+  var defaultComment = '';
+  if (commentConfig.enable) {
+    // 1. 首先检查localStorage中是否有保存的评论类型
+    var savedCommentType = localStorage.getItem('commentType');
+    
+    // 2. 如果localStorage中有值且对应的评论系统可用，就使用它
+    if (savedCommentType) {
+      if (commentConfig[savedCommentType]?.enable) {
+        defaultComment = savedCommentType;
+      }
+    }
+    
+    // 3. 如果localStorage无效，检查配置的默认评论系统
+    if (!defaultComment) {
+      var configDefault = 'valine';
+      if (commentConfig[configDefault]?.enable) {
+        defaultComment = configDefault;
+      }
+    }
+    
+    // 4. 如果前两项都无效，按指定顺序找到第一个可用的评论系统
+    if (!defaultComment) {
+      defaultComment = commentConfigKeys.find(sys => commentConfig[sys].enable) || '';
+    }
+  }
+  function loadComments() {
+    if (!commentConfig.enable) return;
+    // 评论组件加载状态跟踪
+    const loadedComments = {
+      valine: false,
+      waline: false,
+      twikoo: false,
+      gitalk: false,
+      giscus: false
+    };
+
+    // 隐藏所有评论容器
+    const hideAllComments = () => {
+      const commentContainers = document.querySelectorAll('.comment');
+      commentContainers.forEach(container => {
+        container.style.display = 'none';
+      });
+    };
+
+    // 按需加载评论系统
+    const loadCommentSystem = (type) => {
+      if (loadedComments[type]) {
+        // 如果已加载，只需显示对应容器
+        document.querySelector(`.${type}-comment`).style.display = 'block';
+        return;
+      }
+
+      // 根据类型加载对应的脚本
+      commentConfig[type]?.load();
+      loadedComments[type] = true;
+    };
+
+    // 评论组件选择器
+    const changeActiveCommentItems = (item) => {
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let i = 0; i < commentItems.length; i++) {
+        commentItems[i].classList.remove('active');
+      }
+      item.classList.add('active');
+
+      // 获取要加载的评论系统类型
+      const commentType = item.getAttribute('data-selector');
+
+      // 隐藏所有评论系统
+      hideAllComments();
+
+      // 加载选中的评论系统
+      loadCommentSystem(commentType);
+    };
+
+    const commentInit = () => {
+      // 评论组件选择器点击事件
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let item of commentItems) {
+        item.addEventListener('click', () => {
+          // 保存选择器状态
+          const commentType = item.getAttribute('data-selector');
+          window.localStorage.setItem('commentType', commentType);
+          // 切换选中状态
+          changeActiveCommentItems(item);
+        });
+      }
+
+      // 检查是否需要加载默认评论系统
+      if (defaultComment) {
+        const defaultSelectorItem = document.querySelector(`[data-selector="${defaultComment}"]`);
+        if (!defaultSelectorItem) return;
+        defaultSelectorItem.style.display = 'block';
+        defaultSelectorItem.classList.add('active');
+        loadCommentSystem(defaultComment);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', commentInit);
+    } else {
+      commentInit();
+    }
+  };
+  loadComments();
+</script>
+
+      
+    
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.8.3' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+  </html>
+
