@@ -1,0 +1,1816 @@
+
+  <!DOCTYPE html>
+  <html lang="en"  
+    
+      data-theme-mode="auto"
+    
+  >
+  <head>
+  
+  <meta charset="utf-8">
+  
+
+  
+
+  
+
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_0khxww3tj3q9';window.REIMU_CONFIG.clipboard_tips = {"success":{"en":"Copy successfully (*^▽^*)","zh-CN":"复制成功 (*^▽^*)","zh-TW":"複製成功 (*^▽^*)","ja":"コピー成功 (*^▽^*)"},"fail":{"en":"Copy failed (ﾟ⊿ﾟ)ﾂ","zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","zh-TW":"複製失敗 (ﾟ⊿ﾟ)ﾂ","ja":"コピー失敗 (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = 'All articles on this blog are licensed under the BY-NC-SA license agreement unless otherwise stated. Please indicate the source when reprinting!';window.REIMU_CONFIG.code_block = {"expand":40};window.REIMU_CONFIG.base = 'https://amakawamasahir0.github.io';</script>
+  
+  <title>
+    PCIe物理层 |
+    
+    测温大师的工位
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7CNoto%20Serif%20SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media&#x3D;&#39;all&#39;">
+  
+  
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_0khxww3tj3q9.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+  
+  
+    <meta name="description" content="介绍PCIe物理层实现的功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCIe物理层">
+<meta property="og:url" content="https://amakawamasahir0.github.io/2025/05/02/PCIe/PCIe%E7%89%A9%E7%90%86%E5%B1%82/index.html">
+<meta property="og:site_name" content="测温大师的工位">
+<meta property="og:description" content="介绍PCIe物理层实现的功能">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/renditionDownload.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/82b8048733402db59625ec93d341060.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114001634766.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114001709338.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114001738635.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114153041429.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241219191644118.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/732580378fab4323fd3a128182df31e9.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241113225208958.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241113002111048.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241113154807340.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241113233014462.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241113233035946.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114000212252.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114143838978.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114143948294.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114144403203.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114152650161.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114195741928.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241224200956951.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241226222015369.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241226184012076.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114211503897.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114211534588.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/image-20241114211612332.png">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/ltssm-detect-Detect.Active.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/ltssm-polling-Polling.Active.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/ltssm-polling-Polling.Configuration.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/ltssm-polling-Polling.Compliance.jpg">
+<meta property="og:image" content="https://amakawamasahir0.github.io/images/PCIe/ltssm-polling-Polling.Active_eg1-1.jpg">
+<meta property="article:published_time" content="2025-05-02T09:48:53.000Z">
+<meta property="article:modified_time" content="2025-05-04T02:49:28.725Z">
+<meta property="article:author" content="wanderingxs">
+<meta property="article:tag" content="协议">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amakawamasahir0.github.io/images/PCIe/renditionDownload.png">
+  
+  
+    <link rel="alternate" href="/404.html" title="测温大师的工位" >
+  
+  
+    <link rel="shortcut icon" href="/images/favicon_new.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  
+  
+  
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+  
+  
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.0/dist/aos.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+  <body>
+    
+    
+  <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+        
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+        
+      </div>
+      
+      
+        
+      
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var startLoading = () => {
+      time = Date.now();
+      document.getElementById('loader').classList.remove("loading");
+    }
+    var endLoading = () => {
+      if (!time) {
+        document.body.style.overflow = 'auto';
+        document.getElementById('loader').classList.add("loading");
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          document.body.style.overflow = 'auto';
+          document.getElementById('loader').classList.add("loading");
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    document.getElementById('loader').addEventListener('click', endLoading);
+  </script>
+
+<div id="copy-tooltip" style="pointer-events: none; opacity: 0; transition: all 0.2s ease; position: fixed;top: 50%;left: 50%;z-index: 999;transform: translate(-50%, -50%);color: white;background: rgba(0, 0, 0, 0.5);padding: 10px 15px;border-radius: 10px;">
+</div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav">
+    
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/">Home</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/archives">Archives</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/about">About</a>
+        </span>
+      
+        <span class="main-nav-link-wrap">
+          <div class="main-nav-icon icon rotate">
+            &#xe62b;
+          </div>
+          <a class="main-nav-link" href="/friend">Friend</a>
+        </span>
+      
+    
+    <a id="main-nav-toggle" class="nav-icon"></a>
+  </nav>
+  <nav id="sub-nav">
+    
+      <a id="nav-rss-link" class="nav-icon" href="/404.html" title="RSS Feed" target="_blank"></a>
+    
+    
+    
+      <a id="nav-search-btn" class="nav-icon popup-trigger" title="Search"></a>
+    
+  </nav>
+  
+</div>
+<header id="header">
+  
+    <picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg" alt="PCIe物理层">
+  
+  <div id="header-outer">
+    <div id="header-title">
+      
+        
+        
+          <a href="/" id="logo">
+            <h1 data-aos="slide-up">PCIe物理层</h1>
+          </a>
+        
+      
+      
+        
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+          
+        </h2>
+      
+    </div>
+  </div>
+</header>
+
+        <div id="content"  class="sidebar-right" >
+          <aside id="sidebar">
+  
+  
+  
+  <div class="sidebar-wrapper wrap-sticky">
+    <div class="sidebar-wrap" data-aos="fade-up">
+      
+        
+          <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E7%A5%9E%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text"> 物理层神图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E9%80%BB%E8%BE%91%E5%AD%90%E6%A8%A1%E5%9D%97"><span class="toc-number">2.</span> <span class="toc-text"> 物理层（逻辑子模块）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5%E8%A7%A3%E9%87%8A"><span class="toc-number">2.0.1.</span> <span class="toc-text"> 概念解释</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E6%89%B08b10b"><span class="toc-number">2.1.</span> <span class="toc-text"> 数据加解扰（8b&#x2F;10b）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8Fencoding-for-25-gts-and-50-gts-data-rates"><span class="toc-number">2.2.</span> <span class="toc-text"> 编码方式：Encoding for 2.5 GT&#x2F;s and 5.0 GT&#x2F;s Data Rates</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#8b10b%E7%BC%96%E7%A0%81"><span class="toc-number">2.2.1.</span> <span class="toc-text"> 8b&#x2F;10b编码</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#8b10b%E8%A7%A3%E7%A0%81"><span class="toc-number">2.2.2.</span> <span class="toc-text"> 8b&#x2F;10b解码</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#8b10b%E7%89%A9%E7%90%86%E5%B1%82%E7%BB%84%E5%B8%A7%E4%B8%8E%E5%B0%86%E7%AC%A6%E5%8F%B7%E6%98%A0%E5%B0%84%E5%88%B0lanes"><span class="toc-number">2.3.</span> <span class="toc-text"> 8b&#x2F;10b物理层组帧与将符号映射到lanes</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#encoding-for-80-gts-and-higher-data-rates"><span class="toc-number">2.4.</span> <span class="toc-text"> Encoding for 8.0 GT&#x2F;s and Higher Data Rates</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E6%89%B0128b130b"><span class="toc-number">2.5.</span> <span class="toc-text"> 数据加解扰（128b&#x2F;130b）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%A2%84%E7%BC%96%E7%A0%81"><span class="toc-number">2.6.</span> <span class="toc-text"> 预编码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#128b130b%E7%9A%84%E8%87%AA%E5%9B%9E%E7%8E%AF"><span class="toc-number">2.7.</span> <span class="toc-text"> 128b&#x2F;130b的自回环</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%9D%87%E8%A1%A1%E6%84%9F%E8%A7%89%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E5%85%88%E5%81%9A%E8%BF%99%E4%B8%AA"><span class="toc-number">2.8.</span> <span class="toc-text"> 链路均衡（感觉可以不用先做这个）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E6%96%B9%E7%B3%BB%E6%95%B0"><span class="toc-number">2.8.1.</span> <span class="toc-text"> 发送方系数</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E8%AE%AD%E7%BB%83"><span class="toc-number">2.9.</span> <span class="toc-text"> 链路初始化和训练</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E5%BA%8F%E5%88%97"><span class="toc-number">2.10.</span> <span class="toc-text"> 训练序列</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E8%AE%AD%E7%BB%83%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">2.11.</span> <span class="toc-text"> 链路训练状态机</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#detect-httpswwwquchaome4081"><span class="toc-number">2.11.1.</span> <span class="toc-text"> detect https:&#x2F;&#x2F;www.quchao.me&#x2F;4081&#x2F;</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#polling-httpswwwquchaome4153"><span class="toc-number">2.11.2.</span> <span class="toc-text"> Polling https:&#x2F;&#x2F;www.quchao.me&#x2F;4153&#x2F;</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#configuration-httpswwwquchaome4515"><span class="toc-number">2.11.3.</span> <span class="toc-text"> Configuration  https:&#x2F;&#x2F;www.quchao.me&#x2F;4515&#x2F;</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E9%80%9F%E7%8E%87%E8%A1%A5%E5%81%BF"><span class="toc-number">2.12.</span> <span class="toc-text"> 链路速率补偿</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E8%80%85%E7%9A%84%E9%93%BE%E8%B7%AF%E8%A3%95%E9%87%8F"><span class="toc-number">2.13.</span> <span class="toc-text"> 接收者的链路裕量</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">8</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">5</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+        
+      
+      
+        
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+        
+      
+    </div>
+  </div>
+
+  <div class="sidebar-widget">
+  
+  </div>
+  
+</aside>
+
+          <section id="main"><article id="post-PCIe/PCIe物理层" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link" data-aos="zoom-in">
+    <time datetime="2025-05-02T09:48:53.000Z" itemprop="datePublished">2025-05-02</time>
+    <time style="display: none;" id="post-update-time">2025-05-04</time>
+  </span>
+</div>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PCIe/" data-aos="zoom-in">PCIe</a>
+  </div>
+
+
+    </div>
+    <div class="hr-line"></div>
+    
+
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+      
+        <h4 id="物理层神图"><a class="markdownIt-Anchor" href="#物理层神图"></a> 物理层神图</h4>
+<p><img src="/images/PCIe/renditionDownload.png" alt="image.png"></p>
+<p><img src="/images/PCIe/82b8048733402db59625ec93d341060.jpg" alt="82b8048733402db59625ec93d341060"></p>
+<h4 id="物理层逻辑子模块"><a class="markdownIt-Anchor" href="#物理层逻辑子模块"></a> 物理层（逻辑子模块）</h4>
+<p>规范最烂的一点就是写作顺序不符合人的思维顺序。比如物理层不讲链路怎么初始化，就讲传输包的格式和方法。具体怎么个传输流程，还他妈得我自己总结。</p>
+<ul>
+<li>
+<p>干了什么工作？</p>
+</li>
+<li>
+<p>按照数据流来看（也有一个逆向过程）</p>
+<ul>
+<li>假设链路已经得到初始化，链路上可以进行收发数据</li>
+<li>加/减包头和包尾，编/解码</li>
+<li>加/解扰（8b/10b可能不用）</li>
+<li>把数据发到链路上</li>
+<li>从链路上接收数据，考虑到lane to lane skrew，要进行对齐调整</li>
+</ul>
+</li>
+<li>
+<p>链路初始化和训练</p>
+</li>
+<li>
+<p>链路训练状态机</p>
+</li>
+<li>
+<p>链路均衡（这是什么？）</p>
+</li>
+<li>
+<p>时钟相关</p>
+</li>
+<li>
+<p>lane混合（这是什么？）</p>
+</li>
+<li>
+<p>串并转换</p>
+</li>
+</ul>
+<h6 id="概念解释"><a class="markdownIt-Anchor" href="#概念解释"></a> 概念解释</h6>
+<ul>
+<li>
+<p>逻辑空闲/电气空闲？</p>
+<p><img src="/images/PCIe/image-20241114001634766.png" alt="image-20241114001634766"></p>
+<p><img src="/images/PCIe/image-20241114001709338.png" alt="image-20241114001709338"></p>
+<p><img src="/images/PCIe/image-20241114001738635.png" alt="image-20241114001738635"></p>
+</li>
+<li>
+<p>lane to lane skrew<br>
+在 PCIe（Peripheral Component Interconnect Express）中，<strong>lane-to-lane skew</strong>（通道偏移）是指在多通道（multi-lane）链路中，各个通道之间的数据到达时间的差异。由于不同物理通道的长度和电子信号传播速度的微小差异，每个通道（lane）上发送的数据可能会在接收端不同时到达，这种到达时间的差异就是 skew。<br>
+<img src="/images/PCIe/image-20241114153041429.png" alt="image-20241114153041429"></p>
+</li>
+<li>
+<p>loopback master和 loopback slave<br>
+<img src="/images/PCIe/image-20241219191644118.png" alt="image-20241219191644118"></p>
+</li>
+<li>
+<p>下游端口/上游端口</p>
+<ul>
+<li>上行端口（Upstream Port）指的是拓扑结构的向上的端口，如图中endpoint向上连接switch的端口，PCIe中的设备必须且仅能有1个上行端口；</li>
+<li>下行端口（Downstream Port）与上行端口在拓扑意义上相反，PCIe中的设备必可以有若干个下行端口。<br>
+<img src="/images/PCIe/732580378fab4323fd3a128182df31e9.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+<h5 id="数据加解扰8b10b"><a class="markdownIt-Anchor" href="#数据加解扰8b10b"></a> 数据加解扰（8b/10b）</h5>
+<p><code>数据加扰在 8b/10b 编码之前进行。Scrambler 的主要作用就是通过“加扰”的方法消减 EMI 噪声，所谓加扰是将源数据流与一个随 机序列异或后，再发送出去。此时被发出的数据流也基本是伪随机的，从而降低了发送数据时产生的 EMI 噪声。</code></p>
+<ul>
+<li>加扰方式：一个一个来，流水线的。加扰一个symbol需要8个周期，<strong>附录C里有加解扰实现的c代码</strong><br>
+<img src="/images/PCIe/image-20241113225208958.png" alt="image-20241113225208958"></li>
+<li>COM 字符来指示初始化 LFSR。LFSR 的种子（D0-D15）的初始值为 FFFFh，接收到COM symbol时，接收端LFSR也要初始化。</li>
+<li>哪些要加扰，哪些不用加扰？
+<ul>
+<li>数据加扰，一些特殊顺序集和特殊symbol不用加扰（参考本节规范）</li>
+</ul>
+</li>
+<li>配置结束（？）后才可以禁用加扰</li>
+<li>自回环不用加扰</li>
+</ul>
+<h5 id="编码方式encoding-for-25-gts-and-50-gts-data-rates"><a class="markdownIt-Anchor" href="#编码方式encoding-for-25-gts-and-50-gts-data-rates"></a> 编码方式：Encoding for 2.5 GT/s and 5.0 GT/s Data Rates</h5>
+<h6 id="8b10b编码"><a class="markdownIt-Anchor" href="#8b10b编码"></a> 8b/10b编码</h6>
+<ul>
+<li>数据编码：为了使得链路上发送的1和0个数大致相等，相同的8b有两种可能被映射到10b编码，分为RD-和RD+
+<ul>
+<li>控制位Z确定编码方式选取</li>
+</ul>
+</li>
+<li>此外，控制字符（有什么用？用于链路管理机制，和区分TLP和DLLP）有其独特的编码，区分与数据的编码形式
+<ul>
+<li>These Special Symbols are used for various Link Management mechanisms described later in this chapter.</li>
+<li>Special Symbols are also used to frame DLLPs and TLPs, using distinct Special Symbols to allow these two types of Packets to be quickly and easily distinguished.</li>
+</ul>
+</li>
+<li>多个链路，比特的发送是这样的<br>
+<img src="/images/PCIe/image-20241113002111048.png" alt="image-20241113002111048"></li>
+</ul>
+<h6 id="8b10b解码"><a class="markdownIt-Anchor" href="#8b10b解码"></a> 8b/10b解码</h6>
+<ul>
+<li>按照规范附录B中的规则解码</li>
+</ul>
+<h5 id="8b10b物理层组帧与将符号映射到lanes"><a class="markdownIt-Anchor" href="#8b10b物理层组帧与将符号映射到lanes"></a> 8b/10b物理层组帧与将符号映射到lanes</h5>
+<p>这一节中文手册中短缺内容较多，参阅英文手册</p>
+<ul>
+<li>
+<p>什么是symbol time</p>
+<ul>
+<li>完成一次传输所用的时间，参见上图</li>
+</ul>
+</li>
+<li>
+<p>物理层各个lane上要传输什么：</p>
+<ul>
+<li>Ordered Sets：用于管理链路、维护链路同步、标记重要事件（如链路开始或结束），并且通常用于控制和状态信息传输，而不是用于承载实际的用户数据。<br>
+在多个通道上同时出现，同步传输，所有lane上ordered set保持一致，接受测每个lane上收到的也应该一样</li>
+<li>TLPs 和 DLLPs：承载数据信息，有包头和包尾<br>
+在不同lane上分布传输<br>
+A properly formed TLP contains a minimum of 18 symbols between the STP and END or EDB Symbols.<br>
+单个STP/SDP（标识TLP和DLLP的开始）在一个symbol time最多只能放在链路上一次<br>
+<img src="/images/PCIe/image-20241113154807340.png" alt="image-20241113154807340"><br>
+<strong>传输两种包的格式，参见图4-5和4-6</strong><br>
+<strong>包是如何在各种宽度的链路上传输的，参见图4-7到4-9</strong></li>
+<li>IDLE data：没有控制集或者数据传输，也要传输idle data；这个idle data是8‘b0，也要加扰。8b/10b编码，就像对TLP和DLLP一样。接收方处于idle状态时，也要接收这些空闲数据。在传输idle data时（逻辑空闲期间），必须传输 SKP 有序集</li>
+</ul>
+</li>
+</ul>
+<h5 id="encoding-for-80-gts-and-higher-data-rates"><a class="markdownIt-Anchor" href="#encoding-for-80-gts-and-higher-data-rates"></a> Encoding for 8.0 GT/s and Higher Data Rates</h5>
+<ul>
+<li>
+<p>链路先使用8b/10b编码训练到L0，然后再提高数据速率，使用128/130b编码训练</p>
+</li>
+<li>
+<p>一个symbol的大小是1字节</p>
+</li>
+<li>
+<p>编码格式</p>
+<ul>
+<li>包头：10是数据块，01是有序集块</li>
+<li>载荷：128b，SKP有序集块长度可变</li>
+</ul>
+</li>
+<li>
+<p>发送到链路上的方式</p>
+<p><strong>问题：怎么判断每个包的结束？</strong></p>
+<p>通过检测frame token实现包的起始，根据起始frame token里面的length字段判断包长度，然后判断包的结束。frame token的结束symbol是表示数据流的结束而不是单个包的结束</p>
+<p><img src="/images/PCIe/image-20241113233014462.png" alt="image-20241113233014462"><br>
+<img src="/images/PCIe/image-20241113233035946.png" alt="image-20241113233035946"><br>
+注意多链路情景下每个lane上开始都有包头</p>
+</li>
+<li>
+<p>发送到链路上的东西</p>
+<ul>
+<li>
+<p>有序集块</p>
+<ul>
+<li>多通道链路所有lane上必须同时传输相同的有序集，有序集的第一 个符号定义有序集的类型</li>
+<li>有序集的后续符号由有序集类型定义，并且在多通道链路的各通道之间不需要相同。</li>
+</ul>
+</li>
+<li>
+<p>有序集块的应用：块对齐<br>
+对齐是串行数据流对齐到并行边界；接收到EIEOS块，接收侧便以该块为边界，对齐它和今后接收到的数据。这个工作由GT完成</p>
+</li>
+<li>
+<p>During Link training, the 130 bits of the Electrical Idle Exit Ordered Set (EIEOS) are a unique bit  pattern that Receivers use to determine the location of the Block Sync Headers in the received bit stream.</p>
+<ul>
+<li>Unaligned Phase:：电气空闲状态下，接收者收到EIEOS则进入aligned phase</li>
+<li>aligned phase：再接收到EIEOS有序集，则调整对齐性。如果接收到SDS有序集，则到LOCK状态</li>
+<li>Locked Phase：接收者不能调整对齐性，此时数据块会进来</li>
+</ul>
+<p><img src="/images/PCIe/image-20241114000212252.png" alt="image-20241114000212252"></p>
+</li>
+<li>
+<p>数据块</p>
+<ul>
+<li>它由 Framing Tokens，TLP 和 DLLP 组成
+<ul>
+<li>什么是frame tokens?</li>
+<li>标志包的开始，<strong>数据流</strong>而不是单个包的结束，以及链路空闲状态</li>
+</ul>
+</li>
+<li>SDS Ordered Set后的第一个symbol，数据块开始；结束于数据块的最后一个symbol，该symbol位于下一个有序集之前，且该有序集不能是SKP有序集</li>
+<li>物理层传输的DLLP和TLP的结构<br>
+<img src="/images/PCIe/image-20241114143838978.png" alt="image-20241114143838978"><br>
+FP和FCRC字段的计算方法参考规范</li>
+<li>物理层如何传输数据流？<br>
+<img src="/images/PCIe/image-20241114143948294.png" alt="image-20241114143948294">
+<ul>
+<li><strong>注意点：</strong></li>
+<li>数据包在链路上的分布</li>
+<li>每一个独特的包都要有对应的起始frame token</li>
+<li>frame token里面包含信息，指定了本报文的大小</li>
+<li>一个包传完了，剩下后面是IDL frame token</li>
+<li>跨越128b边界的包会分多次传，第二次以后也要附加 sync header</li>
+<li>只有数据流结束的时候才会有表示结束的frame token</li>
+</ul>
+</li>
+<li>物理层传输一个数据流的开始与结束，数据流后面跟一个有序集<br>
+<img src="/images/PCIe/image-20241114144403203.png" alt="image-20241114144403203">
+<ul>
+<li>注意点</li>
+<li>数据流的结束以一个数据块symbol15高位lane的EDS为结尾</li>
+<li>然后跟有序集的sync header</li>
+<li>然后跟有序集的内容</li>
+<li>可以在有序集的后面恢复数据流（对应data bolck 的sync header</li>
+</ul>
+</li>
+<li>发送方传输数据块的规则（更细节）
+<ul>
+<li>发送一个TLP
+<ul>
+<li>发送STP token，然后发送TLP，但每个symbol time 只能发送一个STP</li>
+<li>TLP的大小必须和length字段规定的一样</li>
+</ul>
+</li>
+<li>发送一个DLLP
+<ul>
+<li>发送SDP token，然后紧接着DLLP，每个symbol time 只能发送一次SDP</li>
+</ul>
+</li>
+<li>在数据流中发送一个SKP有序集，但不中断数据流
+<ul>
+<li>在当前数据块最后一个symbol time 的高位链路上发送一个EDS token</li>
+<li>当前数据块之后发送这个有序集</li>
+<li>在这个有序集后必须跟一个数据块（参见规范原文叙述）</li>
+</ul>
+</li>
+<li>结束一个数据流
+<ul>
+<li>在当前数据块最后一个symbol time的最后一个DW中发送EDS token</li>
+<li>然后紧接着EIEOS有序集（不考虑电源管理）</li>
+</ul>
+</li>
+<li>数据流未中断，但是不传输TLP或者DLLP
+<ul>
+<li>发送IDL token</li>
+</ul>
+</li>
+<li>多lane链路的特殊要求
+<ul>
+<li>传输IDL token之后，在以后若干个symbol time的lane0传输SDP或STP的第一个symbol。</li>
+<li>可以在相同symbol time里接着传输EDS token</li>
+<li>一个symbol time中，一个数据包结束，且不打算在崩symbol time里面新开数据包，后面多余的lane需要用IDL token填满。可以在最高DW填EDS</li>
+<li>token必须放置在为4倍数的lane上</li>
+</ul>
+</li>
+<li>接收方接收数据块的规则
+<ul>
+<li>不打算做错误处理，只做正常的逻辑</li>
+<li>接收端需要预期某个symbol time可以接收到frame token</li>
+<li>接受到STP token，计算FP和FCRC,然后根据length从链路里提取包</li>
+<li>接收到SDP token，一样的方法</li>
+<li>接收到EDB token可以设置为向链路层报告</li>
+<li>接收器收到EDS token：
+<ul>
+<li>停止接收数据</li>
+<li>后续只可以接收到SKP，EIOS 或 EIEOS 有序集</li>
+<li>接收方将使用 SKP 有序集后的数据块的 第一个符号恢复数据流处理</li>
+</ul>
+</li>
+<li>收到IDL token
+<ul>
+<li>对于 x8，x12，x16 和 x32 链路，下一个要处理的 Token 是 IDL Token 后的下一个 DW 对齐 Lane 中接收到的符号。例如， 如果在 x16 链路的 Lane 4 中接收到 IDL Token，则下一个 Token 位置是同一 Symbol Time 的 Lane 8。但是，如果在 x8链路的 Lane 4 上接收到 IDL Token，则下一个 Token 位置是下一个 Symbol Time 的 Lane 0。</li>
+</ul>
+</li>
+<li>考虑lane to lane skrew<br>
+<img src="/images/PCIe/image-20241114152650161.png" alt="image-20241114152650161"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>从帧错误中恢复
+<ul>
+<li>暂时不实现</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="数据加解扰128b130b"><a class="markdownIt-Anchor" href="#数据加解扰128b130b"></a> 数据加解扰（128b/130b）</h5>
+<ul>
+<li>位于数据组帧之后</li>
+<li>同步头不加扰</li>
+<li>不加扰vs不执行LFSR
+<ul>
+<li>不加扰指的是只把原来的symbol放在链路上，但是这些symbol还要进入LFSR，以产生下一个伪随机码</li>
+<li>不执行LFSR指的是直接把symbol放在链路上，同时并不将这些symbol进入LFSR</li>
+</ul>
+</li>
+<li>有序集对于要不要加扰的特殊情景（参照规范原文）
+<ul>
+<li>电气空闲退出有序集（EIEOS）的所有 16 个符号都要 bypass 掉加扰。在发送时，发送 EIEOS 的最后一个符号后，将对加扰 的 LFSR 进行初始化；在接收时，接收到 EIEOS 的最后一个符号后，将对解扰的 LFSR 进行初始化。</li>
+<li>etc</li>
+<li>除 SKP 有序集外，发送器会对所有有序集的所有符号都会推进 LFSR。对于 SKP 有序集的任何符号，都不推进 LFSR。这里推 进的意思是让 LFSR 产生下一个伪随机码。</li>
+<li>etc</li>
+</ul>
+</li>
+<li>LFSR 的种子值取决于当链路首次进入 Configuration.Idle（即从 LinkUp = 0b 的 Detect 进入 Polling 时）时分配给该 Lane 的 Lane number。具体信息看规范</li>
+<li>shared lfsr
+<ul>
+<li>seperate lfsr针对每一个链路例化一个lfsr，第i位输出=第i位输入 异或 lfsr输出</li>
+<li>shared lfsr只例化一个lfsr，第i位输出 = 抽头系数 异或 第i位输入</li>
+<li>抽头系数在协议规范里说明了，就是lfsr不同节点处的输出</li>
+<li><strong>种子值到底是多少，没有规定。</strong></li>
+</ul>
+</li>
+</ul>
+<h5 id="预编码"><a class="markdownIt-Anchor" href="#预编码"></a> 预编码</h5>
+<ul>
+<li>32.0GT/s以上速率要求，我不需要</li>
+</ul>
+<h5 id="128b130b的自回环"><a class="markdownIt-Anchor" href="#128b130b的自回环"></a> 128b/130b的自回环</h5>
+<ul>
+<li>传输有序集块和数据块的一些特殊要求：例如有序集到数据，不需要传输SDS有序集</li>
+<li>当使用 128b/130b 编码时，Loopback Slave 必须转发所有接收到的未被修改的比特流，除了 SKP 有序集，可以根据需要对它们进 行调整以进行时钟补偿。</li>
+<li>这里感觉涉及到了对齐（指的是接收端lane对齐）<img src="/images/PCIe/image-20241114195741928.png" alt="image-20241114195741928"></li>
+</ul>
+<h5 id="链路均衡感觉可以不用先做这个"><a class="markdownIt-Anchor" href="#链路均衡感觉可以不用先做这个"></a> 链路均衡（感觉可以不用先做这个）</h5>
+<p>链路训练完之后进行的过程。接收有序集表明一定已经进行了块对齐。</p>
+<p>调节每个lane的发送和接受测设置，改善信号传输</p>
+<p>还涉及到一些链路训练相关知识点，但是不至于太复杂。多数是速率切换时的L0-&gt;recovery</p>
+<ul>
+<li>
+<p>在所有速率8G以上的情形，都是必须的</p>
+</li>
+<li>
+<p>均衡按照顺序进行，速率切换后先在8G下进行；成功后，再进行16G的均衡。</p>
+</li>
+<li>
+<p>DLLP blocking</p>
+<ul>
+<li>在下行端口完成均衡前，它不会发出DLLP</li>
+<li>在上行端口在下行端口处收到DLLP之前，它需要阻断DLLP的传输</li>
+</ul>
+</li>
+<li>
+<p>注意到，链路均衡启动信息在上行端口和下行端口之间的传输是借助TS2 order sets,改变其中的某些位来提示是否请求链路均衡，本端口是否空闲，以及目标速率是多少。（必须收到连续的8个这样的有序集）</p>
+<ul>
+<li><strong>这个操作应该默认块对齐已经完成，不然咋收有序集？</strong></li>
+</ul>
+</li>
+<li>
+<p>链路均衡化涉及到上行端口和下行端口的严格交互，但是我设计的这个只有一个上行端口，自回环情景下不知道能不能同时当作一个上行端口？</p>
+<ul>
+<li>真正测这的时候可能需要两块板子相连</li>
+</ul>
+</li>
+<li>
+<p>关于是否允许进行链路均衡，且不产生其他副作用<br>
+<img src="/images/PCIe/image-20241224200956951.png" alt="image-20241224200956951"></p>
+</li>
+<li>
+<p><strong>均衡步骤：</strong>（<strong>每发32个TS1/TS2，必须接一个EIEOS</strong>）阶段2和阶段3是可选的，但是会提高误码率</p>
+</li>
+<li>
+<p>阶段0：（1/2到3）</p>
+<ul>
+<li>下行端口发：切换到目标速率之前，源自下游端口，在Recovery.RcvrCfg状态，使用8b10b编码，以 EQ TS2 有序集，让下游端口给上游端口发送这些值。发送两个，一个是上游端口发送者预设，一个是上游端口接收者预设提醒</li>
+<li>上行端口收，发：切换到目标速率之后，上游端口将使用其接收到的 preset 值发送 TS1 有序集。</li>
+<li>切换到目标速率后，下游端口要不要发，应该怎么发有序集，在阶段1中规定（下游端口在速率切换后发TS1涉及到阶段0切换到阶段1）</li>
+<li>spec5.0规定：(2-&gt;3)在数据速率改变到需要执行均衡的更高数据速率后，下游端口发送具有先前收到 preset 值的 TS1 有序 集；当发送器使用 reduced swing时 preset 值必须在 Section 8.3.3.3 中定义的可操作范围内</li>
+</ul>
+</li>
+<li>
+<p>阶段0（3到4）</p>
+<ul>
+<li>下行端口发：切换到目标速率之前，源自下游端口，在Recovery.RcvrCfg状态，使用128b130b编码，以8GT EQ TS2 有序集，让下游端口给上游端口发送这些值。发送两个，一个是上游端口发送者预设，一个是上游端口接收者预设提醒</li>
+<li>（可选）上行端口发：切换到目标速率之前，源自上游端口，在Recovery.RcvrCfg状态，使用128b130b编码，以8GT EQ TS2 有序集，让上游端口给下游端口发送16G发射器预设设置。如果这被实现，那么速率切换到16G之后，下游端口将用这些预设传输TS1有序集（指的是从阶段0到阶段1）</li>
+<li>上行端口收，发：无论可选功能是否实现，上游端口都会使用之前收到的预设传输TS1有序集</li>
+</ul>
+</li>
+<li>
+<p>阶段1：两个组件交换TS1有序集，误码率达到10的-4次以下。</p>
+<ul>
+<li>（可选）下行端口发：如果当前数据运行速率为 16.0 GT/s 且在 Recovery.RcvrCfg 中接收到八个连续的 8GT EQ TS2 有序集，则下行端口将使用 Recovery.RcvrCfg 中从上行端口接收到的预设值，通过向上行端口传输 EC=01b（表示阶段 1）的 TS1 有序集来启动阶段 1。</li>
+<li>下行端口发：（1/2到3，或者3到4可选功能没有实现）下行端口使用其本身的预设值发送TS1有序集，向上行端口传输 EC=01b（表示阶段 1）的 TS1 有序集来启动阶段 1</li>
+<li>上行端口再收，再发：上行端口在必要时调整其接收器以确保其能够继续进行均衡过程后，接收这些 TS1 有序集并转换到阶段 1（传输具有 EC=01b 的 TS1 有序集）</li>
+<li>下行端口再收，再发：下行端口能接收来自上行端口EC=01的TS1有序集并处理，才能进入阶段2</li>
+</ul>
+</li>
+<li>
+<p>阶段2：上游端口在每个lane上<strong>继续</strong>调整下游端口发送器设置和他自己的接收器设置，达到一定的误码率限制</p>
+<ul>
+<li>
+<p>下游端口通过将 EC = 10b 的 TS1 有序集发送到上游端口来启动进 入 Phase 2。</p>
+</li>
+<li>
+<p>阶段1下游端口只向上游端口发preset;阶段2下游端口向上游端口发preset和系数。</p>
+<ul>
+<li>在响应系数请求的任何一种情况下，传输的 TS1 有序集的预设字段不会不同于传输的最后一个预设值。</li>
+</ul>
+</li>
+<li>
+<p>上行端口接收这些有序集，并可能请求不同的系数或预设设置，并继续评估每个设置，直到找到操作下行通道的最佳设置</p>
+</li>
+<li>
+<p>上行端口完成此阶段后，它通过向下行端口传输 EC=11b 的 TS1 有序集将链路移动到阶段 3。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>阶段3：下游端口在每个lane上<strong>继续</strong>调整上游端口发送器设置和他自己的接收器设置，达到一定的误码率限制</p>
+<ul>
+<li>上游端口通过将 EC = 11b 的 TS1 有序集发送到下游端口来启动进 入 Phase 3。</li>
+<li>阶段1上游端口只向下游端口发preset;阶段3上游端口向下游端口发preset和系数。</li>
+<li>下行端口接收这些有序集，并可能请求不同的系数或预设设置，并继续评估每个设置，直到找到操作上行通道的最佳设置</li>
+<li>下游端口通过发送 EC = 00b 的 TS1 有序集来发信号通知 Phase 3（以及均衡过程）结束。</li>
+</ul>
+</li>
+<li>
+<p>总结：链路均衡就是上行端口/下行端口的两个发送/接收对，找出一组最适合的预设集/系数，然后配置两个发送/接收对每条lane的发送器和接收器。</p>
+</li>
+<li>
+<p>组件用于调整其链接伙伴的发送器的算法以及对该发送器设置与其接收器设置的评估是特定于实现的。</p>
+<ul>
+<li>怎么确定最优的算法，什么样的指标评估某组预设集/系数的优良程度，协议里没有规定。</li>
+<li>pcie block IP里面没有链路均衡的代码</li>
+<li>一个猜想：phy_ip里面做了均衡评估，系数最佳的时候它会把tx/rx done 拉高</li>
+</ul>
+</li>
+<li>
+<p>一个链路组件收到一个让它调整发送器/接收器的TS1有序集，则该组件得按照里面的系数信息调整；它发出的TS1有序集包含的系数信息，和它收到并调整的一致。</p>
+</li>
+<li>
+<p>调整系数的请求可以被接受或拒绝。如果为 Lane 请求的系数 集被接受，则必须在发送器设置中反映出来，然后在传输的 TS1 有序集中反映出来。如果为 Lane 请求的系数集被拒绝，则不会 更改发送器设置，但发送的 TS1 有序集必须反映所请求的系数以及将 Reject Coefficient 字段设置为 1b。</p>
+</li>
+<li>
+<p>回环模式：在环回状态下，环回主控负责通过以 2.5 GT/s 或 5.0 GT/s 数据速率传输的 EQ TS1 有序集传达希望从控使用的发送器和接收器设置，以及希望被测设备在以 8.0 GT/s 或更高数据速率传输的 TS1 有序集中运行的预设或系数设置。同样，如果通过 TS1 有序集进入 8.0 GT/s 或更高数据速率的轮询合规状态，则执行测试的实体需要根据第 4.2.6.2 节中定义的机制发送适当的 EQ TS1 有序集和系数，以供被测设备运行。</p>
+</li>
+</ul>
+<h6 id="发送方系数"><a class="markdownIt-Anchor" href="#发送方系数"></a> 发送方系数</h6>
+<p>说了一些系数的取值范围，FS和LF，IP核提供了接口。</p>
+<p><img src="/images/PCIe/image-20241226222015369.png" alt="image-20241226222015369"></p>
+<ul>
+<li>
+<p>IMPLEMENTATION NOTE Equalization Example</p>
+<ul>
+<li>中文手册219页</li>
+<li>按照phase的介绍，不断发起/接收系数变更请求</li>
+</ul>
+</li>
+<li>
+<p>发送者系数：约束FIR滤波器的一些系数</p>
+<ul>
+<li>系数怎么确定？<br>
+Link equalization is achieved by using the preset values defined in PCIe specification. Preset values are configurations that can modify the characteristics of the transmitted data wave form. Figure 6-1 shows select preset values in waveform and eye diagram.<br>
+<img src="/images/PCIe/image-20241226184012076.png" alt="image-20241226184012076"></li>
+</ul>
+</li>
+<li>
+<p>phy ip ug说了该以如何的时序传输均衡所需参数，但是没有说明这些参数是怎么来的。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.intel.com/content/www/us/en/docs/programmable/683617/21-1/phy-ip-core-for-pcie-pipe-link-equalization.html%E8%BF%99%E9%87%8C%E4%BC%BC%E4%B9%8E%E6%9C%89%E8%AF%B4%E6%98%8E">https://www.intel.com/content/www/us/en/docs/programmable/683617/21-1/phy-ip-core-for-pcie-pipe-link-equalization.html这里似乎有说明</a></li>
+<li>方法是用不同的参数手动扫描眼图，看误码率是否在10^-12以下。官方手动眼图扫描教程<a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/article/73208?language=en_US">https://adaptivesupport.amd.com/s/article/73208?language=en_US</a></li>
+<li>链路均衡系数没有被链路伙伴接受<a target="_blank" rel="noopener" href="https://adaptivesupport.amd.com/s/question/0D54U00006Rx98SSAR/ku15p-pcie-phy%E5%AF%B9%E4%BA%8E%E7%AC%AC%E4%B8%89%E6%96%B9mac%E4%BF%A1%E5%8F%B7%E5%9D%87%E8%A1%A1%E7%9A%84%E5%A4%84%E7%90%86?language=en_US">https://adaptivesupport.amd.com/s/question/0D54U00006Rx98SSAR/ku15p-pcie-phy对于第三方mac信号均衡的处理?language=en_US</a></li>
+<li>Please refer to the file pcie4_uscale_plus_0_pl_eq.v for detailed code of using the EQ，This file can be found in PCIE IP core说明了链路均衡可以直接参考的代码来源</li>
+</ul>
+</li>
+</ul>
+<h5 id="链路初始化和训练"><a class="markdownIt-Anchor" href="#链路初始化和训练"></a> 链路初始化和训练</h5>
+<ul>
+<li>实现功能<br>
+<img src="/images/PCIe/image-20241114211503897.png" alt="image-20241114211503897"></li>
+<li>链路训练协商的信息<br>
+<img src="/images/PCIe/image-20241114211534588.png" alt="image-20241114211534588"></li>
+<li>链路训练包含的功能<br>
+<img src="/images/PCIe/image-20241114211612332.png" alt="image-20241114211612332"></li>
+</ul>
+<h5 id="训练序列"><a class="markdownIt-Anchor" href="#训练序列"></a> 训练序列</h5>
+<ul>
+<li>
+<p><strong>TS1和TS2的作用：位对齐，symbol对齐，交换物理层参数</strong></p>
+</li>
+<li>
+<p>8b/10b下不加扰；128/130b下按照4.2.2.4中的规则决定是否加扰</p>
+</li>
+<li>
+<p>训练序列由TS1和TS2组成，对于8G还会有EQ TS1和EQ TS2；对于16G还会有8GT EQ TS2</p>
+</li>
+<li>
+<p>训练序列连续（只能被SKPOS中断，或者5G及以上情况的EIEOS中断）</p>
+<ul>
+<li>对于1.0和2.0，Symbol 6 matches the Symbol 6 of the previous TS1 or TS2 Ordered Set.</li>
+<li>对于3.0和4.0，TS1 or TS2 Ordered Sets are considered consecutive only if Symbols 6-9 match Symbols 6-9 of the previous TS1 or TS2 Ordered Set</li>
+</ul>
+</li>
+<li>
+<p>直流平衡</p>
+<ul>
+<li>发送方必须跟踪-511到+511之间的直流平衡（0比1多511个或者少511个），且计数器在溢出后保持511不变，但是减少时是从511开始减少
+<ul>
+<li>For example, a counter that can track a difference of 511 bits will saturate at 511 if a difference of 513 is detected, and then change to 509 if the difference is reduced by 2 in the future.</li>
+</ul>
+</li>
+<li>直流平衡计数值在发送方脱离电气空闲状态；或者收到EIEOS后跟数据后重置</li>
+<li>TS1和TS2也要保持直流平衡，这是根据训练序列中前面symbol的特征，设置不同的symbol14和symbol15来实现的</li>
+</ul>
+</li>
+<li>
+<p>Training control bits 是独占的，同时只能有效最多一个</p>
+</li>
+<li>
+<p>TS1训练序列的取值，原始是table 4.5</p>
+<ul>
+<li>symbol0：gen1/2：k28.5；gen3/4：1Eh</li>
+<li>symbol1：link number：标识该链路的编号，用于唯一标识系统中多个链路之间的差异。
+<ul>
+<li>取值指的是要么在某个范围，要么就是PAD</li>
+</ul>
+</li>
+<li>symbol2：Lane Number within Link：标识当前物理 Lane 在该链路中的编号/PAD</li>
+<li>symbol3：接收者请求的快速训练序列数目</li>
+<li>symbol4：链路数据速率</li>
+<li>symbol5：链路控制，包括复位，disable link，自回环</li>
+<li>symbol6-9：标准TS1或者链路均衡相关</li>
+<li>symbol10-13：标准TS1，随速率不同</li>
+<li>symbol14-15：标准TS1或者直流平衡位（gen3/4）</li>
+</ul>
+</li>
+<li>
+<p>TS2训练序列的值，原始是table4.6</p>
+<ul>
+<li>symbol0-5：和TS1一致</li>
+<li>symbol6-7：标准TS2或者链路均衡相关</li>
+<li>symbol8-13：标准TS2标识符。随速率不同</li>
+<li>symbol14-15：标准TS2或者直流平衡位</li>
+</ul>
+</li>
+<li>
+<p>电气空闲序列EIOSQ</p>
+<ul>
+<li>
+<p>序列长度随速率不同：</p>
+<ul>
+<li>2.5G/8G/16G：一个EIOS</li>
+<li>5G：两个连续的EIOS</li>
+</ul>
+</li>
+<li>
+<p>序列定义随编码不同</p>
+<ul>
+<li>
+<p>8b10b：a K28.5 (COM) followed by three K28.3 (IDL) Symbols，Table 4-7:</p>
+<ul>
+<li>传输者必须传输所有的symbol</li>
+<li>当接收者收到COM和2个IDL后，就认为它收到一个EIOS序列了。</li>
+</ul>
+</li>
+<li>
+<p>128b130b：Table 4-8</p>
+<ul>
+<li>如果要在EIOS后发送附加的EIOS，那么必须传输全部symbol；如果传输完一个后直接进入电气空闲，则可以只传输symbol0到13.</li>
+<li>当接收者接收到symbol0到3时，就认为收到EIOS了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>电气空闲退出序列</p>
+<ul>
+<li>
+<p>gen1：规范里没有规定这个</p>
+</li>
+<li>
+<p>gen2/3/4table4-9/10/11</p>
+<ul>
+<li>用来使得接收者判定退出链路电气空闲状态</li>
+<li>在gen3/4中也用来进行块对齐</li>
+</ul>
+</li>
+<li>
+<p>传输场景：gen2</p>
+<ul>
+<li>Before the first TS1 Ordered Set after entering the LTSSM Configuration.Linkwidth.Start state.</li>
+<li>Before the first TS1 Ordered Set after entering the LTSSM Recovery.RcvrLock state.</li>
+<li>After every 32 TS1 or TS2 Ordered Sets are transmitted in the LTSSM  Configuration.Linkwidth.Start, Recovery.RcvrLock, and Recovery.RcvrCfg states. The TS1/TS2 count is set to 0 when:
+<ul>
+<li>An EIEOS is transmitted.</li>
+<li>The first TS2 Ordered Set is received while in the LTSSM Recovery.RcvrCfg state.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>传输场景：gen3/4</p>
+<ul>
+<li>Before the first TS1 Ordered Set after entering the LTSSM Configuration.Linkwidth.Start  substate.</li>
+<li>Before the first TS1 Ordered Set after entering the LTSSM Recovery.RcvrLock substate.</li>
+<li>Immediately following an EDS Framing Token when ending a Data Stream and not transmitting an EIOS and not entering the LTSSM Recovery.RcvrLock substate.</li>
+<li>After every 32 TS1 or TS2 Ordered Sets are transmitted in all LTSSM states which require  transmission of TS1 or TS2 Ordered Sets. The TS1/TS2 count is set to 0 when:
+<ul>
+<li>An EIEOS is transmitted.</li>
+<li>The first TS2 Ordered Set is received while in the LTSSM Recovery.RcvrCfg state.</li>
+<li>The first TS2 Ordered Set is received while in the LTSSM Configuration.Complete state.</li>
+<li>A Downstream Port is in Phase 2 of the LTSSM Recovery.Equalization state and two consecutive TS1 Ordered Sets are received on any Lane with the Reset EIEOS Interval Count bit set.</li>
+<li>An Upstream Port is in Phase 3 of the LTSSM Recovery.Equalization state and two consecutive TS1 Ordered Sets are received on any Lane with the Reset EIEOS Interval Count bit set.</li>
+</ul>
+</li>
+<li>After every 65,536 TS1 Ordered Sets are transmitted in the LTSSM Recovery.Equalization state if the Reset EIEOS Interval Count bit has prevented it from being transmitted for that interval. 15 Implementations are permitted to satisfy this requirement by transmitting an EIEOS within two TS1 Ordered Sets of when the scrambling LFSR matches its seed value.</li>
+<li>As part of an FTS Ordered Set, Compliance Pattern, or Modified Compliance pattern as  described in the relevant sections.</li>
+</ul>
+</li>
+<li>
+<p>以上传输场景很繁琐，也不是每一个都用得上。再次遇到这种情景不再摘录，只是点出所在页而已</p>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h5 id="链路训练状态机"><a class="markdownIt-Anchor" href="#链路训练状态机"></a> 链路训练状态机</h5>
+<h6 id="detect-httpswwwquchaome4081"><a class="markdownIt-Anchor" href="#detect-httpswwwquchaome4081"></a> detect <a target="_blank" rel="noopener" href="https://www.quchao.me/4081/">https://www.quchao.me/4081/</a></h6>
+<p>目的：检查对端是否存在</p>
+<p>简化实现：必须所有lane都检测到对端</p>
+<ul>
+<li>detect.quiet
+<ul>
+<li>初始状态，发送端处于EI，切速率为2.5G，初始化寄存器和变量</li>
+<li>具体是哪些配置寄存器和哪些变量，参见<a target="_blank" rel="noopener" href="https://www.quchao.me/4081/">https://www.quchao.me/4081/</a></li>
+</ul>
+</li>
+<li>detect.quiet -&gt; detect.active
+<ul>
+<li>要么12ms超时</li>
+<li>要么任意一条lane没有处于EI状态（表明对端LTSSM已经进入其他状态）</li>
+</ul>
+</li>
+<li>detect.active
+<ul>
+<li>发送方在所有位配置的lane上发送接收机检测序列</li>
+</ul>
+</li>
+<li>detect.active -&gt; any
+<ul>
+<li><img src="/images/PCIe/ltssm-detect-Detect.Active.jpg" alt="Detect.Active -&gt; Polling"></li>
+</ul>
+</li>
+</ul>
+<h6 id="polling-httpswwwquchaome4153"><a class="markdownIt-Anchor" href="#polling-httpswwwquchaome4153"></a> Polling <a target="_blank" rel="noopener" href="https://www.quchao.me/4153/">https://www.quchao.me/4153/</a></h6>
+<ul>
+<li>目的：实现 bit lock (位锁定)，Symbol lock (符号锁定) 和 Lane polarity (lane 极性反转)
+<ul>
+<li>我之前的工作，是卡在了这一步</li>
+</ul>
+</li>
+<li>polling.active
+<ul>
+<li>发射机在 Detect 状态检测到 Receiver 的所有 lane 上发射 TS1 Ordered Set。具体要求见笔记</li>
+</ul>
+</li>
+<li>polling.active -&gt; any
+<ul>
+<li><img src="/images/PCIe/ltssm-polling-Polling.Active.jpg" alt="Polling.Active状态跳转"></li>
+<li>简化1：只专注于满足条件1，就跳转到configuration</li>
+<li>简化2：满足条件1；或者满足条件2（polling.active进来之后，不是所有lane都退出EI);或者条件3（这个状态甚至不需要实现）</li>
+<li>简化3：不满足跳到以上两个，24ms超时后就跳到detect</li>
+</ul>
+</li>
+<li>polling.configuration
+<ul>
+<li>接收机必须处理极性反转；在 Detect 状态检测到 Receiver 的所有 lane 发送 TS2；其他可选和高级功能参见网站</li>
+<li><img src="/images/PCIe/ltssm-polling-Polling.Configuration.jpg" alt="Polling.Configuration状态跳转"></li>
+</ul>
+</li>
+<li>polling compliance
+<ul>
+<li>进入时会采样 Transmit Margin field (Link Control 2 寄存器的 bit [9：7]becomes effective on the transmit package pins within 192 ns of entry to this substate and remain effective through the time the LTSSM is in this substate.</li>
+<li>确定发射机发送 pattern 的速度</li>
+<li>确定发射机发送 pattern 的 De-emphasis/preset</li>
+<li>发送 compliance pattern 的类型，是 compliance pattern 还是 modified compliance pattern 或者 jitter compliance pattern 等</li>
+<li>感觉像是一个比较高级的状态。具体不细说，不知道有没有必要实现</li>
+<li>这个状态作用：如果信号质量不好，有些lane一直不能收到所需的TS1序列，超时后进入这个状态，微调发射器模拟参数，再次尝试接收TS1或者TS2</li>
+<li><img src="/images/PCIe/ltssm-polling-Polling.Compliance.jpg" alt="Polling.Compliance状态跳转"></li>
+</ul>
+</li>
+</ul>
+<p><strong>正常训练状态</strong></p>
+<p><img src="/images/PCIe/ltssm-polling-Polling.Active_eg1-1.jpg" alt="正常训练"></p>
+<h6 id="configuration-httpswwwquchaome4515"><a class="markdownIt-Anchor" href="#configuration-httpswwwquchaome4515"></a> Configuration  <a target="_blank" rel="noopener" href="https://www.quchao.me/4515/">https://www.quchao.me/4515/</a></h6>
+<ul>
+<li>要做的关键工作
+<ul>
+<li>link number 和 lane number 的确定</li>
+<li>lane-to-lane deskew，消除 lane 与 lane 之间的数据偏差</li>
+<li>决定是否需要做 EQ，以及 EQ 方式</li>
+</ul>
+</li>
+<li>子状态
+<ul>
+<li><code>Configuration.Linkwidth.Start</code></li>
+<li><code>Configuration.Linkwidth.Accept</code></li>
+<li><code>Configuration.Lanenum.Wait</code></li>
+<li><code>Configuration.Lanenum.Accept</code></li>
+<li><code>Configuration.Complete</code></li>
+<li><code>Configuration.Ilde</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="链路速率补偿"><a class="markdownIt-Anchor" href="#链路速率补偿"></a> 链路速率补偿</h5>
+<ul>
+<li>使用SKP有序集用来补偿链路两端比特率差异</li>
+</ul>
+<h5 id="接收者的链路裕量"><a class="markdownIt-Anchor" href="#接收者的链路裕量"></a> 接收者的链路裕量</h5>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+        <a data-aos="zoom-in" href="/2025/05/02/PCIe/PCIe%E7%89%A9%E7%90%86%E5%B1%82/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/2025/05/02/PCIe/PCIe%E7%89%A9%E7%90%86%E5%B1%82/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+      
+      
+        <span data-aos="zoom-in" id="/2025/05/02/PCIe/PCIe%E7%89%A9%E7%90%86%E5%B1%82/" class="leancloud_visitors article-visitor-link" data-flag-title="PCIe物理层">
+          <span class="leancloud-visitors-count">0</span>
+          <em class="post-meta-item-text">Readings</em>
+        </span>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%8D%8F%E8%AE%AE/" rel="tag">协议</a></li></ul>
+
+
+    </footer>
+  </div>
+  
+  <nav id="article-nav" data-aos="fade-up">
+    
+      
+      <div class="article-nav-link-wrap article-nav-link-left">
+        
+          <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215682.jpg" data-sizes="auto" alt="IB简介" class="lazyload">
+        
+        <a href="/2025/05/02/Infiniband/IB%E7%AE%80%E4%BB%8B/"></a>
+        <div class="article-nav-caption">Newer</div>
+        <h3 class="article-nav-title">
+          
+            IB简介
+          
+        </h3>
+      </div>
+    
+    
+    
+    <div class="article-nav-link-wrap article-nav-link-right">
+      
+        <img data-src="https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg" data-sizes="auto" alt="PCI总线概述" class="lazyload">
+      
+      <a href="/2025/05/02/PCIe/PCI%E6%80%BB%E7%BA%BF%E6%A6%82%E8%BF%B0/"></a>
+      <div class="article-nav-caption">Older</div>
+      <h3 class="article-nav-title">
+        
+          PCI总线概述
+        
+      </h3>
+    </div>
+    
+  </nav>
+
+
+</article>
+
+
+
+
+
+
+
+
+
+  <section id="comments" data-aos="fade-up">
+    <div class="comment-header">
+      
+      
+        
+      
+      <h2 class="comment-title">Leave a comment</h2>
+      <div class="comment-selector">
+        <div class="comment-selector-wrap">
+            
+            <div class="selector-item" data-selector="valine">
+              <span>valine</span>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="comment-content">
+      
+        <div class="comment valine-comment" data-aos="fade-up"
+          id="valine-comment">
+        </div>
+      
+    </div>
+  </section>
+
+
+</section>
+        </div>
+        <footer id="footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    
+    <div>
+      <span class="icon-copyright"></span>
+      
+      
+      
+        2020-2025
+      
+      <span class="footer-info-sep rotate"></span>
+      wanderingxs
+    </div>
+    
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener external nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener external nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+    
+    
+      <div>
+        <span class="icon-brush"></span>
+        36.6k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        02:21
+      </div>
+    
+    
+    
+    
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+    
+  </div>
+</footer>
+
+        
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav">
+  <div class="sidebar-wrap">
+    
+      
+        <div class="sidebar-toc-sidebar"><div class="sidebar-toc">
+  <h3 class="toc-title">Contents</h3>
+  <div class="sidebar-toc-wrapper toc-div-class" >
+      
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E7%A5%9E%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text"> 物理层神图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E9%80%BB%E8%BE%91%E5%AD%90%E6%A8%A1%E5%9D%97"><span class="toc-number">2.</span> <span class="toc-text"> 物理层（逻辑子模块）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5%E8%A7%A3%E9%87%8A"><span class="toc-number">2.0.1.</span> <span class="toc-text"> 概念解释</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E6%89%B08b10b"><span class="toc-number">2.1.</span> <span class="toc-text"> 数据加解扰（8b&#x2F;10b）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8Fencoding-for-25-gts-and-50-gts-data-rates"><span class="toc-number">2.2.</span> <span class="toc-text"> 编码方式：Encoding for 2.5 GT&#x2F;s and 5.0 GT&#x2F;s Data Rates</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#8b10b%E7%BC%96%E7%A0%81"><span class="toc-number">2.2.1.</span> <span class="toc-text"> 8b&#x2F;10b编码</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#8b10b%E8%A7%A3%E7%A0%81"><span class="toc-number">2.2.2.</span> <span class="toc-text"> 8b&#x2F;10b解码</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#8b10b%E7%89%A9%E7%90%86%E5%B1%82%E7%BB%84%E5%B8%A7%E4%B8%8E%E5%B0%86%E7%AC%A6%E5%8F%B7%E6%98%A0%E5%B0%84%E5%88%B0lanes"><span class="toc-number">2.3.</span> <span class="toc-text"> 8b&#x2F;10b物理层组帧与将符号映射到lanes</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#encoding-for-80-gts-and-higher-data-rates"><span class="toc-number">2.4.</span> <span class="toc-text"> Encoding for 8.0 GT&#x2F;s and Higher Data Rates</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E6%89%B0128b130b"><span class="toc-number">2.5.</span> <span class="toc-text"> 数据加解扰（128b&#x2F;130b）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%A2%84%E7%BC%96%E7%A0%81"><span class="toc-number">2.6.</span> <span class="toc-text"> 预编码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#128b130b%E7%9A%84%E8%87%AA%E5%9B%9E%E7%8E%AF"><span class="toc-number">2.7.</span> <span class="toc-text"> 128b&#x2F;130b的自回环</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%9D%87%E8%A1%A1%E6%84%9F%E8%A7%89%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E5%85%88%E5%81%9A%E8%BF%99%E4%B8%AA"><span class="toc-number">2.8.</span> <span class="toc-text"> 链路均衡（感觉可以不用先做这个）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E6%96%B9%E7%B3%BB%E6%95%B0"><span class="toc-number">2.8.1.</span> <span class="toc-text"> 发送方系数</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E8%AE%AD%E7%BB%83"><span class="toc-number">2.9.</span> <span class="toc-text"> 链路初始化和训练</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E5%BA%8F%E5%88%97"><span class="toc-number">2.10.</span> <span class="toc-text"> 训练序列</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E8%AE%AD%E7%BB%83%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">2.11.</span> <span class="toc-text"> 链路训练状态机</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#detect-httpswwwquchaome4081"><span class="toc-number">2.11.1.</span> <span class="toc-text"> detect https:&#x2F;&#x2F;www.quchao.me&#x2F;4081&#x2F;</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#polling-httpswwwquchaome4153"><span class="toc-number">2.11.2.</span> <span class="toc-text"> Polling https:&#x2F;&#x2F;www.quchao.me&#x2F;4153&#x2F;</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#configuration-httpswwwquchaome4515"><span class="toc-number">2.11.3.</span> <span class="toc-text"> Configuration  https:&#x2F;&#x2F;www.quchao.me&#x2F;4515&#x2F;</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%93%BE%E8%B7%AF%E9%80%9F%E7%8E%87%E8%A1%A5%E5%81%BF"><span class="toc-number">2.12.</span> <span class="toc-text"> 链路速率补偿</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E8%80%85%E7%9A%84%E9%93%BE%E8%B7%AF%E8%A3%95%E9%87%8F"><span class="toc-number">2.13.</span> <span class="toc-text"> 接收者的链路裕量</span></a></li></ol></li></ol>
+      
+  </div>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/gg1bddca.gif" data-sizes="auto" alt="wanderingxs" class="lazyload">
+  <div class="sidebar-author-name">wanderingxs</div>
+  <div class="sidebar-description">TCP连接又建不起来了</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">8</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">5</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">3</div>
+  </div>
+</div>
+<div class="sidebar-social">
+  
+</div>
+<div class="sidebar-menu">
+  
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="Home"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="Archives"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="About"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+    
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="Friend"></a>
+        <div class="sidebar-menu-icon icon rotate">
+          &#xe62b;
+        </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+    
+  
+</div>
+</div>
+      
+    
+  </div>
+  
+    
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+    
+  
+</nav>
+
+    </div>
+    
+      <div class="site-search">
+        <div class="reimu-popup popup">
+          <div class="reimu-search">
+            <div class="reimu-search-input-icon"></div>
+            <div class="reimu-search-input" id="reimu-search-input"></div>
+            <div class="popup-btn-close"></div>
+          </div>
+          <div class="reimu-results">
+            <div id="reimu-stats"></div>
+            <div id="reimu-hits"></div>
+            <div id="reimu-pagination" class="reimu-pagination"></div>
+          </div>
+          <img class="reimu-bg" src="/images/reimu.png"/>
+        </div>
+      </div>
+    
+    
+    
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+  
+<script src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js" integrity="sha384-vLev0II0HKFaxkcm+&#x2F;7kX5IGwVFBASkGchU311wmU&#x2F;veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+  
+<script src="/js/generator_search.js" defer></script>
+
+
+
+
+
+
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.1.1/dist/index.umd.js" integrity="sha384-8LyaidD9GPxQQgLJO&#x2F;WRw&#x2F;O2h3BoNq&#x2F;ApI&#x2F;ecpvM6RsrCz2qP2ppBXUKihP4V&#x2F;2d" crossorigin="anonymous"></script>
+
+  <script>
+    window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'))
+  </script>
+
+
+
+
+
+  <script>
+    function initLive2d() {
+      live2d.init("https://fastly.jsdelivr.net/gh/D-Sketon/plugin-live2d/", {themeTipsPath: ""});
+    }
+  </script>
+  
+<script src="https://fastly.jsdelivr.net/gh/D-Sketon/plugin-live2d/js/live2d-autoload.js" onload="initLive2d &amp;&amp; initLive2d()" async></script>
+
+
+
+
+  
+<script src="https://npm.webcache.cn/live2d-widgets@0.9.0/autoload.js" integrity="sha384-poTN7wN&#x2F;SqNhQqo3jdFeX20ikddWeFGkUkDEzsKjgH&#x2F;ez8aQLn81oI0Cw6q5xNyB" crossorigin="anonymous"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+    
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "wanderingxs",
+          title: "PCIe物理层",
+          url: "https://amakawamasahir0.github.io/2025/05/02/PCIe/PCIe%E7%89%A9%E7%90%86%E5%B1%82/",
+          excerpt: "介绍PCIe物理层实现的功能",
+          description: "",
+          stripContent: " 物理层神图    物理层（逻辑子模块） 规范最烂的一点就是写作顺序不符合人的思维顺序。比如物理层不讲链路怎么初始化，就讲传输包的格式和方法。具体怎么个传输流程，还他妈得我自己总结。   干了什么工作？   按照数据流来看（也有一个逆向过程）  假设链路已经得到初始化，链路上可以进行收发数据 加/减包头和包尾，编/解码 加/解扰（8b/10b可能不用） 把数据发到链路上 从链路上接收数据，考虑到lane to lane skrew，要进行对齐调整    链路初始化和训练   链路训练状态机   ",
+          date: "Fri May 02 2025 17:48:53 GMT+0800",
+          updated: "Sun May 04 2025 10:49:28 GMT+0800",
+          cover: "https://cdn.jsdelivr.net/gh/amakawaMasahir0/blog_image_bed@master/img/202505032215106.jpg",
+        };
+      </script>
+       
+    
+    
+      
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+        
+      
+    
+    
+      <script type="module" data-pjax>
+        const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+        
+        const pswp = () => {
+          if (_$$('.article-entry a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-entry',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          if(_$$('.article-gallery a.article-gallery-item').length > 0) {
+            new PhotoSwipeLightbox({
+              gallery: '.article-gallery',
+              children: 'a.article-gallery-item',
+              pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+            }).init();
+          }
+          window.lightboxStatus = 'done';
+          window.removeEventListener('lightbox:ready', pswp);
+        }
+        if(window.lightboxStatus === 'ready') {
+          pswp()
+        } else {
+          window.addEventListener('lightbox:ready', pswp);
+        }
+      </script>
+      
+        
+
+
+
+
+
+
+
+
+<script data-pjax>
+  var loadScript = (src, integrity) => {
+    const script = document.createElement('script');
+    script.src = src;
+    if (integrity) script.integrity = integrity;
+    script.crossOrigin = 'anonymous';
+    return script;
+  };
+
+  var commentConfigKeys = ['valine', 'waline', 'twikoo', 'gitalk', 'giscus'];
+  var commentConfig = {
+    valine: {
+      enable: true,
+      load: () => {
+        const container = document.querySelector('.valine-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/valine@1.5.1/dist/Valine.min.js',
+          'sha384-3ma91AExDeMAZ1rjTjaP8V2A2obQE+s5ltKRwYlwdpArz9xVbp0tF3b0VV2ACNPn'
+        );
+        script.onload = () => {
+          var GUEST_INFO = ['nick', 'mail', 'link'];
+          var guest_info = 'nick,mail,link'.split(',').filter((item) => {
+            return GUEST_INFO.indexOf(item) > -1
+          });
+          var recordIP = JSON.parse('true');
+          var highlight = JSON.parse('true');
+          var visitor = JSON.parse('true');
+          var serverURLs = 'https://zrnvqoxq.api.lncldglobal.com';
+
+          if (window.Valine) {
+            new Valine({
+              el: '.valine-comment',
+              appId: "zrnVQoxQHb8R7bVcJkUheSl5-MdYXbMMI",
+              appKey: "4FFftWoCmetu0akdzWM69pUJ",
+              placeholder: "留下你的评论...",
+              pageSize: '10',
+              avatar: 'mp',
+              lang: document.documentElement.lang || 'en',
+              recordIP: recordIP,
+              highlight: highlight,
+              visitor: visitor,
+              requiredFields: guest_info,
+              path: window.location.pathname,
+              serverURLs
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    },
+    waline: {
+      enable: false,
+      load: async () => {
+        const container = document.querySelector('.waline-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        let walineInit;
+        const walineCdn = 'https://npm.webcache.cn/@waline/client@2.15.8/dist/waline.mjs';
+        const walineIntegrity = 'sha384-9sbqJjrfGjbkI6/PI4nU/MvBfEmkkPC4YK9I4zBeMIf1CVCZdCMH/KinBEAZII/5';
+
+        const module = await safeImport(walineCdn, walineIntegrity);
+        walineInit = module.init;
+
+        window.walineInstance = walineInit({
+          el: '.waline-comment',
+          serverURL: '',
+          lang: document.documentElement.lang || 'en',
+          locale: {},
+          emoji: ["https://unpkg.com/@waline/emojis@1.2.0/weibo","https://unpkg.com/@waline/emojis@1.2.0/alus","https://unpkg.com/@waline/emojis@1.2.0/bilibili","https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/tieba","https://unpkg.com/@waline/emojis@1.2.0/tw-emoji"],
+          meta: ["nick","mail","link"],
+          requiredMeta: ["nick","mail"],
+          wordLimit: JSON.parse('0'),
+          comment: true,
+          pageSize: JSON.parse('10'),
+          dark: 'html[data-theme="dark"]',
+          pageview: JSON.parse('true'),
+        });
+      }
+    },
+    twikoo: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.twikoo-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/twikoo@1.6.16/dist/twikoo.all.min.js',
+          'sha384-lDHsr5aZmkMS0eKnsUu6e9RWP+dRmn7sgjRAKGOAoXfMyzbUK6Qi86zZK7R+KvRV'
+        );
+
+        script.onload = () => {
+          if (window.twikoo) {
+            twikoo.init({
+              envId: '',
+              el: '.tcomment',
+              region: '',
+              lang: document.documentElement.lang || 'en',
+            })
+          }
+        } 
+        document.head.appendChild(script);
+      }
+    },
+    gitalk: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.gitalk-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        const script = loadScript(
+          'https://npm.webcache.cn/gitalk@1.8.0/dist/gitalk.min.js',
+          'sha384-kspnZUWBoSWwoJHa0hBCXYbHGbhvU/lcEH5O8eVbSDhbPwsiVUTp/aGX/z/5EuMA'
+        );
+
+        script.onload = () => {
+          if (false) {
+            const md5Script = loadScript(
+              'https://npm.webcache.cn/blueimp-md5@2.19.0/js/md5.min.js',
+              'sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH'
+            );
+            md5Script.onload = initGitalk;
+            document.head.appendChild(md5Script);
+          } else {
+            initGitalk();
+          }
+        }
+        document.head.appendChild(script);
+
+        function initGitalk() {
+          var gitalkId = location.pathname;
+          var gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: null,
+            id: gitalkId,
+            distractionFreeMode: false,
+            language: document.documentElement.lang || 'en',
+          })
+          gitalk.render('gitalk-comment');
+        }
+      }
+    },
+    giscus: {
+      enable: false,
+      load: () => {
+        const container = document.querySelector('.giscus-comment');
+        if (!container) return;
+        container.style.display = 'block';
+
+        // 删除可能已存在的 giscus 脚本和 iframe
+        const existingScript = container.querySelector('script[src*="giscus.app/client.js"]');
+        if (existingScript) existingScript.remove();
+        const existingFrame = document.querySelector('iframe.giscus-frame');
+        if (existingFrame) existingFrame.remove();
+
+        const giscusScript = document.createElement('script');
+        const domMode = document.documentElement.getAttribute("data-theme");
+        giscusScript.src = 'https://giscus.app/client.js';
+        giscusScript.setAttribute('data-repo', '');
+        giscusScript.setAttribute('data-repo-id', '');
+        giscusScript.setAttribute('data-category', ''); 
+        giscusScript.setAttribute('data-category-id', '');
+        giscusScript.setAttribute('data-mapping', '0');
+        giscusScript.setAttribute('data-strict', '0');
+        giscusScript.setAttribute('data-reactions-enabled', '1');
+        giscusScript.setAttribute('data-emit-metadata', '0');
+        giscusScript.setAttribute('data-input-position', 'bottom');
+        giscusScript.setAttribute('data-theme', domMode === 'dark' ? 'dark' : 'light');
+        giscusScript.setAttribute('data-lang', document.documentElement.lang || 'en');
+        giscusScript.setAttribute('crossorigin', 'anonymous');
+        giscusScript.async = true;
+        container.appendChild(giscusScript);
+        document.body.addEventListener('light-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'light' } } }, 'https://giscus.app');
+        });
+        document.body.addEventListener('dark-theme-set', () => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: 'dark' } } }, 'https://giscus.app');
+        });
+      }
+    }
+  }
+  commentConfig.enable = commentConfigKeys.some(key => commentConfig[key].enable);
+
+  var defaultComment = '';
+  if (commentConfig.enable) {
+    // 1. 首先检查localStorage中是否有保存的评论类型
+    var savedCommentType = localStorage.getItem('commentType');
+    
+    // 2. 如果localStorage中有值且对应的评论系统可用，就使用它
+    if (savedCommentType) {
+      if (commentConfig[savedCommentType]?.enable) {
+        defaultComment = savedCommentType;
+      }
+    }
+    
+    // 3. 如果localStorage无效，检查配置的默认评论系统
+    if (!defaultComment) {
+      var configDefault = 'valine';
+      if (commentConfig[configDefault]?.enable) {
+        defaultComment = configDefault;
+      }
+    }
+    
+    // 4. 如果前两项都无效，按指定顺序找到第一个可用的评论系统
+    if (!defaultComment) {
+      defaultComment = commentConfigKeys.find(sys => commentConfig[sys].enable) || '';
+    }
+  }
+  function loadComments() {
+    if (!commentConfig.enable) return;
+    // 评论组件加载状态跟踪
+    const loadedComments = {
+      valine: false,
+      waline: false,
+      twikoo: false,
+      gitalk: false,
+      giscus: false
+    };
+
+    // 隐藏所有评论容器
+    const hideAllComments = () => {
+      const commentContainers = document.querySelectorAll('.comment');
+      commentContainers.forEach(container => {
+        container.style.display = 'none';
+      });
+    };
+
+    // 按需加载评论系统
+    const loadCommentSystem = (type) => {
+      if (loadedComments[type]) {
+        // 如果已加载，只需显示对应容器
+        document.querySelector(`.${type}-comment`).style.display = 'block';
+        return;
+      }
+
+      // 根据类型加载对应的脚本
+      commentConfig[type]?.load();
+      loadedComments[type] = true;
+    };
+
+    // 评论组件选择器
+    const changeActiveCommentItems = (item) => {
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let i = 0; i < commentItems.length; i++) {
+        commentItems[i].classList.remove('active');
+      }
+      item.classList.add('active');
+
+      // 获取要加载的评论系统类型
+      const commentType = item.getAttribute('data-selector');
+
+      // 隐藏所有评论系统
+      hideAllComments();
+
+      // 加载选中的评论系统
+      loadCommentSystem(commentType);
+    };
+
+    const commentInit = () => {
+      // 评论组件选择器点击事件
+      const commentItems = document.querySelectorAll('.selector-item');
+      for (let item of commentItems) {
+        item.addEventListener('click', () => {
+          // 保存选择器状态
+          const commentType = item.getAttribute('data-selector');
+          window.localStorage.setItem('commentType', commentType);
+          // 切换选中状态
+          changeActiveCommentItems(item);
+        });
+      }
+
+      // 检查是否需要加载默认评论系统
+      if (defaultComment) {
+        const defaultSelectorItem = document.querySelector(`[data-selector="${defaultComment}"]`);
+        if (!defaultSelectorItem) return;
+        defaultSelectorItem.style.display = 'block';
+        defaultSelectorItem.classList.add('active');
+        loadCommentSystem(defaultComment);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', commentInit);
+    } else {
+      commentInit();
+    }
+  };
+  loadComments();
+</script>
+
+      
+    
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.8.3' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+  </html>
+
